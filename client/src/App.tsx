@@ -11,6 +11,7 @@ import MallPage from "@/pages/mall";
 import ProfilePage from "@/pages/profile";
 import NotificationsPage from "@/pages/notifications";
 import LoginPage from "@/pages/login";
+import InboxPage from "@/pages/inbox";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/mall" component={MallPage} />
       <Route path="/profile/:username" component={ProfilePage} />
       <Route path="/notifications" component={NotificationsPage} />
+      <Route path="/inbox" component={InboxPage} />
       <Route path="/login" component={LoginPage} />
       <Route component={NotFound} />
     </Switch>

@@ -1,34 +1,35 @@
-# DAH SOCIAL - Design Guidelines (Sunset Aesthetic)
+# DAH SOCIAL - Design Guidelines (Dark Theme with Pink/Blue Accents)
 
 ## Design Approach
-**Reference-Based**: Instagram's visual clarity + Twitter's information density + Poshmark's marketplace integration, wrapped in a soft, calming sunset aesthetic. Focus on content discovery, social interaction, and seamless buying/selling experiences.
+**Reference-Based**: TikTok's vertical video experience + Instagram's engagement patterns + Facebook Marketplace integration, wrapped in a sleek dark theme with vibrant pink and blue accents. Focus on content discovery, social interaction, and seamless buying/selling experiences.
 
-## Color Palette - Sunset Aesthetic
+## Color Palette - Dark Theme
 
-**Primary Gradient**: Soft pink (#FFE5EC) to sky blue (#E3F2FD)
-**Accent Colors**:
-- Coral: #FFB3BA (CTAs, active states)
-- Peach: #FFDFBA (highlights, badges)
-- Light Blue: #BAE1FF (links, secondary actions)
-- Lavender: #E8D5F2 (tertiary accents)
+**Base Colors**:
+- Background: Deep blue-black (#0A0D14) - HSL: 225 15% 6%
+- Card: Slightly elevated (#14181F) - HSL: 225 15% 9%
+- Border: Subtle (#1E242E) - HSL: 225 15% 15%
 
-**Neutrals**:
-- Pure white: #FFFFFF (cards, backgrounds)
-- Soft cream: #FFF9F5 (page backgrounds)
-- Warm gray: #F5F0ED (dividers, borders)
-- Text gray: #6B6B6B (body text)
-- Charcoal: #3D3D3D (headings)
+**Primary Accents**:
+- Pink Primary: #E85D8C (330 85% 60%) - CTAs, active states, hearts
+- Blue Secondary: #3B82F6 (210 80% 50%) - links, secondary actions
+- Gradient: Pink to Blue (135deg)
+
+**Supporting Colors**:
+- Muted text: #8B8B9A - HSL: 210 15% 55%
+- Foreground: #F0F2F5 - HSL: 210 20% 95%
 
 **Semantic Colors**:
-- Success: Soft mint #C4E5D4
-- Warning: Warm peach #FFE4CC
-- Error: Blush pink #FFD4D9
+- Success: Emerald #10B981
+- Warning: Amber #F59E0B  
+- Error: Red #EF4444
+- Info: Blue #3B82F6
 
 **Gradient Applications**:
-- Headers: Linear gradient pink-to-blue (horizontal)
-- Buttons: Subtle coral-to-peach
-- Cards: Soft glow overlays
-- Story rings: Animated pink-blue rotation
+- Primary buttons: Pink to blue (bg-dah-gradient-strong)
+- Cards subtle glow: bg-dah-gradient (15% opacity)
+- Logo text: text-gradient-dah
+- Avatar rings: ring-gradient-dah (pink-purple-blue)
 
 ## Typography System
 
@@ -45,150 +46,135 @@
 
 **Tailwind Units**: 2, 3, 4, 6, 8, 12, 16
 - Component padding: p-6 (desktop), p-4 (mobile)
-- Card spacing: gap-6
-- Section margins: my-12 to my-16
-- Grid gaps: gap-4 (feed), gap-1 (tight grids)
+- Card spacing: gap-4 to gap-6
+- Section margins: my-8 to my-12
+- Grid gaps: gap-4 (feed), gap-1 (profile grids)
 
 **Container Widths**:
 - Feed: max-w-2xl centered
-- Marketplace grid: max-w-7xl
-- Modals: max-w-4xl
+- Video: max-w-lg centered (full-height vertical)
+- Mall: max-w-5xl (wider for product grids)
+- Profile: max-w-4xl
 
 ## Core Components
 
 ### Navigation
-**Top Bar** (h-16, gradient background):
-- Left: Logo + wordmark
-- Center: Search bar (rounded-full, white bg, subtle shadow)
-- Right: Icons (Notifications bell, Messages, Cart badge, Profile avatar)
-- Sticky with soft shadow on scroll
+**Top Bar** (h-14, bg-card/98 with backdrop-blur):
+- Left: Logo (text-gradient-dah) + Desktop nav items
+- Center: Search bar (bg-muted/50, rounded)
+- Right: Messages, Notifications, Profile avatar with gradient ring
+- Mobile: Compact nav bar below with icons only
 
-**Mobile Bottom Tab** (5 icons):
-- Home, Search, Sell/Create (gradient circle, prominent), Activity, Profile
-- Active state: Gradient underline + icon color shift
+**Story Bubbles**:
+- Horizontal scroll at top of feed
+- 64px circular avatars with 3px gradient ring
+- "Add Story" as first item with dashed border
+- Type indicators (LIVE red, Video blue, Shop pink)
 
 ### Feed Components
 
 **Post Card**:
-- White background, rounded-2xl, shadow-sm
-- User header: 48px avatar, username (bold), timestamp, menu dots
-- Media: Full-width, rounded-xl within card, 4:3 or 1:1 ratio
-- Action bar: Heart, comment bubble, share, bookmark (right-aligned)
-- Engagement counts below icons
-- Caption: Username bold + text, max 3 lines with "more" expansion
-- Comments preview: 2 top comments with avatars
-- Product tag indicator (if marketplace item)
-- Spacing: p-6, gap-4 between sections
+- Dark card background, rounded-xl
+- User header: 40px avatar with gradient ring, username, timestamp, menu
+- Media: Full-width, aspect-square or 4:5
+- Action bar: Heart, comment, share, bookmark (right-aligned)
+- Engagement: Like count, username + caption inline
+- Comments preview: clickable "View all X comments"
 
-**Story Bar**:
-- Horizontal scroll, pb-6
-- 80px circular avatars with gradient ring (2px)
-- "Add yours" as first item
-- Username labels below (12px)
+**Tabs**:
+- For You / Following / Trending
+- Pills style with bg-muted/50 TabsList
+- Icons + text on desktop, icons only on mobile
+
+### Video Components
+
+**Video Post** (TikTok-style):
+- Full-height vertical (aspect 9:16, max 80vh)
+- Tap to play/pause
+- Right sidebar: Avatar, heart, comments, share, bookmark
+- Bottom overlay: Username, caption (line-clamp-2)
+- Top: Mute/unmute button
 
 ### Marketplace Components
 
+**Mall Hero**:
+- Gradient banner (bg-dah-gradient-strong)
+- Title with Sparkles icon
+- Quick action badges (Trending, Deals, Flash Sale)
+- Decorative circles for visual interest
+
+**Category Cards**:
+- Icon with gradient background (unique per category)
+- Flea Market: orange-rose, Thrift: purple-pink, Tech: blue-cyan, Trade: emerald-teal
+- Active state: ring-2 ring-primary
+
 **Product Listing Card**:
-- Square thumbnail (1:1)
-- Gradient overlay on hover
-- Price tag (top-right, gradient badge)
-- Product name + seller info below
-- Like/save heart icon (top-left)
-- Condition badge (new/used)
-
-**Marketplace Grid**:
-- 3-4 columns (responsive)
-- gap-4, masonry option for varied heights
-- Category filters (sticky horizontal scroll)
-
-**Product Detail Modal**:
-- Full-screen mobile, max-w-5xl desktop
-- Left: Image carousel with thumbnails
-- Right: Title, price (large coral), seller profile, description, size/condition, buy/message buttons
-- Related items carousel at bottom
+- Square thumbnail with heart overlay
+- Price badge (gradient, bottom-left)
+- Seller info with avatar, verified badge, rating
+- Action buttons: Buy Now (gradient), Message, Share
 
 ### Profile Components
 
 **Profile Header**:
-- Banner area: Gradient pink-to-blue (16:9 ratio, optional cover image)
-- Avatar: 128px, white ring, overlapping banner
-- Stats row: Posts, Followers, Following, Items Sold (clickable)
-- Bio: max-w-md, 150 chars
-- Action buttons: Follow (gradient), Message, Shop (if seller)
-- Highlights/Collections row (circular)
+- Banner gradient overlay (32px height)
+- Large avatar (128px) with gradient ring, overlapping banner
+- Stats row: Posts, Followers, Following, Rating
+- Action buttons: Follow (gradient), Message, Settings
 
-**Tabs**:
-- Posts, Shop, Tagged, Saved
-- Underline indicator (gradient)
+**Profile Themes** (user customizable):
+- Midnight: slate-900 to blue-950
+- Neon: purple-950 to pink-950
+- Ocean: blue-950 to cyan-950
+- Sunset: rose-950 to amber-950
+- Aurora: emerald-950 to cyan-950
+- Minimal: neutral-950
 
-**Post/Product Grid**:
-- 3 columns, square thumbnails
-- gap-1 aesthetic
-- Hover: Engagement metrics overlay
+**Content Tabs**:
+- Posts / Videos / Shop / Saved
+- Underline indicator style
+- Grid layouts: 3-col for posts, 2-3 col for shop
 
-### Interaction Components
+### Interactive Elements
 
-**Create Modal**:
-- Toggle: Post / List Item
-- Image upload area (dashed border, gradient on drag)
-- Caption/description field
-- For listings: Price, category, condition, shipping options
-- Preview pane (right side desktop)
-- Post/List button (gradient)
+**Buttons**:
+- Primary: bg-dah-gradient-strong (pink to blue)
+- Secondary: bg-secondary (blue)
+- Ghost: transparent with hover elevation
+- Icon buttons: size="icon" with h-9 w-9
 
-**Comment Section**:
-- Nested replies (1 level)
-- Avatar + username + text
-- Like count + reply link
-- Timestamp (light gray)
-- Input field at bottom (gradient border on focus)
+**Cards**:
+- bg-card with border-border
+- Use hover-elevate for interactive cards
+- Never nest cards inside cards
 
-**Search/Explore**:
-- Tabs: For You, Following, Marketplace, People
-- Grid + list view toggle
-- Filters sidebar (price range, categories, location)
+**Badges**:
+- Small size for status indicators
+- Use with icons for context
+- bg-white/20 for overlay badges
 
-## Images
+## Animations
 
-**Placement Strategy**:
-- Feed posts: Primary content (user-generated)
-- Marketplace listings: Product photos (high quality, multiple angles)
-- Profile banners: Optional gradient overlays
-- Story highlights: Circular previews
-- Explore page: Dense masonry grid
-
-**Specifications**:
-- Profile photos: 1:1 square, circular display
-- Posts: 1:1, 4:5 ratios preferred
-- Products: 1:1 square mandatory
-- Stories: 9:16 vertical
-- Banners: 16:9 landscape
-
-**Hero Section**: No traditional hero - platform opens directly to feed. Marketing pages use gradient headers with product imagery.
-
-## Animations (Minimal)
-
-- Gradient color shifts on hover (subtle)
+- Subtle transitions (200-300ms)
 - Heart fill animation on like
+- Gradient ring rotation on stories
 - Smooth modal/sheet transitions
-- Pull-to-refresh indicator
-- Skeleton loaders (gradient shimmer)
+- Skeleton loaders for loading states
 
 ## Accessibility
 
-- 4.5:1 contrast minimums maintained
-- Touch targets: 48px minimum
-- Keyboard navigation for all modals
-- Focus indicators: Gradient outline
-- Alt text required for all images
-- Screen reader labels on icon buttons
+- 4.5:1 contrast minimum maintained
+- Touch targets: 44px minimum
+- Focus indicators: ring-primary
+- Alt text for all images
+- Keyboard navigation support
 
 ## Platform Patterns
 
-**Feed**: Infinite scroll, pull-to-refresh, optimistic updates
-**Marketplace**: Quick buy flow, saved searches, price alerts
-**Messaging**: In-app chat for transactions, media sharing
-**Notifications**: Grouped by type (social, sales, messages), badges
-**Payments**: Integrated checkout modal, seller payouts dashboard
+**Feed**: Infinite scroll, optimistic updates, tab filtering
+**Video**: Vertical swipe navigation, tap controls
+**Mall**: Grid/list toggle, category filters, search
+**Profile**: Customizable themes, tabbed content
+**Notifications**: Grouped by type, actionable items
 
-This creates a soothing, visually cohesive experience that makes extended browsing comfortable while maintaining social engagement and commerce functionality.
+This creates an engaging, polished dark theme experience that feels like a premium social platform - comfortable for hours of browsing while maintaining visual interest through the pink and blue accent system.

@@ -31,3 +31,20 @@ export function unfollow(username: string, target: string) {
   lsSet(KEY(username), state);
   return state.following;
 }
+
+export function getFollowers(username: string): string[] {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return [];
+  }
+  const allKeys = Object.keys(localStorage).filter(k => k.startsWith("dah.following."));
+  const followers: string[] = [];
+  for (const key of allKeys) {
+    try {
+      const state = JSON.parse(localStorage.getItem(key) || "{}") as FollowState;
+      if (state.following?.includes(username)) {
+        followers.push(state.username);
+      }
+    } catch {}
+  }
+  return followers;
+}

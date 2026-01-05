@@ -8,10 +8,10 @@ export type ProfileTheme = {
 };
 
 export const defaultTheme: ProfileTheme = {
-  background: "bg-gradient-to-br from-pink-50 to-sky-50",
-  accent: "text-pink-500",
-  accentHex: "350 80% 65%",
-  text: "text-gray-800",
-  card: "bg-white/80",
+  background: "bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950",
+  accent: "text-pink-400",
+  accentHex: "330 85% 60%",
+  text: "text-white",
+  card: "bg-slate-900/80",
   font: "font-sans",
 };

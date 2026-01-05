@@ -26,4 +26,19 @@ export type ListingPost = {
   category?: ListingCategory;
 };
 
-export type Post = TextPost | VideoPost | ListingPost;
+export type AdPost = {
+  id: string;
+  type: "ad";
+  advertiser: string;
+  headline: string;
+  caption: string;
+  media?: string;
+  videoSrc?: string;
+  cta: string;
+  ctaUrl: string;
+  impressions: number;
+  clicks: number;
+  revenue: number;
+};
+
+export type Post = TextPost | VideoPost | ListingPost | AdPost;
