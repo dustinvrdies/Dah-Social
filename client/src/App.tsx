@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import VideoPage from "@/pages/video";
 import MallPage from "@/pages/mall";
+import StorePage from "@/pages/store";
 import ProfilePage from "@/pages/profile";
 import NotificationsPage from "@/pages/notifications";
 import LoginPage from "@/pages/login";
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/video" component={VideoPage} />
       <Route path="/mall" component={MallPage} />
+      <Route path="/mall/store/:storeId" component={StorePage} />
       <Route path="/profile/:username" component={ProfilePage} />
       <Route path="/notifications" component={NotificationsPage} />
       <Route path="/inbox" component={InboxPage} />

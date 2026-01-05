@@ -15,6 +15,19 @@ export type VideoPost = {
 
 export type ListingCategory = "flea-market" | "thrift-shop" | "electronics" | "exchange";
 
+export type Store = {
+  id: string;
+  name: string;
+  owner: string;
+  description: string;
+  avatar?: string;
+  banner?: string;
+  category: ListingCategory;
+  rating: number;
+  sales: number;
+  featured: boolean;
+};
+
 export type ListingPost = {
   id: string;
   type: "listing";

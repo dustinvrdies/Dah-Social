@@ -1,4 +1,4 @@
-import { Post, ListingCategory } from "./postTypes";
+import { Post, ListingCategory, Store } from "./postTypes";
 
 export const initialFeed: Post[] = [
   {
@@ -116,4 +116,80 @@ export function getListingsByCategory(category: ListingCategory | null): Post[] 
   const listings = allPosts.filter(p => p.type === "listing");
   if (!category) return listings;
   return listings.filter(p => p.type === "listing" && p.category === category);
+}
+
+export const stores: Store[] = [
+  {
+    id: "thriftqueen",
+    name: "Thrift Queen",
+    owner: "thriftqueen",
+    description: "Curated vintage and secondhand fashion finds. Sustainable style for less.",
+    category: "thrift-shop",
+    rating: 4.8,
+    sales: 234,
+    featured: true,
+  },
+  {
+    id: "fleafinds",
+    name: "Flea Finds",
+    owner: "fleafinds",
+    description: "Antiques, collectibles, and unique treasures from estate sales.",
+    category: "flea-market",
+    rating: 4.6,
+    sales: 156,
+    featured: true,
+  },
+  {
+    id: "gadgetguru",
+    name: "Gadget Guru",
+    owner: "gadgetguru",
+    description: "Quality refurbished electronics and tech accessories.",
+    category: "electronics",
+    rating: 4.9,
+    sales: 412,
+    featured: true,
+  },
+  {
+    id: "techswap",
+    name: "Tech Swap Hub",
+    owner: "techswap",
+    description: "Trade your gaming gear, consoles, and electronics with others.",
+    category: "exchange",
+    rating: 4.5,
+    sales: 89,
+    featured: true,
+  },
+  {
+    id: "vintagevault",
+    name: "Vintage Vault",
+    owner: "vintagevault",
+    description: "Retro clothing, accessories, and memorabilia from the 80s and 90s.",
+    category: "thrift-shop",
+    rating: 4.7,
+    sales: 178,
+    featured: false,
+  },
+  {
+    id: "seller1",
+    name: "Mobile Market",
+    owner: "seller1",
+    description: "Pre-owned phones and tablets at unbeatable prices.",
+    category: "electronics",
+    rating: 4.4,
+    sales: 67,
+    featured: false,
+  },
+];
+
+export function getStoreById(storeId: string): Store | undefined {
+  return stores.find(s => s.id === storeId);
+}
+
+export function getListingsByStore(storeOwner: string): Post[] {
+  const allPosts = getAllPosts();
+  return allPosts.filter(p => p.type === "listing" && p.user === storeOwner);
+}
+
+export function getFeaturedStores(): Store[] {
+  return stores.filter(s => s.featured);
 }

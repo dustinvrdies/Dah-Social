@@ -1,8 +1,11 @@
+import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ListingCategory } from "@/lib/postTypes";
-import { Store, ShoppingBag, Cpu, ArrowLeftRight, Sparkles, TrendingUp, Tag, Zap } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ListingCategory, Store as StoreType } from "@/lib/postTypes";
+import { getFeaturedStores } from "@/lib/feedData";
+import { Store, ShoppingBag, Cpu, ArrowLeftRight, Sparkles, TrendingUp, Tag, Zap, Star, ChevronRight } from "lucide-react";
 
 interface CategoryInfo {
   id: ListingCategory;
@@ -90,6 +93,49 @@ export function MallLanding({ selectedCategory, onSelectCategory }: MallLandingP
               <div className="font-semibold text-sm">{c.title}</div>
               <div className="text-xs text-muted-foreground">{c.subtitle}</div>
             </Card>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <h2 className="font-semibold">Featured Stores</h2>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {getFeaturedStores().map((store) => {
+          const gradient = categories.find(c => c.id === store.category)?.gradient || "from-gray-500 to-gray-600";
+          return (
+            <Link key={store.id} href={`/mall/store/${store.id}`}>
+              <Card
+                className="p-4 cursor-pointer hover-elevate transition-all"
+                data-testid={`card-store-${store.id}`}
+              >
+                <div className="flex items-start gap-3">
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={store.avatar} />
+                    <AvatarFallback className={`bg-gradient-to-br ${gradient} text-white font-bold`}>
+                      {store.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold truncate">{store.name}</span>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                      {store.description}
+                    </p>
+                    <div className="flex items-center gap-3 mt-2 flex-wrap">
+                      <div className="flex items-center gap-1 text-xs">
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                        <span>{store.rating}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{store.sales} sales</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </Link>
           );
         })}
       </div>
