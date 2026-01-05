@@ -3,32 +3,32 @@ import { Plus, Play, ShoppingBag, Sparkles, Video, Radio } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "./AuthProvider";
 
-interface Story {
+interface Imagination {
   id: string;
   username: string;
   avatar?: string;
   hasNew: boolean;
-  type: "story" | "live" | "video" | "product";
+  type: "imagination" | "live" | "video" | "product";
   label?: string;
 }
 
-const mockStories: Story[] = [
+const mockImaginations: Imagination[] = [
   { id: "1", username: "trending", hasNew: true, type: "video", label: "For You" },
-  { id: "2", username: "maya_designs", hasNew: true, type: "story" },
+  { id: "2", username: "maya_designs", hasNew: true, type: "imagination" },
   { id: "3", username: "tech_hub", hasNew: true, type: "live", label: "LIVE" },
   { id: "4", username: "streetwear", hasNew: false, type: "product" },
   { id: "5", username: "gaming_pro", hasNew: true, type: "video" },
-  { id: "6", username: "music_vibes", hasNew: true, type: "story" },
-  { id: "7", username: "fitness_coach", hasNew: false, type: "story" },
+  { id: "6", username: "music_vibes", hasNew: true, type: "imagination" },
+  { id: "7", username: "fitness_coach", hasNew: false, type: "imagination" },
   { id: "8", username: "dah_mall", hasNew: true, type: "product", label: "Shop" },
-  { id: "9", username: "art_collective", hasNew: true, type: "story" },
+  { id: "9", username: "art_collective", hasNew: true, type: "imagination" },
   { id: "10", username: "crypto_news", hasNew: false, type: "video" },
 ];
 
-export function StoryBubbles() {
+export function ImaginationBubbles() {
   const { session } = useAuth();
 
-  const getTypeIcon = (type: Story["type"]) => {
+  const getTypeIcon = (type: Imagination["type"]) => {
     switch (type) {
       case "live":
         return <Radio className="w-3 h-3" />;
@@ -41,7 +41,7 @@ export function StoryBubbles() {
     }
   };
 
-  const getTypeColor = (type: Story["type"]) => {
+  const getTypeColor = (type: Imagination["type"]) => {
     switch (type) {
       case "live":
         return "bg-red-500";
@@ -67,36 +67,36 @@ export function StoryBubbles() {
                 <Plus className="w-3 h-3 text-primary-foreground" />
               </div>
             </div>
-            <span className="text-xs text-muted-foreground">Add Story</span>
+            <span className="text-xs text-muted-foreground">Add Imagination</span>
           </div>
         )}
         
-        {mockStories.map((story) => (
-          <Link key={story.id} href={`/profile/${story.username}`}>
+        {mockImaginations.map((item) => (
+          <Link key={item.id} href={`/profile/${item.username}`}>
             <div 
               className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer group"
-              data-testid={`story-bubble-${story.username}`}
+              data-testid={`imagination-bubble-${item.username}`}
             >
-              <div className={`p-[3px] rounded-full ${story.hasNew ? 'ring-gradient-dah' : 'bg-muted'}`}>
+              <div className={`p-[3px] rounded-full ${item.hasNew ? 'ring-gradient-dah' : 'bg-muted'}`}>
                 <div className="bg-background rounded-full p-[2px]">
                   <Avatar className="w-14 h-14 group-hover:scale-105 transition-transform">
-                    <AvatarImage src={story.avatar} />
+                    <AvatarImage src={item.avatar} />
                     <AvatarFallback className="bg-card text-foreground text-sm font-medium">
-                      {story.username.slice(0, 2).toUpperCase()}
+                      {item.username.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </div>
               </div>
               
-              {story.type !== "story" && (
-                <div className={`absolute mt-11 ml-10 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium text-white ${getTypeColor(story.type)}`}>
-                  {getTypeIcon(story.type)}
-                  {story.label && <span>{story.label}</span>}
+              {item.type !== "imagination" && (
+                <div className={`absolute mt-11 ml-10 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium text-white ${getTypeColor(item.type)}`}>
+                  {getTypeIcon(item.type)}
+                  {item.label && <span>{item.label}</span>}
                 </div>
               )}
               
               <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-[64px]">
-                {story.label || story.username.split('_')[0]}
+                {item.label || item.username.split('_')[0]}
               </span>
             </div>
           </Link>
@@ -105,7 +105,7 @@ export function StoryBubbles() {
         <Link href="/mall">
           <div 
             className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer group"
-            data-testid="story-bubble-mall"
+            data-testid="imagination-bubble-mall"
           >
             <div className="ring-gradient-dah p-[3px] rounded-full">
               <div className="bg-background rounded-full p-[2px]">

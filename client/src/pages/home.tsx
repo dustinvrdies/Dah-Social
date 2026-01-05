@@ -1,6 +1,6 @@
 import { MainNav } from "@/components/MainNav";
 import { Feed } from "@/components/Feed";
-import { StoryBubbles } from "@/components/StoryBubbles";
+import { ImaginationBubbles } from "@/components/ImaginationBubbles";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
       <MainNav />
       <div className="max-w-2xl mx-auto">
         <div className="border-b border-border/50">
-          <StoryBubbles />
+          <ImaginationBubbles />
         </div>
         <div className="p-4">
           <Feed />

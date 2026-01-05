@@ -11,7 +11,7 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - **Native Ads System** - Non-intrusive ads that blend into feed/video streams looking like normal posts
 - **DAH Inbox** - Direct messaging system for users to send letters to each other
 - **Revenue System** - Platform tracks ad revenue with capped user payouts (daily: 100, monthly: 2000 DAH Coins)
-- **Story Bubbles** - TikTok/Instagram-style story bubbles at top of feed
+- **Imagination Bubbles** - Creative content bubbles at top of feed (renamed from stories to be unique)
 - Profile themes: Midnight, Neon, Ocean, Sunset, Aurora, Minimal
 - All color tokens use HSL format (H S% L%) per design guidelines
 
