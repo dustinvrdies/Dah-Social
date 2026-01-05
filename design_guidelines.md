@@ -1,131 +1,194 @@
-# DAH SOCIAL - Design Guidelines
+# DAH SOCIAL - Design Guidelines (Sunset Aesthetic)
 
 ## Design Approach
-**Reference-Based**: Inspired by Instagram's visual clarity + Twitter's information density + LinkedIn's professional polish. Focus on content discovery, social interaction, and user-generated content presentation.
+**Reference-Based**: Instagram's visual clarity + Twitter's information density + Poshmark's marketplace integration, wrapped in a soft, calming sunset aesthetic. Focus on content discovery, social interaction, and seamless buying/selling experiences.
+
+## Color Palette - Sunset Aesthetic
+
+**Primary Gradient**: Soft pink (#FFE5EC) to sky blue (#E3F2FD)
+**Accent Colors**:
+- Coral: #FFB3BA (CTAs, active states)
+- Peach: #FFDFBA (highlights, badges)
+- Light Blue: #BAE1FF (links, secondary actions)
+- Lavender: #E8D5F2 (tertiary accents)
+
+**Neutrals**:
+- Pure white: #FFFFFF (cards, backgrounds)
+- Soft cream: #FFF9F5 (page backgrounds)
+- Warm gray: #F5F0ED (dividers, borders)
+- Text gray: #6B6B6B (body text)
+- Charcoal: #3D3D3D (headings)
+
+**Semantic Colors**:
+- Success: Soft mint #C4E5D4
+- Warning: Warm peach #FFE4CC
+- Error: Blush pink #FFD4D9
+
+**Gradient Applications**:
+- Headers: Linear gradient pink-to-blue (horizontal)
+- Buttons: Subtle coral-to-peach
+- Cards: Soft glow overlays
+- Story rings: Animated pink-blue rotation
 
 ## Typography System
 
-**Font Family**: Inter (Google Fonts) for UI, Lexend for headings
-- Headings: 600-700 weight, 24-40px
-- Body text: 400 weight, 14-16px  
-- Captions/metadata: 400 weight, 12-14px
-- Usernames/actions: 500-600 weight, 14-16px
+**Font Family**: Inter (UI), Lexend (headings) via Google Fonts
+- H1 (Hero): Lexend 700, 40-48px
+- H2 (Section): Lexend 600, 32px
+- H3 (Card titles): Lexend 600, 24px
+- Body: Inter 400, 16px
+- Captions: Inter 400, 14px
+- Small text: Inter 400, 12px
+- Username/links: Inter 600, 14-16px
 
 ## Layout & Spacing
 
-**Tailwind Unit System**: Primarily use 2, 3, 4, 6, 8, 12, 16 units
-- Component padding: p-4 to p-6
-- Section spacing: gap-4 to gap-8
-- Container max-widths: max-w-2xl (feed), max-w-7xl (explore/discover)
+**Tailwind Units**: 2, 3, 4, 6, 8, 12, 16
+- Component padding: p-6 (desktop), p-4 (mobile)
+- Card spacing: gap-6
+- Section margins: my-12 to my-16
+- Grid gaps: gap-4 (feed), gap-1 (tight grids)
 
-**Grid System**: 
-- Main feed: Single column (max-w-2xl centered)
-- Explore/Discover: 3-column grid (md:grid-cols-2 lg:grid-cols-3)
-- Profile pages: 3-column post grid
+**Container Widths**:
+- Feed: max-w-2xl centered
+- Marketplace grid: max-w-7xl
+- Modals: max-w-4xl
 
 ## Core Components
 
 ### Navigation
-**Top Bar**: Fixed header with logo left, search center, icons right (notifications, messages, profile)
-- Height: h-16
-- Border bottom for separation
-- Sticky positioning
+**Top Bar** (h-16, gradient background):
+- Left: Logo + wordmark
+- Center: Search bar (rounded-full, white bg, subtle shadow)
+- Right: Icons (Notifications bell, Messages, Cart badge, Profile avatar)
+- Sticky with soft shadow on scroll
 
-**Mobile Navigation**: Bottom tab bar (Home, Search, Create, Notifications, Profile)
+**Mobile Bottom Tab** (5 icons):
+- Home, Search, Sell/Create (gradient circle, prominent), Activity, Profile
+- Active state: Gradient underline + icon color shift
 
 ### Feed Components
 
 **Post Card**:
-- Full-width content area
-- User header: Avatar (40px), username, timestamp, menu
-- Image/media area: Aspect ratio 4:3 or 1:1
-- Action bar: Like, comment, share icons with counts
-- Caption: Username bold + text
-- Comments preview: Show 2-3 top comments
-- Spacing: p-4 for content, gap-3 between sections
+- White background, rounded-2xl, shadow-sm
+- User header: 48px avatar, username (bold), timestamp, menu dots
+- Media: Full-width, rounded-xl within card, 4:3 or 1:1 ratio
+- Action bar: Heart, comment bubble, share, bookmark (right-aligned)
+- Engagement counts below icons
+- Caption: Username bold + text, max 3 lines with "more" expansion
+- Comments preview: 2 top comments with avatars
+- Product tag indicator (if marketplace item)
+- Spacing: p-6, gap-4 between sections
 
-**Story/Highlights Bar**:
-- Horizontal scroll
-- Circular avatars (72px) with gradient rings
-- Username labels below
-- Positioned at top of feed
+**Story Bar**:
+- Horizontal scroll, pb-6
+- 80px circular avatars with gradient ring (2px)
+- "Add yours" as first item
+- Username labels below (12px)
+
+### Marketplace Components
+
+**Product Listing Card**:
+- Square thumbnail (1:1)
+- Gradient overlay on hover
+- Price tag (top-right, gradient badge)
+- Product name + seller info below
+- Like/save heart icon (top-left)
+- Condition badge (new/used)
+
+**Marketplace Grid**:
+- 3-4 columns (responsive)
+- gap-4, masonry option for varied heights
+- Category filters (sticky horizontal scroll)
+
+**Product Detail Modal**:
+- Full-screen mobile, max-w-5xl desktop
+- Left: Image carousel with thumbnails
+- Right: Title, price (large coral), seller profile, description, size/condition, buy/message buttons
+- Related items carousel at bottom
 
 ### Profile Components
 
 **Profile Header**:
-- Avatar: 96px (mobile), 150px (desktop)
-- Stats row: Posts, Followers, Following (clickable)
-- Bio section: max 150 characters
-- Action buttons: Follow/Edit Profile (prominent)
-- Highlight circles below bio
+- Banner area: Gradient pink-to-blue (16:9 ratio, optional cover image)
+- Avatar: 128px, white ring, overlapping banner
+- Stats row: Posts, Followers, Following, Items Sold (clickable)
+- Bio: max-w-md, 150 chars
+- Action buttons: Follow (gradient), Message, Shop (if seller)
+- Highlights/Collections row (circular)
 
-**Post Grid**:
-- Square thumbnails
-- gap-1 for tight grid aesthetic
-- Hover overlay shows likes/comments count
+**Tabs**:
+- Posts, Shop, Tagged, Saved
+- Underline indicator (gradient)
+
+**Post/Product Grid**:
+- 3 columns, square thumbnails
+- gap-1 aesthetic
+- Hover: Engagement metrics overlay
 
 ### Interaction Components
 
-**Create Post Modal**:
-- Full-screen overlay on mobile
-- Centered modal (max-w-4xl) on desktop
-- Image preview + caption input
-- Filter/edit options
-- Location/tag inputs
+**Create Modal**:
+- Toggle: Post / List Item
+- Image upload area (dashed border, gradient on drag)
+- Caption/description field
+- For listings: Price, category, condition, shipping options
+- Preview pane (right side desktop)
+- Post/List button (gradient)
 
-**Comments Section**:
-- Nested threading (1 level)
-- Like button per comment
-- Reply action
-- Time stamps
-- Load more trigger
+**Comment Section**:
+- Nested replies (1 level)
+- Avatar + username + text
+- Like count + reply link
+- Timestamp (light gray)
+- Input field at bottom (gradient border on focus)
 
 **Search/Explore**:
-- Search bar with recent/suggested
-- Category tabs (Top, People, Tags, Places)
-- Masonry or grid layout for results
+- Tabs: For You, Following, Marketplace, People
+- Grid + list view toggle
+- Filters sidebar (price range, categories, location)
 
 ## Images
 
-**Profile Photos**: Require 1:1 square cropping, circular display
-**Post Images**: Support 1:1, 4:5, 16:9 aspect ratios
-**Story Content**: Vertical 9:16 format
-**Cover/Banner**: 3:1 ratio for profile covers (optional feature)
+**Placement Strategy**:
+- Feed posts: Primary content (user-generated)
+- Marketplace listings: Product photos (high quality, multiple angles)
+- Profile banners: Optional gradient overlays
+- Story highlights: Circular previews
+- Explore page: Dense masonry grid
 
-Place images prominently throughout:
-- Feed posts (primary content)
-- Profile grids (visual portfolio)
-- Story highlights (circular previews)
-- Explore page (dense visual discovery)
+**Specifications**:
+- Profile photos: 1:1 square, circular display
+- Posts: 1:1, 4:5 ratios preferred
+- Products: 1:1 square mandatory
+- Stories: 9:16 vertical
+- Banners: 16:9 landscape
+
+**Hero Section**: No traditional hero - platform opens directly to feed. Marketing pages use gradient headers with product imagery.
+
+## Animations (Minimal)
+
+- Gradient color shifts on hover (subtle)
+- Heart fill animation on like
+- Smooth modal/sheet transitions
+- Pull-to-refresh indicator
+- Skeleton loaders (gradient shimmer)
 
 ## Accessibility
-- Minimum touch targets: 44px
-- Clear focus states on all interactive elements
-- Alt text support for images
-- Keyboard navigation for modals/dropdowns
-- Color contrast ratios: 4.5:1 minimum
 
-## Platform-Specific Patterns
+- 4.5:1 contrast minimums maintained
+- Touch targets: 48px minimum
+- Keyboard navigation for all modals
+- Focus indicators: Gradient outline
+- Alt text required for all images
+- Screen reader labels on icon buttons
 
-**Feed Behavior**:
-- Infinite scroll with "Load More" trigger
-- Pull-to-refresh on mobile
-- Optimistic UI updates (instant like/follow)
+## Platform Patterns
 
-**Notifications**:
-- Badge counts on icons
-- Grouped by type (likes, comments, follows)
-- Mark all read action
+**Feed**: Infinite scroll, pull-to-refresh, optimistic updates
+**Marketplace**: Quick buy flow, saved searches, price alerts
+**Messaging**: In-app chat for transactions, media sharing
+**Notifications**: Grouped by type (social, sales, messages), badges
+**Payments**: Integrated checkout modal, seller payouts dashboard
 
-**Messaging** (if included):
-- Chat list with unread indicators
-- Conversation threads
-- Media sharing within chats
-
-## Performance Considerations
-- Lazy load images below fold
-- Virtualize long feeds
-- Cache user data in localStorage
-- Optimistic updates for social actions
-
-This creates a modern, familiar social experience optimized for content discovery and engagement.
+This creates a soothing, visually cohesive experience that makes extended browsing comfortable while maintaining social engagement and commerce functionality.

@@ -7,10 +7,12 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 ## Recent Changes (January 2026)
 
 - Ported from Next.js to Vite/React with wouter routing
-- All data persistence now uses localStorage (no backend required)
-- Dark theme by default with purple accent (#7c3aed / 263 70% 58%)
+- **NEW: Sunset aesthetic** - Light pink and sky blue color palette, soft gradients, cleaner design
+- **NEW: Real dropshipping integration** - Backend API routes for product catalog (CJDropshipping setup pending)
+- Mall categories now clickable with filtering
+- Profile customization expanded (bio, links, interests, favorite song)
+- Profile themes updated: Sunset, Ocean, Twilight, Peach
 - All color tokens use HSL format (H S% L%) per design guidelines
-- Added login page with age-based DAH Coins distribution
 
 ## User Preferences
 

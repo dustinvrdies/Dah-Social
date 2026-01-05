@@ -15,9 +15,9 @@ export function MainNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-background/95 backdrop-blur">
+    <nav className="sticky top-0 z-50 flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-card/95 backdrop-blur shadow-sm">
       <Link href="/" data-testid="link-home-logo">
-        <span className="font-bold text-lg text-primary">DAH Social</span>
+        <span className="font-bold text-xl text-gradient-sunset">DAH Social</span>
       </Link>
 
       <div className="flex items-center gap-1">
