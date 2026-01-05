@@ -99,7 +99,7 @@ export default function ProfilePage() {
         </Card>
 
         <Card className={`${theme.card} p-5`}>
-          <ProfileBlocks />
+          <ProfileBlocks profileUsername={username} />
         </Card>
       </div>
     </ProfileThemeProvider>

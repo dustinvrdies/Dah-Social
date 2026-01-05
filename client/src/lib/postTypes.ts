@@ -13,6 +13,8 @@ export type VideoPost = {
   caption?: string;
 };
 
+export type ListingCategory = "flea-market" | "thrift-shop" | "electronics" | "exchange";
+
 export type ListingPost = {
   id: string;
   type: "listing";
@@ -21,6 +23,7 @@ export type ListingPost = {
   price: number;
   location?: string;
   media?: string;
+  category?: ListingCategory;
 };
 
 export type Post = TextPost | VideoPost | ListingPost;
