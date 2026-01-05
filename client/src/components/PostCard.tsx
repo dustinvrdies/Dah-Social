@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { addCoins } from "@/lib/dahCoins";
 import { pushNotification } from "@/lib/notifications";
 import { hidePost, reportPost } from "@/lib/moderation";
+import { getLikes, hasLiked, toggleLike, getCommentCount, subscribeToEngagement } from "@/lib/engagement";
 import { Comments } from "./Comments";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Heart, 
   MessageCircle, 
-  Share2, 
   Flag, 
   EyeOff, 
   MoreHorizontal,
@@ -30,31 +30,47 @@ interface PostCardProps {
   content: string;
   postId: string;
   image?: string;
+  timestamp?: number;
 }
 
-export function PostCard({ user, content, postId, image }: PostCardProps) {
+export function PostCard({ user, content, postId, image, timestamp }: PostCardProps) {
   const { session } = useAuth();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 500) + 10);
-  const [commentCount] = useState(Math.floor(Math.random() * 50));
+  const [likeCount, setLikeCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
   const [showComments, setShowComments] = useState(false);
   const [hidden, setHidden] = useState(false);
 
+  useEffect(() => {
+    const refresh = () => {
+      const likes = getLikes(postId);
+      setLikeCount(likes.count);
+      if (session) {
+        setLiked(hasLiked(postId, session.username));
+      }
+      setCommentCount(getCommentCount(postId));
+    };
+    
+    refresh();
+    const unsubscribe = subscribeToEngagement(refresh);
+    return unsubscribe;
+  }, [postId, session]);
+
   const handleLike = () => {
     if (!session) return;
-    if (!liked) {
-      setLikeCount((c) => c + 1);
-      setLiked(true);
+    
+    const nowLiked = toggleLike(postId, session.username);
+    setLiked(nowLiked);
+    setLikeCount(getLikes(postId).count);
+    
+    if (nowLiked) {
       addCoins(session.username, session.age, "Liked a post", 1);
       pushNotification(session.username, {
         username: session.username,
         type: "coin",
         message: "You earned 1 DAH Coin for liking a post.",
       });
-    } else {
-      setLikeCount((c) => c - 1);
-      setLiked(false);
     }
   };
 
@@ -78,7 +94,17 @@ export function PostCard({ user, content, postId, image }: PostCardProps) {
     );
   }
 
-  const timeAgo = `${Math.floor(Math.random() * 23) + 1}h`;
+  const formatTimeAgo = () => {
+    if (!timestamp) return `${Math.floor(Math.random() * 23) + 1}h`;
+    const diff = Date.now() - timestamp;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "now";
+    if (mins < 60) return `${mins}m`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
+  };
 
   return (
     <Card className="overflow-hidden" data-testid={`card-post-${postId}`}>
@@ -97,7 +123,7 @@ export function PostCard({ user, content, postId, image }: PostCardProps) {
               <span className="font-semibold text-sm group-hover:text-primary transition-colors" data-testid="link-post-user">
                 {user}
               </span>
-              <p className="text-xs text-muted-foreground">{timeAgo} ago</p>
+              <p className="text-xs text-muted-foreground">{formatTimeAgo()} ago</p>
             </div>
           </div>
         </Link>
@@ -163,7 +189,9 @@ export function PostCard({ user, content, postId, image }: PostCardProps) {
         </div>
 
         <div className="space-y-1">
-          <p className="font-semibold text-sm">{likeCount.toLocaleString()} likes</p>
+          <p className="font-semibold text-sm" data-testid="text-like-count">
+            {likeCount.toLocaleString()} {likeCount === 1 ? "like" : "likes"}
+          </p>
           <p className="text-sm">
             <Link href={`/profile/${user}`}>
               <span className="font-semibold hover:text-primary cursor-pointer">{user}</span>
@@ -171,17 +199,18 @@ export function PostCard({ user, content, postId, image }: PostCardProps) {
             {" "}
             <span className="text-foreground" data-testid="text-post-content">{content}</span>
           </p>
-          {commentCount > 0 && (
+          {commentCount > 0 && !showComments && (
             <button 
-              onClick={() => setShowComments(!showComments)}
+              onClick={() => setShowComments(true)}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              data-testid="button-view-comments"
             >
-              View all {commentCount} comments
+              View {commentCount === 1 ? "1 comment" : `all ${commentCount} comments`}
             </button>
           )}
         </div>
 
-        {showComments && <Comments />}
+        {showComments && <Comments postId={postId} />}
       </div>
     </Card>
   );

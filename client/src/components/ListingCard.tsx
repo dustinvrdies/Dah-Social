@@ -15,10 +15,11 @@ interface ListingCardProps {
   title: string;
   price: number;
   location?: string;
-  image?: string;
+  media?: string;
+  postId?: string;
 }
 
-export function ListingCard({ user, title, price, location, image }: ListingCardProps) {
+export function ListingCard({ user, title, price, location, media }: ListingCardProps) {
   const { session } = useAuth();
   const [rep, setRep] = useState<{ score: number; verifiedSales: number } | null>(null);
   const [liked, setLiked] = useState(false);
@@ -44,9 +45,9 @@ export function ListingCard({ user, title, price, location, image }: ListingCard
   return (
     <Card className="overflow-hidden" data-testid={`card-listing-${title.replace(/\s+/g, "-").toLowerCase()}`}>
       <div className="relative">
-        {image ? (
+        {media ? (
           <div className="aspect-square bg-muted">
-            <img src={image} alt={title} className="w-full h-full object-cover" />
+            <img src={media} alt={title} className="w-full h-full object-cover" />
           </div>
         ) : (
           <div className="aspect-square bg-dah-gradient flex items-center justify-center">

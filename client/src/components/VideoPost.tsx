@@ -9,6 +9,7 @@ interface VideoPostProps {
   src: string;
   user: string;
   caption?: string;
+  postId?: string;
 }
 
 export function VideoPost({ src, user, caption }: VideoPostProps) {

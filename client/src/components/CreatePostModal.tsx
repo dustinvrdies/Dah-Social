@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "./AuthProvider";
 import { addPost } from "@/lib/posts";
 import { initialFeed } from "@/lib/feedData";
@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -23,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus } from "lucide-react";
+import { Plus, Image, Video, X, RotateCw } from "lucide-react";
 
 interface CreatePostModalProps {
   onPostCreated: (posts: Post[]) => void;
@@ -34,24 +35,64 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
   const [open, setOpen] = useState(false);
   const [postType, setPostType] = useState<"text" | "listing">("text");
   const [content, setContent] = useState("");
+  const [media, setMedia] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
+  const [rotation, setRotation] = useState(0);
   const [listingTitle, setListingTitle] = useState("");
   const [listingPrice, setListingPrice] = useState("");
   const [listingLocation, setListingLocation] = useState("");
+  const [listingMedia, setListingMedia] = useState<string | null>(null);
   const [listingCategory, setListingCategory] = useState<ListingCategory>("flea-market");
+  
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const listingImageRef = useRef<HTMLInputElement>(null);
 
   if (!session) return null;
 
   const resetForm = () => {
     setContent("");
+    setMedia(null);
+    setMediaType(null);
+    setRotation(0);
     setListingTitle("");
     setListingPrice("");
     setListingLocation("");
+    setListingMedia(null);
     setListingCategory("flea-market");
     setPostType("text");
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: "image" | "video", forListing = false) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (forListing) {
+        setListingMedia(result);
+      } else {
+        setMedia(result);
+        setMediaType(type);
+        setRotation(0);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveMedia = () => {
+    setMedia(null);
+    setMediaType(null);
+    setRotation(0);
+  };
+
+  const handleRotate = () => {
+    setRotation((r) => (r + 90) % 360);
+  };
+
   const handleCreateTextPost = () => {
-    if (!content.trim()) return;
+    if (!content.trim() && !media) return;
 
     const newPost: Post = {
       id: `p-${Date.now()}`,
@@ -60,7 +101,7 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
       content: content.trim(),
     };
 
-    const updated = addPost(newPost, initialFeed);
+    const updated = addPost(newPost, initialFeed, media || undefined);
     onPostCreated(updated);
     resetForm();
     setOpen(false);
@@ -86,7 +127,7 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
       category: listingCategory,
     };
 
-    const updated = addPost(newPost, initialFeed);
+    const updated = addPost(newPost, initialFeed, listingMedia || undefined);
     onPostCreated(updated);
     resetForm();
     setOpen(false);
@@ -107,9 +148,10 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
           Create
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New</DialogTitle>
+          <DialogDescription>Share a post or list something for sale</DialogDescription>
         </DialogHeader>
         <Tabs value={postType} onValueChange={(v) => setPostType(v as "text" | "listing")}>
           <TabsList className="w-full">
@@ -122,14 +164,97 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
               placeholder="What's on your mind?"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              rows={4}
+              rows={3}
+              className="resize-none"
               data-testid="input-post-content"
             />
+            
+            {media && (
+              <div className="relative rounded-lg overflow-hidden bg-muted">
+                <div className="absolute top-2 right-2 z-10 flex gap-1">
+                  {mediaType === "image" && (
+                    <Button 
+                      size="icon" 
+                      variant="secondary" 
+                      className="h-8 w-8"
+                      onClick={handleRotate}
+                      data-testid="button-rotate-media"
+                    >
+                      <RotateCw className="w-4 h-4" />
+                    </Button>
+                  )}
+                  <Button 
+                    size="icon" 
+                    variant="destructive" 
+                    className="h-8 w-8"
+                    onClick={handleRemoveMedia}
+                    data-testid="button-remove-media"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+                {mediaType === "image" ? (
+                  <img 
+                    src={media} 
+                    alt="Preview" 
+                    className="w-full max-h-64 object-contain"
+                    style={{ transform: `rotate(${rotation}deg)` }}
+                  />
+                ) : (
+                  <video 
+                    src={media} 
+                    controls 
+                    className="w-full max-h-64"
+                  />
+                )}
+              </div>
+            )}
+            
+            <div className="flex items-center gap-2">
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFileSelect(e, "image")}
+              />
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={(e) => handleFileSelect(e, "video")}
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => imageInputRef.current?.click()}
+                data-testid="button-add-image"
+              >
+                <Image className="w-4 h-4 mr-1" />
+                Photo
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => videoInputRef.current?.click()}
+                data-testid="button-add-video"
+              >
+                <Video className="w-4 h-4 mr-1" />
+                Video
+              </Button>
+            </div>
+            
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setOpen(false)} data-testid="button-cancel-post">
                 Cancel
               </Button>
-              <Button onClick={handleCreateTextPost} disabled={!content.trim()} data-testid="button-submit-post">
+              <Button 
+                onClick={handleCreateTextPost} 
+                disabled={!content.trim() && !media}
+                className="bg-dah-gradient-strong"
+                data-testid="button-submit-post"
+              >
                 Post
               </Button>
             </div>
@@ -142,6 +267,41 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
               onChange={(e) => setListingTitle(e.target.value)}
               data-testid="input-listing-title"
             />
+            
+            {listingMedia ? (
+              <div className="relative rounded-lg overflow-hidden bg-muted">
+                <Button 
+                  size="icon" 
+                  variant="destructive" 
+                  className="absolute top-2 right-2 h-8 w-8 z-10"
+                  onClick={() => setListingMedia(null)}
+                  data-testid="button-remove-listing-media"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+                <img 
+                  src={listingMedia} 
+                  alt="Listing preview" 
+                  className="w-full max-h-48 object-contain"
+                />
+              </div>
+            ) : (
+              <div 
+                onClick={() => listingImageRef.current?.click()}
+                className="border-2 border-dashed border-muted-foreground/30 rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+              >
+                <input
+                  ref={listingImageRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, "image", true)}
+                />
+                <Image className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Click to add product photo</p>
+              </div>
+            )}
+            
             <div className="grid grid-cols-2 gap-3">
               <Input
                 type="number"
@@ -172,7 +332,12 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
               <Button variant="ghost" onClick={() => setOpen(false)} data-testid="button-cancel-listing">
                 Cancel
               </Button>
-              <Button onClick={handleCreateListing} disabled={!listingTitle.trim()} data-testid="button-submit-listing">
+              <Button 
+                onClick={handleCreateListing} 
+                disabled={!listingTitle.trim()}
+                className="bg-dah-gradient-strong"
+                data-testid="button-submit-listing"
+              >
                 Create Listing
               </Button>
             </div>
