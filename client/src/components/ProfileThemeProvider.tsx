@@ -8,7 +8,7 @@ interface ProfileThemeProviderProps {
 
 export function ProfileThemeProvider({ theme, children }: ProfileThemeProviderProps) {
   const style = {
-    "--dah-accent": theme.accentHex || "#7c3aed",
+    "--dah-accent": theme.accentHex || "263 70% 58%",
   } as React.CSSProperties;
 
   return (

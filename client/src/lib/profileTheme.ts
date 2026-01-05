@@ -10,7 +10,7 @@ export type ProfileTheme = {
 export const defaultTheme: ProfileTheme = {
   background: "bg-black",
   accent: "text-purple-400",
-  accentHex: "#7c3aed",
+  accentHex: "263 70% 58%",
   text: "text-white",
   card: "bg-neutral-950",
   font: "font-sans",

@@ -12,7 +12,7 @@ export function ProfileThemeSwitcher({ setTheme }: ProfileThemeSwitcherProps) {
       theme: {
         background: "bg-black",
         accent: "text-purple-400",
-        accentHex: "#7c3aed",
+        accentHex: "263 70% 58%",
         text: "text-white",
         card: "bg-neutral-950",
         font: "font-sans",
@@ -23,7 +23,7 @@ export function ProfileThemeSwitcher({ setTheme }: ProfileThemeSwitcherProps) {
       theme: {
         background: "bg-white",
         accent: "text-blue-600",
-        accentHex: "#2563eb",
+        accentHex: "217 91% 60%",
         text: "text-black",
         card: "bg-neutral-100",
         font: "font-serif",
@@ -34,7 +34,7 @@ export function ProfileThemeSwitcher({ setTheme }: ProfileThemeSwitcherProps) {
       theme: {
         background: "bg-black",
         accent: "text-emerald-400",
-        accentHex: "#34d399",
+        accentHex: "160 84% 39%",
         text: "text-white",
         card: "bg-neutral-950",
         font: "font-sans",
