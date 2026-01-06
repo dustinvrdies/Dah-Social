@@ -88,7 +88,10 @@ export function ListingCard({ user, title, price, location, media }: ListingCard
               </Avatar>
             </div>
             <div className="flex-1">
-              <span className="text-sm font-medium group-hover:text-primary transition-colors">@{user}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">@{user}</span>
+                <RiskFlag level={analyzePostRisk(title)} />
+              </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 {rep && rep.verifiedSales > 0 && (
                   <span className="flex items-center gap-1">
