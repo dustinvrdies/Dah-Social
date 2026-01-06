@@ -1,4 +1,5 @@
 import { Post, ListingCategory, Store } from "./postTypes";
+import { initializeBotEcosystem, maybeGenerateNewBotPost, getBotPosts } from "./botUsers";
 
 export const initialFeed: Post[] = [
   {
@@ -108,7 +109,21 @@ export const videoOnlyFeed = initialFeed.filter(p => p.type === "video");
 export const mallOnlyFeed = initialFeed.filter(p => p.type === "listing");
 
 export function getAllPosts(): Post[] {
-  return getPosts(initialFeed);
+  initializeBotEcosystem();
+  maybeGenerateNewBotPost();
+  
+  const userPosts = getPosts(initialFeed);
+  const botPosts = getBotPosts();
+  
+  const allPosts = [...userPosts, ...botPosts];
+  
+  allPosts.sort((a, b) => {
+    const aTime = (a as any).timestamp || 0;
+    const bTime = (b as any).timestamp || 0;
+    return bTime - aTime;
+  });
+  
+  return allPosts;
 }
 
 export function getListingsByCategory(category: ListingCategory | null): Post[] {
