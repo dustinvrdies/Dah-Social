@@ -11,6 +11,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ShoppingBag, MapPin, Star, Heart, MessageCircle, Share2, ShieldCheck } from "lucide-react";
 import { EscrowStatus } from "./EscrowStatus";
 
+import { analyzePostRisk } from "@/lib/safetyAI";
+import { RiskFlag } from "./RiskFlag";
+
 interface ListingCardProps {
   user: string;
   title: string;

@@ -9,6 +9,8 @@ import { Comments } from "./Comments";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RiskFlag } from "./RiskFlag";
+import { analyzePostRisk } from "@/lib/safetyAI";
 import { 
   Heart, 
   MessageCircle, 
@@ -134,10 +136,13 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
                 </AvatarFallback>
               </Avatar>
             </div>
-            <div>
-              <span className="font-semibold text-sm group-hover:text-primary transition-colors" data-testid="link-post-user">
-                {user}
-              </span>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-sm group-hover:text-primary transition-colors" data-testid="link-post-user">
+                  {user}
+                </span>
+                <RiskFlag level={analyzePostRisk(content)} />
+              </div>
               <p className="text-xs text-muted-foreground">{formatTimeAgo()} ago</p>
             </div>
           </div>
