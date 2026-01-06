@@ -4,7 +4,7 @@ import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import { getUnreadCount } from "@/lib/inbox";
-import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3 } from "lucide-react";
+import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ export function MainNav() {
   const navItems = [
     { href: "/", label: "Feed", icon: Home },
     { href: "/video", label: "Video", icon: Video },
+    { href: "/avenues", label: "Avenues", icon: MessageSquare },
     { href: "/live", label: "Live", icon: Radio },
     { href: "/mall", label: "Mall", icon: ShoppingBag },
     { href: "/discover", label: "Discover", icon: Sparkles },

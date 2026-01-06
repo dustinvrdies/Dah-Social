@@ -20,6 +20,9 @@ import EventsPage from "@/pages/events";
 import DiscoverPage from "@/pages/discover";
 import QuestsPage from "@/pages/quests";
 import DashboardPage from "@/pages/dashboard";
+import AvenuesPage from "@/pages/avenues";
+import AvenueDetailPage from "@/pages/avenue-detail";
+import AvenuePostPage from "@/pages/avenue-post";
 
 function Router() {
   return (
@@ -38,6 +41,9 @@ function Router() {
       <Route path="/discover" component={DiscoverPage} />
       <Route path="/quests" component={QuestsPage} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/avenues" component={AvenuesPage} />
+      <Route path="/av/:name" component={AvenueDetailPage} />
+      <Route path="/av/:name/post/:postId" component={AvenuePostPage} />
       <Route component={NotFound} />
     </Switch>
   );
