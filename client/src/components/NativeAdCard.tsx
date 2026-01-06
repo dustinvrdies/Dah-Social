@@ -22,7 +22,8 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!cardRef.current || hasRecordedImpression) return;
+    if (typeof window === "undefined" || !cardRef.current || hasRecordedImpression) return;
+    if (typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
       (entries) => {
