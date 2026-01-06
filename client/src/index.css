@@ -4,57 +4,57 @@
 @tailwind components;
 @tailwind utilities;
 
-/* DAH SOCIAL - Dark Theme with Black, Blue, Pink accents */
+/* DAH SOCIAL - Soft Charcoal Dark Theme - Easier on the eyes */
 :root {
-  --dah-accent: 330 85% 60%;
-  --button-outline: rgba(255,255,255, .08);
-  --badge-outline: rgba(255,255,255, .05);
+  --dah-accent: 330 70% 62%;
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .06);
   --opaque-button-border-intensity: 8;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .08);
+  --elevate-1: rgba(255,255,255, .05);
+  --elevate-2: rgba(255,255,255, .10);
   
-  /* Dark theme - black base with blue/pink accents */
-  --background: 225 15% 6%;
-  --foreground: 210 20% 95%;
-  --border: 225 15% 15%;
+  /* Soft charcoal dark theme - easier on eyes */
+  --background: 225 12% 12%;
+  --foreground: 210 18% 92%;
+  --border: 225 10% 22%;
   
-  --card: 225 15% 9%;
-  --card-foreground: 210 20% 95%;
-  --card-border: 225 15% 14%;
+  --card: 225 12% 15%;
+  --card-foreground: 210 18% 92%;
+  --card-border: 225 10% 20%;
   
-  --sidebar: 225 18% 8%;
-  --sidebar-foreground: 210 20% 92%;
-  --sidebar-border: 225 15% 14%;
-  --sidebar-primary: 330 85% 60%;
+  --sidebar: 225 12% 13%;
+  --sidebar-foreground: 210 18% 90%;
+  --sidebar-border: 225 10% 20%;
+  --sidebar-primary: 330 70% 62%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 80% 25%;
-  --sidebar-accent-foreground: 210 60% 90%;
-  --sidebar-ring: 330 85% 60%;
+  --sidebar-accent: 210 60% 28%;
+  --sidebar-accent-foreground: 210 50% 88%;
+  --sidebar-ring: 330 70% 62%;
   
-  --popover: 225 15% 10%;
-  --popover-foreground: 210 20% 95%;
-  --popover-border: 225 15% 16%;
+  --popover: 225 12% 14%;
+  --popover-foreground: 210 18% 92%;
+  --popover-border: 225 10% 22%;
   
-  /* Pink primary */
-  --primary: 330 85% 60%;
+  /* Softer pink primary */
+  --primary: 330 70% 62%;
   --primary-foreground: 0 0% 100%;
   
-  /* Blue secondary */
-  --secondary: 210 80% 50%;
+  /* Softer blue secondary */
+  --secondary: 210 70% 55%;
   --secondary-foreground: 0 0% 100%;
   
-  --muted: 225 15% 14%;
-  --muted-foreground: 210 15% 55%;
+  --muted: 225 10% 18%;
+  --muted-foreground: 210 12% 60%;
   
-  /* Blue accent */
-  --accent: 210 70% 20%;
-  --accent-foreground: 210 60% 90%;
+  /* Softer blue accent */
+  --accent: 210 55% 24%;
+  --accent-foreground: 210 50% 88%;
   
-  --destructive: 0 70% 50%;
+  --destructive: 0 65% 52%;
   --destructive-foreground: 0 0% 100%;
   
-  --input: 225 15% 14%;
-  --ring: 330 85% 60%;
+  --input: 225 10% 18%;
+  --ring: 330 70% 62%;
   
   /* Chart colors */
   --chart-1: 330 85% 60%;
@@ -235,17 +235,17 @@
     inset: -1px;
   }
   
-  /* DAH gradient utilities */
+  /* DAH gradient utilities - softer saturation */
   .bg-dah-gradient {
-    background: linear-gradient(135deg, hsl(330 85% 60% / 0.15) 0%, hsl(210 80% 50% / 0.15) 100%);
+    background: linear-gradient(135deg, hsl(330 70% 62% / 0.12) 0%, hsl(210 70% 55% / 0.12) 100%);
   }
   
   .bg-dah-gradient-strong {
-    background: linear-gradient(135deg, hsl(330 85% 55%) 0%, hsl(210 80% 50%) 100%);
+    background: linear-gradient(135deg, hsl(330 70% 58%) 0%, hsl(210 70% 52%) 100%);
   }
   
   .text-gradient-dah {
-    background: linear-gradient(135deg, hsl(330 85% 65%) 0%, hsl(210 80% 60%) 100%);
+    background: linear-gradient(135deg, hsl(330 70% 65%) 0%, hsl(210 70% 60%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -254,23 +254,29 @@
   .border-gradient-dah {
     border: 2px solid transparent;
     background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-                linear-gradient(135deg, hsl(330 85% 60%), hsl(210 80% 50%)) border-box;
+                linear-gradient(135deg, hsl(330 70% 62%), hsl(210 70% 55%)) border-box;
   }
   
   /* Story bubble ring gradient */
   .ring-gradient-dah {
-    background: linear-gradient(135deg, hsl(330 85% 60%), hsl(280 70% 55%), hsl(210 80% 50%));
+    background: linear-gradient(135deg, hsl(330 70% 62%), hsl(280 60% 55%), hsl(210 70% 55%));
     padding: 3px;
     border-radius: 9999px;
   }
   
-  /* Glow effects */
+  /* Glow effects - softer */
   .glow-pink {
-    box-shadow: 0 0 20px hsl(330 85% 60% / 0.3), 0 0 40px hsl(330 85% 60% / 0.15);
+    box-shadow: 0 0 20px hsl(330 70% 62% / 0.25), 0 0 40px hsl(330 70% 62% / 0.1);
   }
   
   .glow-blue {
-    box-shadow: 0 0 20px hsl(210 80% 50% / 0.3), 0 0 40px hsl(210 80% 50% / 0.15);
+    box-shadow: 0 0 20px hsl(210 70% 55% / 0.25), 0 0 40px hsl(210 70% 55% / 0.1);
+  }
+  
+  /* Card translucency for softer feel */
+  .card-translucent {
+    background: hsl(var(--card) / 0.9);
+    backdrop-filter: blur(8px);
   }
 
   /* Hide scrollbar but allow scrolling */
