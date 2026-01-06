@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ShoppingBag, MapPin, Star, Heart, MessageCircle, Share2, ShieldCheck } from "lucide-react";
+import { EscrowStatus } from "./EscrowStatus";
 
 interface ListingCardProps {
   user: string;
@@ -109,6 +110,8 @@ export function ListingCard({ user, title, price, location, media }: ListingCard
             {location}
           </div>
         )}
+
+        <EscrowStatus status="pending" />
         
         <div className="flex items-center gap-2 pt-2 border-t border-border/50">
           {canMarkSold ? (

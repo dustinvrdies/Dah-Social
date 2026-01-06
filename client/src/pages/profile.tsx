@@ -6,6 +6,8 @@ import { ProfileThemeProvider } from "@/components/ProfileThemeProvider";
 import { ProfileThemeSwitcher } from "@/components/ProfileThemeSwitcher";
 import { WalletSummary } from "@/components/WalletSummary";
 import { CreatorWallet } from "@/components/CreatorWallet";
+import { CreatorAnalytics } from "@/components/CreatorAnalytics";
+import { PayoutRequest } from "@/components/PayoutRequest";
 import { useAuth } from "@/components/AuthProvider";
 import { defaultTheme, ProfileTheme } from "@/lib/profileTheme";
 import { follow, unfollow, isFollowing, getFollowers, getFollowing } from "@/lib/follows";
@@ -160,13 +162,23 @@ export default function ProfilePage() {
             
             <div className="mt-6 space-y-6">
               {isOwnProfile && (
-                <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <WalletSummary />
-                    <CreatorWallet balance={wallet.available} />
-                  </div>
-                  <ProfileThemeSwitcher setTheme={setTheme} />
-                </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
+                    <div className="space-y-4">
+                      <WalletSummary />
+                      <CreatorWallet balance={wallet.available} />
+                    </div>
+                  </Card>
+                  <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
+                    <div className="space-y-4">
+                      <CreatorAnalytics views={postCount * 124} sales={rep.verifiedSales} />
+                      <PayoutRequest balance={wallet.available} />
+                    </div>
+                  </Card>
+                  <Card className={`${theme.card} p-4 md:col-span-2 backdrop-blur-sm`}>
+                    <ProfileThemeSwitcher setTheme={setTheme} />
+                  </Card>
+                </div>
               )}
               
               <Card className={`${theme.card} p-4 backdrop-blur-sm`}>
