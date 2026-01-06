@@ -63,3 +63,29 @@ export function addCoins(u: string, age: number, event: string, base: number) {
 function cryptoId() {
   return (crypto as any)?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
+
+export function spendCoins(u: string, amount: number, event: string): boolean {
+  const w = getWallet(u);
+  if (w.available < amount) return false;
+  
+  const nw = {
+    username: u,
+    available: w.available - amount,
+    lockedForCollege: w.lockedForCollege,
+  };
+  lsSet(WKEY(u), nw);
+  
+  const e: Entry = {
+    id: cryptoId(),
+    ts: Date.now(),
+    username: u,
+    event: `Spent: ${event}`,
+    base: -amount,
+    available: -amount,
+    lockedForCollege: 0,
+  };
+  const l = getLedger();
+  l.unshift(e);
+  lsSet(LKEY, l);
+  return true;
+}
