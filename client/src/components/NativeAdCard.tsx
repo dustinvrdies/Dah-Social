@@ -80,16 +80,18 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
           
           <p className="text-white text-sm leading-relaxed">{ad.caption}</p>
           
-          <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
-            <Button 
-              size="sm"
-              variant="secondary"
-              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
-              data-testid={`button-ad-cta-${ad.id}`}
-            >
-              {ad.cta}
-            </Button>
-          </a>
+          <Button 
+            size="sm"
+            variant="secondary"
+            className="bg-white/20 backdrop-blur-sm text-white border-white/30"
+            data-testid={`button-ad-cta-${ad.id}`}
+            onClick={() => {
+              handleCTAClick();
+              window.open(ad.ctaUrl, "_blank", "noopener,noreferrer");
+            }}
+          >
+            {ad.cta}
+          </Button>
         </div>
 
         <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5">
@@ -215,15 +217,17 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
             <p className="text-sm text-muted-foreground">{ad.caption}</p>
           </div>
 
-          <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
-            <Button 
-              className="w-full"
-              variant="secondary"
-              data-testid={`button-ad-cta-${ad.id}`}
-            >
-              {ad.cta}
-            </Button>
-          </a>
+          <Button 
+            className="w-full"
+            variant="secondary"
+            data-testid={`button-ad-cta-${ad.id}`}
+            onClick={() => {
+              handleCTAClick();
+              window.open(ad.ctaUrl, "_blank", "noopener,noreferrer");
+            }}
+          >
+            {ad.cta}
+          </Button>
         </div>
       </Card>
     );
@@ -315,15 +319,17 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
           </p>
         </div>
 
-        <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
-          <Button 
-            className="w-full"
-            variant="secondary"
-            data-testid={`button-ad-cta-${ad.id}`}
-          >
-            {ad.cta}
-          </Button>
-        </a>
+        <Button 
+          className="w-full"
+          variant="secondary"
+          data-testid={`button-ad-cta-${ad.id}`}
+          onClick={() => {
+            handleCTAClick();
+            window.open(ad.ctaUrl, "_blank", "noopener,noreferrer");
+          }}
+        >
+          {ad.cta}
+        </Button>
       </div>
     </Card>
   );

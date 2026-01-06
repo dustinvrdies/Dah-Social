@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { NativeAdCard } from "@/components/NativeAdCard";
 import { videoOnlyFeed, getAllPosts } from "@/lib/feedData";
 import { getVideoAds, NativeAd } from "@/lib/ads";
-import { Post } from "@/lib/postTypes";
+import { Post, VideoPost as VideoPostType } from "@/lib/postTypes";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
@@ -22,9 +22,9 @@ import {
 
 const VIDEO_AD_FREQUENCY = 4;
 
-type VideoFeedItem = { type: "video"; post: Post } | { type: "ad"; ad: NativeAd };
+type VideoFeedItem = { type: "video"; post: VideoPostType } | { type: "ad"; ad: NativeAd };
 
-function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: Post; isMuted: boolean; onToggleMute: () => void }) {
+function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: VideoPostType; isMuted: boolean; onToggleMute: () => void }) {
   const { session } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -74,7 +74,7 @@ function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: Post; isMuted:
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-[calc(100vh-56px)] bg-black snap-start snap-always flex-shrink-0"
+      className="relative w-full h-screen bg-black snap-start snap-always flex-shrink-0"
     >
       <video
         ref={videoRef}
@@ -173,7 +173,7 @@ export default function VideoPage() {
 
   const allVideos = useMemo(() => {
     const allPosts = getAllPosts();
-    return allPosts.filter(p => p.type === "video");
+    return allPosts.filter((p): p is VideoPostType => p.type === "video");
   }, []);
 
   const feedWithAds = useMemo((): VideoFeedItem[] => {
@@ -181,7 +181,7 @@ export default function VideoPage() {
     const result: VideoFeedItem[] = [];
     let adIndex = 0;
 
-    const videos = allVideos.length > 0 ? allVideos : videoOnlyFeed;
+    const videos: VideoPostType[] = allVideos.length > 0 ? allVideos : videoOnlyFeed;
 
     videos.forEach((post, i) => {
       result.push({ type: "video", post });
@@ -210,7 +210,7 @@ export default function VideoPage() {
               return (
                 <div 
                   key={`ad-${item.ad.id}-${idx}`} 
-                  className="w-full h-[calc(100vh-56px)] snap-start snap-always flex-shrink-0"
+                  className="w-full h-screen snap-start snap-always flex-shrink-0"
                 >
                   <NativeAdCard ad={item.ad} variant="video" />
                 </div>
