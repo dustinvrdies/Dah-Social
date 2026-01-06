@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/components/AuthProvider";
+import { EnvironmentBadge } from "@/components/EnvironmentBadge";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import VideoPage from "@/pages/video";
@@ -36,6 +37,7 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <Toaster />
+          <EnvironmentBadge env="dev" />
           <Router />
         </AuthProvider>
       </TooltipProvider>

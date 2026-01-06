@@ -8,6 +8,9 @@ import { WalletSummary } from "@/components/WalletSummary";
 import { CreatorWallet } from "@/components/CreatorWallet";
 import { CreatorAnalytics } from "@/components/CreatorAnalytics";
 import { PayoutRequest } from "@/components/PayoutRequest";
+import { KYCStatus } from "@/components/KYCStatus";
+import { PrivacyControls } from "@/components/PrivacyControls";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { useAuth } from "@/components/AuthProvider";
 import { defaultTheme, ProfileTheme } from "@/lib/profileTheme";
 import { follow, unfollow, isFollowing, getFollowers, getFollowing } from "@/lib/follows";
@@ -178,6 +181,15 @@ export default function ProfilePage() {
                   <Card className={`${theme.card} p-4 md:col-span-2 backdrop-blur-sm`}>
                     <ProfileThemeSwitcher setTheme={setTheme} />
                   </Card>
+                  <div className="md:col-span-1">
+                    <KYCStatus status="verified" />
+                  </div>
+                  <div className="md:col-span-1">
+                    <PrivacyControls />
+                  </div>
+                  <div className="md:col-span-2">
+                    <OnboardingChecklist />
+                  </div>
                 </div>
               )}
               
