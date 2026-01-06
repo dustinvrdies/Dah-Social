@@ -172,7 +172,7 @@ export default function ProfilePage() {
                   <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
                     <div className="space-y-4">
                       <WalletSummary />
-                      <CreatorWallet balance={wallet.available} />
+                      <EarningsDashboard />
                     </div>
                   </Card>
                   <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
@@ -198,7 +198,7 @@ export default function ProfilePage() {
               )}
               
               <Card className={`${theme.card} p-4 backdrop-blur-sm`}>
-                <ProfileBlocks profileUsername={username} />
+                <DraggableProfileBlocks profileUsername={username} />
               </Card>
               
               <Tabs value={activeTab} onValueChange={setActiveTab}>
