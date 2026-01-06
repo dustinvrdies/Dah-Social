@@ -16,7 +16,8 @@ import {
   EyeOff, 
   MoreHorizontal,
   Bookmark,
-  Send
+  Send,
+  Coins
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,6 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { TipButton } from "./TipButton";
 
 interface PostCardProps {
   user: string;
@@ -72,6 +74,19 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
         message: "You earned 1 DAH Coin for liking a post.",
       });
     }
+  };
+
+  const handleTip = (amount: number) => {
+    if (!session) return;
+    // Tipping adds coins to creator, removes from tipper
+    addCoins(user, 25, `Tip from @${session.username}`, amount);
+    addCoins(session.username, session.age, `Tipped @${user}`, -amount);
+    pushNotification(user, {
+      username: user,
+      type: "coin",
+      message: `@${session.username} sent you a tip of ${amount} DAH Coin!`,
+    });
+    alert(`Tip of ${amount} DAH Coin sent to @${user}`);
   };
 
   const handleHide = () => {
@@ -176,6 +191,9 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
             <Button variant="ghost" size="icon" data-testid="button-share-post">
               <Send className="w-6 h-6" />
             </Button>
+            {session && session.username !== user && (
+              <TipButton onTip={handleTip} />
+            )}
           </div>
           <Button 
             variant="ghost" 

@@ -5,10 +5,12 @@ import { ProfileBlocks } from "@/components/ProfileBlocks";
 import { ProfileThemeProvider } from "@/components/ProfileThemeProvider";
 import { ProfileThemeSwitcher } from "@/components/ProfileThemeSwitcher";
 import { WalletSummary } from "@/components/WalletSummary";
+import { CreatorWallet } from "@/components/CreatorWallet";
 import { useAuth } from "@/components/AuthProvider";
 import { defaultTheme, ProfileTheme } from "@/lib/profileTheme";
 import { follow, unfollow, isFollowing, getFollowers, getFollowing } from "@/lib/follows";
 import { getReputation } from "@/lib/reputation";
+import { getWallet } from "@/lib/dahCoins";
 import { pushNotification } from "@/lib/notifications";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,11 +32,13 @@ export default function ProfilePage() {
   const [rep, setRep] = useState(() => getReputation(username));
   const [followers, setFollowers] = useState<string[]>([]);
   const [followingList, setFollowingList] = useState<string[]>([]);
+  const [wallet, setWallet] = useState(() => getWallet(username));
   
   useEffect(() => {
     setRep(getReputation(username));
     setFollowers(getFollowers(username));
     setFollowingList(getFollowing(username));
+    setWallet(getWallet(username));
   }, [username]);
 
   useEffect(() => {
@@ -157,7 +161,10 @@ export default function ProfilePage() {
             <div className="mt-6 space-y-6">
               {isOwnProfile && (
                 <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
-                  <WalletSummary />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <WalletSummary />
+                    <CreatorWallet balance={wallet.available} />
+                  </div>
                   <ProfileThemeSwitcher setTheme={setTheme} />
                 </Card>
               )}

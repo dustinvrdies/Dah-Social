@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
+import { SearchBar } from "./SearchBar";
 import { getUnreadCount } from "@/lib/inbox";
-import { Home, Video, ShoppingBag, User, LogIn, LogOut, Search, Mail, Menu } from "lucide-react";
+import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -61,15 +61,7 @@ export function MainNav() {
           </div>
 
           <div className="hidden sm:flex flex-1 max-w-md mx-4">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search DAH..."
-                className="w-full pl-9 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-primary/50"
-                data-testid="input-search"
-              />
-            </div>
+            <SearchBar onSearch={(q) => console.log("Searching for:", q)} />
           </div>
 
           <div className="flex items-center gap-2">
