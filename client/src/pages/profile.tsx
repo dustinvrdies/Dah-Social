@@ -8,6 +8,7 @@ import { WalletSummary } from "@/components/WalletSummary";
 import { CreatorWallet } from "@/components/CreatorWallet";
 import { CreatorAnalytics } from "@/components/CreatorAnalytics";
 import { PayoutRequest } from "@/components/PayoutRequest";
+import { RevenueSplitPreview } from "@/components/RevenueSplitPreview";
 import { KYCStatus } from "@/components/KYCStatus";
 import { PrivacyControls } from "@/components/PrivacyControls";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
@@ -175,6 +176,7 @@ export default function ProfilePage() {
                   <Card className={`${theme.card} p-4 space-y-4 backdrop-blur-sm`}>
                     <div className="space-y-4">
                       <CreatorAnalytics views={postCount * 124} sales={rep.verifiedSales} />
+                      <RevenueSplitPreview amount={wallet.available / 10} />
                       <PayoutRequest balance={wallet.available} />
                     </div>
                   </Card>
