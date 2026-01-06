@@ -7,6 +7,7 @@ import { Post, AdPost } from "@/lib/postTypes";
 import { getAds } from "@/lib/ads";
 import { PostRenderer } from "./PostRenderer";
 import { CreatePostModal } from "./CreatePostModal";
+import FeedFilter from "./FeedFilter";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Users, TrendingUp } from "lucide-react";
 
@@ -17,6 +18,7 @@ export function Feed() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [hidden, setHidden] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("foryou");
+  const [feedFilter, setFeedFilter] = useState("all");
 
   useEffect(() => {
     setPosts(getPosts(initialFeed));
@@ -25,11 +27,17 @@ export function Feed() {
     }
   }, [session]);
 
-  const visiblePosts = posts.filter((p) => !hidden.includes(p.id));
+  const visiblePosts = useMemo(() => {
+    let filtered = posts.filter((p) => !hidden.includes(p.id));
+    if (feedFilter !== "all") {
+      filtered = filtered.filter((p) => p.type === feedFilter);
+    }
+    return filtered;
+  }, [posts, hidden, feedFilter]);
 
   const feedWithAds = useMemo(() => {
     const ads = getAds();
-    if (ads.length === 0) return visiblePosts;
+    if (ads.length === 0 || feedFilter !== "all") return visiblePosts;
     
     const result: Post[] = [];
     let adIndex = 0;
@@ -43,29 +51,33 @@ export function Feed() {
     });
 
     return result;
-  }, [visiblePosts]);
+  }, [visiblePosts, feedFilter]);
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-          <TabsList className="grid w-full sm:w-auto grid-cols-3 bg-muted/50">
-            <TabsTrigger value="foryou" className="gap-1.5" data-testid="tab-foryou">
-              <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">For You</span>
-            </TabsTrigger>
-            <TabsTrigger value="following" className="gap-1.5" data-testid="tab-following">
-              <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Following</span>
-            </TabsTrigger>
-            <TabsTrigger value="trending" className="gap-1.5" data-testid="tab-trending">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">Trending</span>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        
-        <CreatePostModal onPostCreated={setPosts} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+            <TabsList className="grid w-full sm:w-auto grid-cols-3 bg-muted/50">
+              <TabsTrigger value="foryou" className="gap-1.5" data-testid="tab-foryou">
+                <Sparkles className="w-4 h-4" />
+                <span className="hidden sm:inline">For You</span>
+              </TabsTrigger>
+              <TabsTrigger value="following" className="gap-1.5" data-testid="tab-following">
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">Following</span>
+              </TabsTrigger>
+              <TabsTrigger value="trending" className="gap-1.5" data-testid="tab-trending">
+                <TrendingUp className="w-4 h-4" />
+                <span className="hidden sm:inline">Trending</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          <CreatePostModal onPostCreated={setPosts} />
+        </div>
+
+        <FeedFilter onFilterChange={setFeedFilter} activeFilter={feedFilter} />
       </div>
 
       {feedWithAds.length === 0 ? (
