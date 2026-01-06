@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/components/AuthProvider";
 import { NativeAd, recordImpression, recordClick, recordViewTime } from "@/lib/ads";
-import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, BadgeCheck, MapPin, Tag, ExternalLink } from "lucide-react";
+import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, BadgeCheck, MapPin, Tag } from "lucide-react";
 
 interface NativeAdCardProps {
   ad: NativeAd;
@@ -52,7 +51,7 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
 
   if (variant === "video" && ad.videoSrc) {
     return (
-      <div ref={cardRef} className="relative aspect-[9/16] bg-black rounded-lg overflow-hidden group">
+      <div ref={cardRef} className="relative w-full h-full bg-black">
         <video
           src={ad.videoSrc}
           className="w-full h-full object-cover"
@@ -61,67 +60,68 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
           loop
           playsInline
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none" />
         
-        <div className="absolute top-3 left-3 flex items-center gap-2">
-          <Badge className="bg-primary/90 text-primary-foreground text-[10px]">
-            Sponsored
-          </Badge>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 p-4 space-y-3">
+        <div className="absolute bottom-0 left-0 right-16 p-4 space-y-3">
           <div className="flex items-center gap-3">
-            <Avatar className="w-10 h-10 ring-2 ring-primary">
-              <AvatarFallback className="bg-primary text-primary-foreground">
+            <Avatar className="w-10 h-10">
+              <AvatarFallback className="bg-card text-sm font-medium">
                 {ad.advertiser.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center gap-1">
-                <span className="font-semibold text-white">@{ad.advertiserHandle}</span>
+                <span className="font-semibold text-white text-sm">@{ad.advertiserHandle}</span>
                 {ad.advertiserVerified && <BadgeCheck className="w-4 h-4 text-primary" />}
+                <span className="text-white/50 text-xs">· Sponsored</span>
               </div>
-              <span className="text-xs text-white/70">{ad.advertiser}</span>
             </div>
           </div>
           
-          <p className="text-white text-sm">{ad.caption}</p>
+          <p className="text-white text-sm leading-relaxed">{ad.caption}</p>
           
-          <Link href={ad.ctaUrl}>
+          <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
             <Button 
-              className="w-full bg-dah-gradient-strong"
-              onClick={handleCTAClick}
+              size="sm"
+              variant="secondary"
+              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
               data-testid={`button-ad-cta-${ad.id}`}
             >
               {ad.cta}
-              <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
-          </Link>
+          </a>
         </div>
 
-        <div className="absolute right-3 bottom-32 flex flex-col gap-4">
-          <Button
-            size="icon"
-            variant="ghost"
-            className={`rounded-full bg-black/30 backdrop-blur-sm ${isLiked ? 'text-red-500' : 'text-white'}`}
+        <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5">
+          <button
+            className="flex flex-col items-center gap-1"
             onClick={() => setIsLiked(!isLiked)}
           >
-            <Heart className={`w-6 h-6 ${isLiked ? 'fill-current' : ''}`} />
-          </Button>
-          <Button size="icon" variant="ghost" className="rounded-full bg-black/30 backdrop-blur-sm text-white">
-            <MessageCircle className="w-6 h-6" />
-          </Button>
-          <Button size="icon" variant="ghost" className="rounded-full bg-black/30 backdrop-blur-sm text-white">
-            <Share2 className="w-6 h-6" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className={`rounded-full bg-black/30 backdrop-blur-sm ${isSaved ? 'text-primary' : 'text-white'}`}
+            <div className={`p-2 rounded-full bg-black/30 backdrop-blur-sm ${isLiked ? 'text-pink-500' : 'text-white'}`}>
+              <Heart className={`w-6 h-6 ${isLiked ? 'fill-current' : ''}`} />
+            </div>
+            <span className="text-white text-xs">2.4K</span>
+          </button>
+          <button className="flex flex-col items-center gap-1">
+            <div className="p-2 rounded-full bg-black/30 backdrop-blur-sm text-white">
+              <MessageCircle className="w-6 h-6" />
+            </div>
+            <span className="text-white text-xs">89</span>
+          </button>
+          <button className="flex flex-col items-center gap-1">
+            <div className="p-2 rounded-full bg-black/30 backdrop-blur-sm text-white">
+              <Send className="w-6 h-6" />
+            </div>
+            <span className="text-white text-xs">Share</span>
+          </button>
+          <button
+            className="flex flex-col items-center gap-1"
             onClick={() => setIsSaved(!isSaved)}
           >
-            <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-current' : ''}`} />
-          </Button>
+            <div className={`p-2 rounded-full bg-black/30 backdrop-blur-sm ${isSaved ? 'text-primary' : 'text-white'}`}>
+              <Bookmark className={`w-6 h-6 ${isSaved ? 'fill-current' : ''}`} />
+            </div>
+          </button>
         </div>
       </div>
     );
@@ -129,109 +129,132 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
 
   if (ad.format === "listing" && ad.listingData) {
     return (
-      <Card ref={cardRef} className="overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
-        <div className="flex items-center gap-3 p-3 border-b border-border/30">
-          <Avatar className="w-8 h-8">
-            <AvatarFallback className="bg-primary/20 text-primary text-xs">
-              {ad.advertiser.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-sm truncate">@{ad.advertiserHandle}</span>
-              {ad.advertiserVerified && <BadgeCheck className="w-3.5 h-3.5 text-primary flex-shrink-0" />}
+      <Card ref={cardRef} className="overflow-hidden" data-testid={`card-ad-${ad.id}`}>
+        <div className="p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="ring-gradient-dah p-[2px] rounded-full">
+              <Avatar className="w-10 h-10">
+                <AvatarFallback className="bg-card text-sm font-medium">
+                  {ad.advertiser.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </div>
-            <span className="text-xs text-muted-foreground">{ad.headline}</span>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-sm">@{ad.advertiserHandle}</span>
+                {ad.advertiserVerified && <BadgeCheck className="w-4 h-4 text-primary" />}
+              </div>
+              <p className="text-xs text-muted-foreground">Sponsored</p>
+            </div>
           </div>
-          <Badge variant="secondary" className="text-[10px] flex-shrink-0">
-            Sponsored
-          </Badge>
+          <Button variant="ghost" size="icon">
+            <MoreHorizontal className="w-5 h-5" />
+          </Button>
         </div>
 
         {ad.media && (
-          <div className="aspect-square relative">
+          <div className="aspect-square bg-muted relative">
             <img 
               src={ad.media} 
               alt={ad.mediaAlt || ad.listingData.title}
               className="w-full h-full object-cover"
             />
-            {ad.listingData.originalPrice && (
-              <Badge className="absolute top-3 left-3 bg-red-500 text-white">
-                {Math.round((1 - ad.listingData.price / ad.listingData.originalPrice) * 100)}% OFF
-              </Badge>
-            )}
           </div>
         )}
 
         <div className="p-4 space-y-3">
-          <div>
-            <h3 className="font-semibold">{ad.listingData.title}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xl font-bold text-primary">${ad.listingData.price}</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsLiked(!isLiked)}
+                className={isLiked ? "text-pink-500" : ""}
+              >
+                <Heart className={`w-6 h-6 ${isLiked ? "fill-current" : ""}`} />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <MessageCircle className="w-6 h-6" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Send className="w-6 h-6" />
+              </Button>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setIsSaved(!isSaved)}
+              className={isSaved ? "text-primary" : ""}
+            >
+              <Bookmark className={`w-6 h-6 ${isSaved ? "fill-current" : ""}`} />
+            </Button>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-bold text-primary">${ad.listingData.price}</span>
               {ad.listingData.originalPrice && (
                 <span className="text-sm text-muted-foreground line-through">
                   ${ad.listingData.originalPrice}
                 </span>
               )}
             </div>
+            <p className="text-sm">
+              <span className="font-semibold">{ad.listingData.title}</span>
+            </p>
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {ad.listingData.location}
+              </div>
+              <div className="flex items-center gap-1">
+                <Tag className="w-3 h-3" />
+                {ad.listingData.category}
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">{ad.caption}</p>
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {ad.listingData.location}
-            </div>
-            <div className="flex items-center gap-1">
-              <Tag className="w-3 h-3" />
-              {ad.listingData.category}
-            </div>
-          </div>
-
-          <p className="text-sm text-muted-foreground">{ad.caption}</p>
-
-          <Link href={ad.ctaUrl}>
+          <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
             <Button 
-              className="w-full bg-dah-gradient-strong"
-              onClick={handleCTAClick}
+              className="w-full"
+              variant="secondary"
               data-testid={`button-ad-cta-${ad.id}`}
             >
               {ad.cta}
             </Button>
-          </Link>
+          </a>
         </div>
       </Card>
     );
   }
 
   return (
-    <Card ref={cardRef} className="overflow-hidden border-border/50 bg-card/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between gap-3 p-3">
+    <Card ref={cardRef} className="overflow-hidden" data-testid={`card-ad-${ad.id}`}>
+      <div className="p-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-10 ring-2 ring-primary/30">
-            <AvatarFallback className="bg-primary/20 text-primary">
-              {ad.advertiser.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div>
+          <div className="ring-gradient-dah p-[2px] rounded-full">
+            <Avatar className="w-10 h-10">
+              <AvatarFallback className="bg-card text-sm font-medium">
+                {ad.advertiser.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="flex flex-col">
             <div className="flex items-center gap-1">
               <span className="font-semibold text-sm">@{ad.advertiserHandle}</span>
               {ad.advertiserVerified && <BadgeCheck className="w-4 h-4 text-primary" />}
             </div>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{ad.advertiser}</span>
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                Sponsored
-              </Badge>
-            </div>
+            <p className="text-xs text-muted-foreground">Sponsored</p>
           </div>
         </div>
-        <Button size="icon" variant="ghost">
+        <Button variant="ghost" size="icon">
           <MoreHorizontal className="w-5 h-5" />
         </Button>
       </div>
 
       {ad.media && (
-        <div className="aspect-video relative">
+        <div className="aspect-square bg-muted">
           <img 
             src={ad.media} 
             alt={ad.mediaAlt || ad.headline}
@@ -240,8 +263,8 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
         </div>
       )}
 
-      {ad.videoSrc && (
-        <div className="aspect-video relative">
+      {ad.videoSrc && !ad.media && (
+        <div className="aspect-video bg-muted">
           <video
             src={ad.videoSrc}
             className="w-full h-full object-cover"
@@ -253,48 +276,54 @@ export function NativeAdCard({ ad, variant = "feed" }: NativeAdCardProps) {
       )}
 
       <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1">
             <Button
-              size="icon"
               variant="ghost"
-              className={isLiked ? 'text-red-500' : ''}
+              size="icon"
               onClick={() => setIsLiked(!isLiked)}
+              className={isLiked ? "text-pink-500" : ""}
             >
-              <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+              <Heart className={`w-6 h-6 ${isLiked ? "fill-current" : ""}`} />
             </Button>
-            <Button size="icon" variant="ghost">
-              <MessageCircle className="w-5 h-5" />
+            <Button variant="ghost" size="icon">
+              <MessageCircle className="w-6 h-6" />
             </Button>
-            <Button size="icon" variant="ghost">
-              <Share2 className="w-5 h-5" />
+            <Button variant="ghost" size="icon">
+              <Send className="w-6 h-6" />
             </Button>
           </div>
-          <Button
+          <Button 
+            variant="ghost" 
             size="icon"
-            variant="ghost"
-            className={isSaved ? 'text-primary' : ''}
             onClick={() => setIsSaved(!isSaved)}
+            className={isSaved ? "text-primary" : ""}
           >
-            <Bookmark className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
+            <Bookmark className={`w-6 h-6 ${isSaved ? "fill-current" : ""}`} />
           </Button>
         </div>
 
-        <div>
-          <p className="font-semibold">{ad.headline}</p>
-          <p className="text-sm text-muted-foreground mt-1">{ad.caption}</p>
+        <div className="space-y-1">
+          <p className="font-semibold text-sm">1,234 likes</p>
+          <p className="text-sm">
+            <span className="font-semibold">{ad.advertiserHandle}</span>
+            {" "}
+            <span>{ad.headline}</span>
+            {ad.caption && ad.caption !== ad.headline && (
+              <span className="text-muted-foreground"> {ad.caption}</span>
+            )}
+          </p>
         </div>
 
-        <Link href={ad.ctaUrl}>
+        <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" onClick={handleCTAClick}>
           <Button 
-            className="w-full bg-dah-gradient-strong"
-            onClick={handleCTAClick}
+            className="w-full"
+            variant="secondary"
             data-testid={`button-ad-cta-${ad.id}`}
           >
             {ad.cta}
-            <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
-        </Link>
+        </a>
       </div>
     </Card>
   );
