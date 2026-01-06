@@ -1,32 +1,42 @@
 import { useState, useMemo } from "react";
 import { MainNav } from "@/components/MainNav";
 import { PostRenderer } from "@/components/PostRenderer";
-import { videoOnlyFeed } from "@/lib/feedData";
-import { getAds } from "@/lib/ads";
+import { NativeAdCard } from "@/components/NativeAdCard";
+import { videoOnlyFeed, getAllPosts } from "@/lib/feedData";
+import { getVideoAds, NativeAd } from "@/lib/ads";
 import { Post } from "@/lib/postTypes";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Users, Sparkles, Clock } from "lucide-react";
 
 const VIDEO_AD_FREQUENCY = 4;
 
+type VideoFeedItem = Post | { isAd: true; ad: NativeAd };
+
 export default function VideoPage() {
   const [activeTab, setActiveTab] = useState("foryou");
 
-  const feedWithAds = useMemo(() => {
-    const videoAds = getAds().filter(a => a.videoSrc);
-    const result: Post[] = [];
+  const allVideos = useMemo(() => {
+    const allPosts = getAllPosts();
+    return allPosts.filter(p => p.type === "video");
+  }, []);
+
+  const feedWithAds = useMemo((): VideoFeedItem[] => {
+    const videoAds = getVideoAds();
+    const result: VideoFeedItem[] = [];
     let adIndex = 0;
 
-    videoOnlyFeed.forEach((post, i) => {
+    const videos = allVideos.length > 0 ? allVideos : videoOnlyFeed;
+
+    videos.forEach((post, i) => {
       result.push(post);
       if ((i + 1) % VIDEO_AD_FREQUENCY === 0 && videoAds.length > 0) {
-        result.push(videoAds[adIndex % videoAds.length] as unknown as Post);
+        result.push({ isAd: true, ad: videoAds[adIndex % videoAds.length] });
         adIndex++;
       }
     });
 
     return result;
-  }, []);
+  }, [allVideos]);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -61,7 +71,13 @@ export default function VideoPage() {
               No videos yet. Be the first to share!
             </div>
           ) : (
-            feedWithAds.map((p, idx) => <PostRenderer key={`${p.id}-${idx}`} post={p} />)
+            feedWithAds.map((item, idx) => {
+              if ('isAd' in item && item.isAd) {
+                return <NativeAdCard key={`ad-${item.ad.id}-${idx}`} ad={item.ad} variant="video" />;
+              }
+              const post = item as Post;
+              return <PostRenderer key={`${post.id}-${idx}`} post={post} />;
+            })
           )}
         </div>
       </div>

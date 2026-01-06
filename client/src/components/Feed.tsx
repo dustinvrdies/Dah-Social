@@ -1,17 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "./AuthProvider";
-import { getPosts } from "@/lib/posts";
-import { initialFeed } from "@/lib/feedData";
+import { getAllPosts } from "@/lib/feedData";
 import { getHidden } from "@/lib/moderation";
-import { Post, AdPost } from "@/lib/postTypes";
-import { getAds } from "@/lib/ads";
+import { Post } from "@/lib/postTypes";
+import { getNextFeedAd, NativeAd } from "@/lib/ads";
 import { PostRenderer } from "./PostRenderer";
+import { NativeAdCard } from "./NativeAdCard";
 import { CreatePostModal } from "./CreatePostModal";
 import FeedFilter from "./FeedFilter";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Users, TrendingUp } from "lucide-react";
 
 const AD_FREQUENCY = 5;
+
+type FeedItem = Post | { isAd: true; ad: NativeAd };
 
 export function Feed() {
   const { session } = useAuth();
@@ -21,11 +23,15 @@ export function Feed() {
   const [feedFilter, setFeedFilter] = useState("all");
 
   useEffect(() => {
-    setPosts(getPosts(initialFeed));
+    setPosts(getAllPosts());
     if (session) {
       setHidden(getHidden(session.username));
     }
   }, [session]);
+
+  const refreshPosts = () => {
+    setPosts(getAllPosts());
+  };
 
   const visiblePosts = useMemo(() => {
     let filtered = posts.filter((p) => !hidden.includes(p.id));
@@ -35,18 +41,20 @@ export function Feed() {
     return filtered;
   }, [posts, hidden, feedFilter]);
 
-  const feedWithAds = useMemo(() => {
-    const ads = getAds();
-    if (ads.length === 0 || feedFilter !== "all") return visiblePosts;
+  const feedWithAds = useMemo((): FeedItem[] => {
+    if (feedFilter !== "all") return visiblePosts;
     
-    const result: Post[] = [];
+    const result: FeedItem[] = [];
     let adIndex = 0;
 
     visiblePosts.forEach((post, i) => {
       result.push(post);
       if ((i + 1) % AD_FREQUENCY === 0) {
-        result.push(ads[adIndex % ads.length] as unknown as Post);
-        adIndex++;
+        const ad = getNextFeedAd(adIndex);
+        if (ad) {
+          result.push({ isAd: true, ad });
+          adIndex++;
+        }
       }
     });
 
@@ -74,7 +82,7 @@ export function Feed() {
             </TabsList>
           </Tabs>
           
-          <CreatePostModal onPostCreated={setPosts} />
+          <CreatePostModal onPostCreated={refreshPosts} />
         </div>
 
         <FeedFilter onFilterChange={setFeedFilter} activeFilter={feedFilter} />
@@ -86,9 +94,13 @@ export function Feed() {
         </div>
       ) : (
         <div className="space-y-4">
-          {feedWithAds.map((post, idx) => (
-            <PostRenderer key={`${post.id}-${idx}`} post={post} />
-          ))}
+          {feedWithAds.map((item, idx) => {
+            if ('isAd' in item && item.isAd) {
+              return <NativeAdCard key={`ad-${item.ad.id}-${idx}`} ad={item.ad} variant="feed" />;
+            }
+            const post = item as Post;
+            return <PostRenderer key={`${post.id}-${idx}`} post={post} />;
+          })}
         </div>
       )}
     </div>
