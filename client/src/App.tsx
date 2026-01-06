@@ -14,6 +14,12 @@ import ProfilePage from "@/pages/profile";
 import NotificationsPage from "@/pages/notifications";
 import LoginPage from "@/pages/login";
 import InboxPage from "@/pages/inbox";
+import LivePage from "@/pages/live";
+import GroupsPage from "@/pages/groups";
+import EventsPage from "@/pages/events";
+import DiscoverPage from "@/pages/discover";
+import QuestsPage from "@/pages/quests";
+import DashboardPage from "@/pages/dashboard";
 
 function Router() {
   return (
@@ -26,6 +32,12 @@ function Router() {
       <Route path="/notifications" component={NotificationsPage} />
       <Route path="/inbox" component={InboxPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/live" component={LivePage} />
+      <Route path="/groups" component={GroupsPage} />
+      <Route path="/events" component={EventsPage} />
+      <Route path="/discover" component={DiscoverPage} />
+      <Route path="/quests" component={QuestsPage} />
+      <Route path="/dashboard" component={DashboardPage} />
       <Route component={NotFound} />
     </Switch>
   );

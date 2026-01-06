@@ -4,7 +4,7 @@ import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import { getUnreadCount } from "@/lib/inbox";
-import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu } from "lucide-react";
+import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,13 @@ export function MainNav() {
   const navItems = [
     { href: "/", label: "Feed", icon: Home },
     { href: "/video", label: "Video", icon: Video },
+    { href: "/live", label: "Live", icon: Radio },
     { href: "/mall", label: "Mall", icon: ShoppingBag },
+    { href: "/discover", label: "Discover", icon: Sparkles },
+    { href: "/groups", label: "Groups", icon: Users },
+    { href: "/events", label: "Events", icon: Calendar },
+    { href: "/quests", label: "Quests", icon: Target },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   ];
 
   return (
@@ -114,7 +120,7 @@ export function MainNav() {
         </div>
       </div>
       
-      <div className="md:hidden flex items-center justify-around py-1 border-t border-border/50">
+      <div className="md:hidden flex items-center gap-1 py-1 border-t border-border/50 overflow-x-auto px-2" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location === item.href;
@@ -123,7 +129,7 @@ export function MainNav() {
               <Button
                 variant="ghost"
                 size="sm"
-                className={isActive ? "text-primary" : "text-muted-foreground"}
+                className={`flex-shrink-0 ${isActive ? "text-primary" : "text-muted-foreground"}`}
                 data-testid={`link-nav-mobile-${item.label.toLowerCase()}`}
               >
                 <Icon className="w-5 h-5" />
@@ -134,7 +140,7 @@ export function MainNav() {
         {session && (
           <>
             <Link href="/inbox">
-              <Button variant="ghost" size="sm" className={location === "/inbox" ? "text-primary" : "text-muted-foreground"} data-testid="link-inbox-mobile">
+              <Button variant="ghost" size="sm" className={`flex-shrink-0 ${location === "/inbox" ? "text-primary" : "text-muted-foreground"}`} data-testid="link-inbox-mobile">
                 <div className="relative">
                   <Mail className="w-5 h-5" />
                   {unreadInbox > 0 && (
@@ -144,7 +150,7 @@ export function MainNav() {
               </Button>
             </Link>
             <Link href={`/profile/${session.username}`}>
-              <Button variant="ghost" size="sm" className="text-muted-foreground" data-testid="link-profile-mobile">
+              <Button variant="ghost" size="sm" className="flex-shrink-0 text-muted-foreground" data-testid="link-profile-mobile">
                 <User className="w-5 h-5" />
               </Button>
             </Link>

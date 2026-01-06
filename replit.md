@@ -11,9 +11,21 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - **Native Ads System** - Non-intrusive ads that blend into feed/video streams looking like normal posts
 - **DAH Inbox** - Direct messaging system for users to send letters to each other
 - **Revenue System** - Platform tracks ad revenue with capped user payouts (daily: 100, monthly: 2000 DAH Coins)
-- **Imagination Bubbles** - Creative content bubbles at top of feed (renamed from stories to be unique)
+- **Stories** - Instagram/TikTok-style stories with full-screen viewer, progress bars, and auto-advance
 - Profile themes: Midnight, Neon, Ocean, Sunset, Aurora, Minimal
 - All color tokens use HSL format (H S% L%) per design guidelines
+
+### New TikTok/Facebook-Style Features (January 2026)
+
+- **Stories/Reels** - Full-screen vertical stories with auto-play, progress indicators, and reply functionality
+- **DAH Live** - Live streaming page with simulated streams, viewer counts, and gift sending (8 gift types from 1-500 coins)
+- **Groups/Communities** - Create and join groups with categories (Hobbies, Marketplace, Fashion, Creator, Business, Art, etc.)
+- **Events** - Upcoming events with RSVPs, location types (online/in-person/hybrid), and category filters
+- **Discover/Trending** - Explore trending hashtags, creators, sounds, and media grid
+- **Quests/Missions** - Daily, weekly, and achievement quests that reward DAH Coins
+- **Creator Dashboard** - Analytics, earnings tracking, transaction history, and performance charts
+- **Reactions** - 8 reaction types (like, love, haha, wow, sad, angry, fire, money) beyond simple likes
+- **Enhanced Navigation** - Horizontal scrollable mobile nav with all pages accessible
 
 ## User Preferences
 
@@ -45,6 +57,16 @@ Preferred communication style: Simple, everyday language.
   - `dah.inbox.{username}:sent` - Sent letters
   - `dah.ads.state` - Ad impressions/clicks/revenue tracking
   - `dah.revenue.state` - Platform revenue and payout caps
+  - `dah.stories` - User stories with media and captions
+  - `dah.quests.{username}` - Quest progress and completion state
+  - `dah.groups` - Groups/communities data
+  - `dah.groups.memberships.{username}` - User group memberships
+  - `dah.groups.posts.{groupId}` - Posts within groups
+  - `dah.events` - Events data with RSVPs
+  - `dah.events.rsvps.{username}` - User RSVP statuses
+  - `dah.live.streams` - Live streaming data
+  - `dah.live.gifts.{streamId}` - Gift transaction history
+  - `dah.reactions.{postId}` - Post reactions
 
 ### Authentication
 - **Current Implementation**: Client-side session management via localStorage
@@ -105,9 +127,15 @@ Preferred communication style: Simple, everyday language.
 - **zod**: Runtime type validation
 
 ## Pages
-- `/` - Home feed with story bubbles, tabs, and posts
-- `/video` - TikTok-style vertical video feed
+- `/` - Home feed with Stories at top, tabs, and posts
+- `/video` - TikTok-style vertical video feed with swipe navigation
+- `/live` - Live streaming with gifting and viewer counts
 - `/mall` - Marketplace with categories and listings
+- `/discover` - Trending hashtags, creators, sounds, and media
+- `/groups` - Communities with categories and membership
+- `/events` - Upcoming events with RSVPs
+- `/quests` - Daily/weekly quests and achievements for earning coins
+- `/dashboard` - Creator analytics and earnings tracking
 - `/profile/:username` - User profile with customizable themes
 - `/notifications` - Notification center
 - `/inbox` - Direct messaging (DAH Inbox)

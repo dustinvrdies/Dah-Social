@@ -25,6 +25,17 @@ export const getWallet = (u: string) =>
 
 export const getLedger = () => lsGet<Entry[]>(LKEY, []);
 
+export function getTransactionHistory(username: string): { amount: number; description: string; timestamp: number }[] {
+  const ledger = getLedger();
+  return ledger
+    .filter((e) => e.username === username)
+    .map((e) => ({
+      amount: e.available + e.lockedForCollege,
+      description: e.event,
+      timestamp: e.ts,
+    }));
+}
+
 export function addCoins(u: string, age: number, event: string, base: number) {
   const s = calculateDahCoins(age, base);
   const w = getWallet(u);
