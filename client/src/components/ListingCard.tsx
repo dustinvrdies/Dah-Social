@@ -14,16 +14,23 @@ import { EscrowStatus } from "./EscrowStatus";
 import { analyzePostRisk } from "@/lib/safetyAI";
 import { RiskFlag } from "./RiskFlag";
 
+interface ListingMedia {
+  url: string;
+  type: "image" | "video";
+}
+
 interface ListingCardProps {
   user: string;
   title: string;
   price: number;
   location?: string;
-  media?: string;
+  media?: string | ListingMedia[];
+  category?: string;
+  viewMode?: "grid" | "list";
   postId?: string;
 }
 
-export function ListingCard({ user, title, price, location, media }: ListingCardProps) {
+export function ListingCard({ user, title, price, location, media, viewMode = "grid" }: ListingCardProps) {
   const { session } = useAuth();
   const [rep, setRep] = useState<{ score: number; verifiedSales: number } | null>(null);
   const [liked, setLiked] = useState(false);
@@ -46,12 +53,104 @@ export function ListingCard({ user, title, price, location, media }: ListingCard
     });
   };
 
+  const getMediaUrl = (): string | null => {
+    if (!media) return null;
+    if (typeof media === "string") return media || null;
+    if (Array.isArray(media) && media.length > 0) return media[0].url;
+    return null;
+  };
+
+  const getMediaType = (): "image" | "video" | null => {
+    if (!media) return null;
+    if (typeof media === "string") return "image";
+    if (Array.isArray(media) && media.length > 0) return media[0].type;
+    return null;
+  };
+
+  const mediaUrl = getMediaUrl();
+  const mediaType = getMediaType();
+
+  if (viewMode === "list") {
+    return (
+      <Card className="overflow-hidden" data-testid={`card-listing-${title.replace(/\s+/g, "-").toLowerCase()}`}>
+        <div className="flex gap-4 p-4">
+          <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
+            {mediaUrl ? (
+              mediaType === "video" ? (
+                <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline preload="metadata" />
+              ) : (
+                <img src={mediaUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
+              )
+            ) : (
+              <div className="w-full h-full bg-dah-gradient flex items-center justify-center">
+                <ShoppingBag className="w-8 h-8 text-primary/50" />
+              </div>
+            )}
+          </div>
+          
+          <div className="flex-1 min-w-0 flex flex-col gap-2">
+            <div className="flex items-start justify-between gap-2">
+              <div className="font-semibold text-lg truncate" data-testid="text-listing-title">{title}</div>
+              <Badge className="bg-dah-gradient-strong text-white border-0 font-bold flex-shrink-0" data-testid="text-listing-price">
+                ${price}
+              </Badge>
+            </div>
+            
+            <Link href={`/profile/${user}`}>
+              <div className="flex items-center gap-2 cursor-pointer group">
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={undefined} />
+                  <AvatarFallback className="bg-card text-xs font-medium">
+                    {user.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm text-muted-foreground group-hover:text-primary transition-colors">@{user}</span>
+                {rep && rep.verifiedSales > 0 && (
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <ShieldCheck className="w-3 h-3 text-primary" />
+                    {rep.verifiedSales}
+                  </span>
+                )}
+              </div>
+            </Link>
+
+            {location && (
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground" data-testid="text-listing-location">
+                <MapPin className="w-4 h-4" />
+                {location}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-auto">
+              {canMarkSold ? (
+                <Button size="sm" variant="default" className="bg-dah-gradient-strong" onClick={markSold} data-testid="button-mark-sold">
+                  Mark as Sold
+                </Button>
+              ) : (
+                <Button size="sm" variant="default" className="bg-dah-gradient-strong" data-testid="button-buy-listing">
+                  Buy Now
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" onClick={() => setLiked(!liked)} className={liked ? "text-pink-500" : ""} data-testid="button-like-listing">
+                <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="overflow-hidden" data-testid={`card-listing-${title.replace(/\s+/g, "-").toLowerCase()}`}>
       <div className="relative">
-        {media ? (
+        {mediaUrl ? (
           <div className="aspect-square bg-muted">
-            <img src={media} alt={title} className="w-full h-full object-cover" />
+            {mediaType === "video" ? (
+              <video src={mediaUrl} className="w-full h-full object-cover" controls playsInline preload="metadata" />
+            ) : (
+              <img src={mediaUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
+            )}
           </div>
         ) : (
           <div className="aspect-square bg-dah-gradient flex items-center justify-center">
