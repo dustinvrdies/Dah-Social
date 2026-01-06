@@ -3,6 +3,7 @@ export type TextPost = {
   type: "text";
   user: string;
   content: string;
+  media?: string;
 };
 
 export type VideoPost = {

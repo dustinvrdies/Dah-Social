@@ -10,8 +10,8 @@ interface PostRendererProps {
 }
 
 export function PostRenderer({ post }: PostRendererProps) {
-  const media = getPostMedia(post.id);
-  
+  const storedMedia = getPostMedia(post.id);
+
   switch (post.type) {
     case "video":
       return <VideoPost user={post.user} src={post.src} caption={post.caption} postId={post.id} />;
@@ -22,7 +22,7 @@ export function PostRenderer({ post }: PostRendererProps) {
           title={post.title}
           price={post.price}
           location={post.location}
-          media={media}
+          media={post.media || storedMedia}
           postId={post.id}
         />
       );
@@ -30,6 +30,6 @@ export function PostRenderer({ post }: PostRendererProps) {
       return <AdCard ad={post as AdPost} />;
     case "text":
     default:
-      return <PostCard user={post.user} content={post.content} postId={post.id} image={media} />;
+      return <PostCard user={post.user} content={post.content} postId={post.id} image={post.media || storedMedia} />;
   }
 }
