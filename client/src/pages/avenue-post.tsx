@@ -82,7 +82,7 @@ export default function AvenuePostPage() {
           <h1 className="text-2xl font-bold mb-4">Post not found</h1>
           <p className="text-muted-foreground mb-4">This post may have been removed or doesn't exist.</p>
           <Link href="/avenues">
-            <Button>Browse Avenues</Button>
+            <Button data-testid="button-browse-avenues">Browse Avenues</Button>
           </Link>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function AvenuePostPage() {
       <main className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-4">
           <Link href={`/av/${avenue.name}`}>
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Button variant="ghost" size="sm" className="gap-2" data-testid="button-back-to-avenue">
               <ArrowLeft className="w-4 h-4" />
               Back to a/{avenue.name}
             </Button>
@@ -263,14 +263,14 @@ export default function AvenuePostPage() {
                 )}
 
                 <div className="flex items-center gap-2 mt-4 text-muted-foreground flex-wrap">
-                  <Button variant="ghost" size="sm" className="gap-1">
+                  <Button variant="ghost" size="sm" className="gap-1" data-testid="button-comments-count">
                     <MessageSquare className="w-4 h-4" />
                     {post.commentCount} Comments
                   </Button>
                   
                   <Dialog open={showAwards} onOpenChange={setShowAwards}>
                     <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-1">
+                      <Button variant="ghost" size="sm" className="gap-1" data-testid="button-give-award">
                         <Award className="w-4 h-4" />
                         Award
                       </Button>
@@ -283,15 +283,15 @@ export default function AvenuePostPage() {
                     </DialogContent>
                   </Dialog>
 
-                  <Button variant="ghost" size="sm" className="gap-1">
+                  <Button variant="ghost" size="sm" className="gap-1" data-testid="button-share-post">
                     <Share2 className="w-4 h-4" />
                     Share
                   </Button>
-                  <Button variant="ghost" size="sm" className="gap-1">
+                  <Button variant="ghost" size="sm" className="gap-1" data-testid="button-save-post">
                     <Bookmark className="w-4 h-4" />
                     Save
                   </Button>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" data-testid="button-more-post">
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
@@ -408,6 +408,7 @@ function CommentThread({
             size="icon"
             className={`h-6 w-6 ${vote === 1 ? "text-primary" : "text-muted-foreground"}`}
             onClick={() => onVote(comment.id, 1)}
+            data-testid={`button-upvote-comment-${comment.id}`}
           >
             <ArrowBigUp className="w-4 h-4" />
           </Button>
@@ -416,6 +417,7 @@ function CommentThread({
             size="icon"
             className={`h-6 w-6 ${vote === -1 ? "text-destructive" : "text-muted-foreground"}`}
             onClick={() => onVote(comment.id, -1)}
+            data-testid={`button-downvote-comment-${comment.id}`}
           >
             <ArrowBigDown className="w-4 h-4" />
           </Button>
@@ -429,6 +431,7 @@ function CommentThread({
                 size="icon"
                 className="h-5 w-5"
                 onClick={() => setCollapsed(!collapsed)}
+                data-testid={`button-collapse-comment-${comment.id}`}
               >
                 {collapsed ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
               </Button>
@@ -452,6 +455,7 @@ function CommentThread({
                     size="sm"
                     className="h-6 text-xs gap-1"
                     onClick={() => onReply(comment.id)}
+                    data-testid={`button-reply-comment-${comment.id}`}
                   >
                     <Reply className="w-3 h-3" />
                     Reply
@@ -467,12 +471,13 @@ function CommentThread({
                     onChange={(e) => onReplyTextChange(e.target.value)}
                     rows={3}
                     autoFocus
+                    data-testid={`input-reply-${comment.id}`}
                   />
                   <div className="flex gap-2">
-                    <Button size="sm" onClick={() => onSubmitReply(comment.id)}>
+                    <Button size="sm" onClick={() => onSubmitReply(comment.id)} data-testid={`button-submit-reply-${comment.id}`}>
                       Reply
                     </Button>
-                    <Button size="sm" variant="outline" onClick={onCancelReply}>
+                    <Button size="sm" variant="outline" onClick={onCancelReply} data-testid={`button-cancel-reply-${comment.id}`}>
                       Cancel
                     </Button>
                   </div>
@@ -524,6 +529,7 @@ function AwardsGrid({ onSelect }: { onSelect: (type: AwardType) => void }) {
             className="h-auto p-3 flex flex-col items-center gap-2"
             disabled={!canAfford}
             onClick={() => onSelect(type)}
+            data-testid={`button-award-${type}`}
           >
             <Icon className="w-8 h-8" style={{ color: config.color }} />
             <span className="font-medium">{config.name}</span>

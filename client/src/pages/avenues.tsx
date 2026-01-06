@@ -157,6 +157,7 @@ export default function AvenuesPage() {
                 variant={selectedCategory === "all" ? "default" : "outline"}
                 className="cursor-pointer"
                 onClick={() => setSelectedCategory("all")}
+                data-testid="filter-category-all"
               >
                 All
               </Badge>
@@ -166,6 +167,7 @@ export default function AvenuesPage() {
                   variant={selectedCategory === cat ? "default" : "outline"}
                   className="cursor-pointer"
                   onClick={() => setSelectedCategory(cat)}
+                  data-testid={`filter-category-${cat.toLowerCase()}`}
                 >
                   {cat}
                 </Badge>
@@ -208,7 +210,7 @@ export default function AvenuesPage() {
                   <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-medium mb-2">No subscriptions yet</h3>
                   <p className="text-muted-foreground mb-4">Join some Avenues to see them here</p>
-                  <Button variant="outline" onClick={() => {}}>
+                  <Button variant="outline" onClick={() => {}} data-testid="button-browse-avenues-empty">
                     Browse Avenues
                   </Button>
                 </div>
@@ -236,11 +238,11 @@ function AvenueCard({
 }) {
   return (
     <Card className="hover-elevate">
-      <Link href={`/av/${avenue.name}`}>
+      <Link href={`/av/${avenue.name}`} data-testid={`link-avenue-${avenue.id}`}>
         <CardHeader className="pb-2">
           <div className="flex items-start gap-3">
             {showRank && rank && (
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm" data-testid={`rank-avenue-${avenue.id}`}>
                 {rank}
               </div>
             )}
@@ -250,7 +252,7 @@ function AvenueCard({
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-base truncate">a/{avenue.name}</CardTitle>
+              <CardTitle className="text-base truncate" data-testid={`text-avenue-name-${avenue.id}`}>a/{avenue.name}</CardTitle>
               <p className="text-sm text-muted-foreground truncate">{avenue.displayName}</p>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />

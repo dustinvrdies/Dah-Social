@@ -26,6 +26,7 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - **Creator Dashboard** - Analytics, earnings tracking, transaction history, and performance charts
 - **Reactions** - 8 reaction types (like, love, haha, wow, sad, angry, fire, money) beyond simple likes
 - **Enhanced Navigation** - Horizontal scrollable mobile nav with all pages accessible
+- **DAH Avenues** - Reddit-style topic-based discussion forums with upvotes/downvotes, threaded comments, awards, karma, and moderation tools
 
 ## User Preferences
 
@@ -67,6 +68,14 @@ Preferred communication style: Simple, everyday language.
   - `dah.live.streams` - Live streaming data
   - `dah.live.gifts.{streamId}` - Gift transaction history
   - `dah.reactions.{postId}` - Post reactions
+  - `dah.avenues` - Avenue communities
+  - `dah.avenues.posts.{avenueId}` - Posts within avenues
+  - `dah.avenues.comments.{postId}` - Comments on avenue posts
+  - `dah.avenues.votes.post.{postId}` - Post votes
+  - `dah.avenues.votes.comment.{commentId}` - Comment votes
+  - `dah.avenues.awards.{postId}` - Awards given to posts
+  - `dah.avenues.subs.{username}` - User avenue subscriptions
+  - `dah.avenues.karma.{username}` - User karma breakdown
 
 ### Authentication
 - **Current Implementation**: Client-side session management via localStorage
@@ -129,6 +138,9 @@ Preferred communication style: Simple, everyday language.
 ## Pages
 - `/` - Home feed with Stories at top, tabs, and posts
 - `/video` - TikTok-style vertical video feed with swipe navigation
+- `/avenues` - Browse topic-based discussion forums (Reddit-style)
+- `/av/:name` - Individual avenue with posts, voting, and rules
+- `/av/:name/post/:postId` - Post detail with threaded comments and awards
 - `/live` - Live streaming with gifting and viewer counts
 - `/mall` - Marketplace with categories and listings
 - `/discover` - Trending hashtags, creators, sounds, and media
@@ -140,3 +152,15 @@ Preferred communication style: Simple, everyday language.
 - `/notifications` - Notification center
 - `/inbox` - Direct messaging (DAH Inbox)
 - `/login` - Account creation/login
+
+### DAH Avenues (Reddit-Style Forums)
+- **Avenues**: Topic-based open communities for discussions
+- **Post Types**: Text, image, video, link, and poll posts with flairs
+- **Voting**: Upvote/downvote system with hot/new/top/rising/controversial sorting
+- **Comments**: Unlimited nesting depth with collapse/expand, inline replies
+- **Awards**: 8 award types (Silver 10, Gold 50, Platinum 100, Diamond 500, Fire 25, Mindblown 75, Helpful 30, Wholesome 40 coins)
+- **Karma**: Separate post/comment/award karma tracked per user
+- **Moderation**: Pin/lock/remove posts, moderator roles (owner/mod/steward)
+- **Rules**: Customizable per-avenue rules displayed in sidebar
+- **Categories**: Technology, Gaming, Crypto, Memes, News, Music, Fitness, Art, Discussion, Lifestyle, Entertainment, Sports, Business, Science, Education, Fashion, Food, Travel, Photography, DIY
+- **Seed Data**: 8 pre-built avenues with sample posts and comments

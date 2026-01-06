@@ -76,7 +76,7 @@ export default function AvenueDetailPage() {
           <h1 className="text-2xl font-bold mb-4">Avenue not found</h1>
           <p className="text-muted-foreground mb-4">The avenue you're looking for doesn't exist.</p>
           <Link href="/avenues">
-            <Button>Browse Avenues</Button>
+            <Button data-testid="button-browse-avenues">Browse Avenues</Button>
           </Link>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function AvenueDetailPage() {
               
               {sort === "top" && (
                 <Select value={timeFilter} onValueChange={(v) => setTimeFilter(v as TimeFilter)}>
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-24" data-testid="select-time-filter">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -217,7 +217,7 @@ export default function AvenueDetailPage() {
                     <h3 className="text-lg font-medium mb-2">No posts yet</h3>
                     <p className="text-muted-foreground mb-4">Be the first to post in this Avenue!</p>
                     {session && (
-                      <Button onClick={() => setCreatePostOpen(true)}>
+                      <Button onClick={() => setCreatePostOpen(true)} data-testid="button-create-post-empty">
                         <Plus className="w-4 h-4 mr-2" />
                         Create Post
                       </Button>
@@ -432,24 +432,24 @@ function PostCard({
 
             <div className="flex items-center gap-4 mt-3 text-muted-foreground">
               <Link href={`/av/${avenueName}/post/${post.id}`}>
-                <Button variant="ghost" size="sm" className="gap-1">
+                <Button variant="ghost" size="sm" className="gap-1" data-testid={`button-comments-${post.id}`}>
                   <MessageSquare className="w-4 h-4" />
                   {post.commentCount} Comments
                 </Button>
               </Link>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-1" data-testid={`button-award-${post.id}`}>
                 <Award className="w-4 h-4" />
                 Award
               </Button>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-1" data-testid={`button-share-${post.id}`}>
                 <Share2 className="w-4 h-4" />
                 Share
               </Button>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-1" data-testid={`button-save-${post.id}`}>
                 <Bookmark className="w-4 h-4" />
                 Save
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" data-testid={`button-more-${post.id}`}>
                 <MoreHorizontal className="w-4 h-4" />
               </Button>
             </div>
