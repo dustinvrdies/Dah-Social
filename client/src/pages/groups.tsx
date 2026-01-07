@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/components/AuthProvider";
 import { getGroups, searchGroups, isGroupMember, joinGroup, leaveGroup, groupCategories, Group } from "@/lib/groups";
 import { Card } from "@/components/ui/card";
@@ -95,86 +97,90 @@ export default function GroupsPage() {
   };
 
   return (
-    <main className="container mx-auto py-6 px-4 space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Users className="w-6 h-6" />
-            Groups
-          </h1>
-          <p className="text-muted-foreground">Join communities that share your interests</p>
-        </div>
-        <Button className="bg-dah-gradient-strong gap-2" data-testid="button-create-group">
-          <Plus className="w-4 h-4" />
-          Create Group
-        </Button>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search groups..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-            data-testid="input-search-groups"
-          />
-        </div>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList>
-            <TabsTrigger value="discover" className="gap-1">
-              <Sparkles className="w-4 h-4" />
-              Discover
-            </TabsTrigger>
-            <TabsTrigger value="joined" className="gap-1">
-              <Users className="w-4 h-4" />
-              Joined
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        <Button
-          variant={activeCategory === "all" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveCategory("all")}
-        >
-          All
-        </Button>
-        {groupCategories.map((cat) => (
-          <Button
-            key={cat}
-            variant={activeCategory === cat ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat}
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="container mx-auto py-6 px-4 space-y-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Users className="w-6 h-6" />
+              Groups
+            </h1>
+            <p className="text-muted-foreground">Join communities that share your interests</p>
+          </div>
+          <Button className="bg-dah-gradient-strong gap-2" data-testid="button-create-group">
+            <Plus className="w-4 h-4" />
+            Create Group
           </Button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredGroups.map((group) => (
-          <GroupCard
-            key={group.id}
-            group={group}
-            isMember={session ? isGroupMember(session.username, group.id) : false}
-            onJoin={() => handleJoin(group.id)}
-            onLeave={() => handleLeave(group.id)}
-          />
-        ))}
-      </div>
-
-      {filteredGroups.length === 0 && (
-        <div className="text-center py-12">
-          <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">
-            {activeTab === "joined" ? "You haven't joined any groups yet" : "No groups found"}
-          </p>
         </div>
-      )}
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search groups..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+              data-testid="input-search-groups"
+            />
+          </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList>
+              <TabsTrigger value="discover" className="gap-1">
+                <Sparkles className="w-4 h-4" />
+                Discover
+              </TabsTrigger>
+              <TabsTrigger value="joined" className="gap-1">
+                <Users className="w-4 h-4" />
+                Joined
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          <Button
+            variant={activeCategory === "all" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveCategory("all")}
+          >
+            All
+          </Button>
+          {groupCategories.map((cat) => (
+            <Button
+              key={cat}
+              variant={activeCategory === cat ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredGroups.map((group) => (
+            <GroupCard
+              key={group.id}
+              group={group}
+              isMember={session ? isGroupMember(session.username, group.id) : false}
+              onJoin={() => handleJoin(group.id)}
+              onLeave={() => handleLeave(group.id)}
+            />
+          ))}
+        </div>
+
+        {filteredGroups.length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">
+              {activeTab === "joined" ? "You haven't joined any groups yet" : "No groups found"}
+            </p>
+          </div>
+        )}
+      </div>
+      <BottomNav />
     </main>
   );
 }

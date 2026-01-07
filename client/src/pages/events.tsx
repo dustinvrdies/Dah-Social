@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/components/AuthProvider";
 import { getUpcomingEvents, getRSVPStatus, setRSVP, formatEventDate, eventCategories, Event } from "@/lib/events";
 import { Card } from "@/components/ui/card";
@@ -116,58 +118,62 @@ export default function EventsPage() {
   };
 
   return (
-    <main className="container mx-auto py-6 px-4 space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Calendar className="w-6 h-6" />
-            Events
-          </h1>
-          <p className="text-muted-foreground">Discover and join local meetups and online events</p>
-        </div>
-        <Button className="bg-dah-gradient-strong gap-2" data-testid="button-create-event">
-          <Plus className="w-4 h-4" />
-          Create Event
-        </Button>
-      </div>
-
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        <Button
-          variant={activeCategory === "all" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setActiveCategory("all")}
-        >
-          All Events
-        </Button>
-        {eventCategories.map((cat) => (
-          <Button
-            key={cat}
-            variant={activeCategory === cat ? "default" : "outline"}
-            size="sm"
-            onClick={() => setActiveCategory(cat)}
-          >
-            {cat}
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="container mx-auto py-6 px-4 space-y-6">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Calendar className="w-6 h-6" />
+              Events
+            </h1>
+            <p className="text-muted-foreground">Discover and join local meetups and online events</p>
+          </div>
+          <Button className="bg-dah-gradient-strong gap-2" data-testid="button-create-event">
+            <Plus className="w-4 h-4" />
+            Create Event
           </Button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredEvents.map((event) => (
-          <EventCard
-            key={event.id}
-            event={event}
-            rsvpStatus={session ? getRSVPStatus(session.username, event.id) : null}
-            onRSVP={(status) => handleRSVP(event.id, status)}
-          />
-        ))}
-      </div>
-
-      {filteredEvents.length === 0 && (
-        <div className="text-center py-12">
-          <Calendar className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">No upcoming events in this category</p>
         </div>
-      )}
+
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          <Button
+            variant={activeCategory === "all" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setActiveCategory("all")}
+          >
+            All Events
+          </Button>
+          {eventCategories.map((cat) => (
+            <Button
+              key={cat}
+              variant={activeCategory === cat ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              rsvpStatus={session ? getRSVPStatus(session.username, event.id) : null}
+              onRSVP={(status) => handleRSVP(event.id, status)}
+            />
+          ))}
+        </div>
+
+        {filteredEvents.length === 0 && (
+          <div className="text-center py-12">
+            <Calendar className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">No upcoming events in this category</p>
+          </div>
+        )}
+      </div>
+      <BottomNav />
     </main>
   );
 }

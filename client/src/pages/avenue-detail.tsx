@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { MainNav } from "@/components/MainNav";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -70,8 +71,8 @@ export default function AvenueDetailPage() {
   
   if (!avenue) {
     return (
-      <div className="min-h-screen bg-background">
-        <MainNav />
+      <main className="min-h-screen bg-background pb-20">
+        <AppHeader />
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold mb-4">Avenue not found</h1>
           <p className="text-muted-foreground mb-4">The avenue you're looking for doesn't exist.</p>
@@ -79,7 +80,8 @@ export default function AvenueDetailPage() {
             <Button data-testid="button-browse-avenues">Browse Avenues</Button>
           </Link>
         </div>
-      </div>
+        <BottomNav />
+      </main>
     );
   }
 
@@ -116,12 +118,11 @@ export default function AvenueDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <MainNav />
-      
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
       <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
       
-      <main className="max-w-7xl mx-auto px-4 -mt-16">
+      <div className="max-w-7xl mx-auto px-4 -mt-16">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1 space-y-4">
             <Card>
@@ -281,8 +282,9 @@ export default function AvenueDetailPage() {
             )}
           </aside>
         </div>
-      </main>
-    </div>
+      </div>
+      <BottomNav />
+    </main>
   );
 }
 

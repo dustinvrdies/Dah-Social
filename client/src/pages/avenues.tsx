@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { MainNav } from "@/components/MainNav";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,10 +75,9 @@ export default function AvenuesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <MainNav />
-      
-      <main className="max-w-7xl mx-auto px-4 py-6">
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -218,8 +218,9 @@ export default function AvenuesPage() {
             </TabsContent>
           )}
         </Tabs>
-      </main>
-    </div>
+      </div>
+      <BottomNav />
+    </main>
   );
 }
 

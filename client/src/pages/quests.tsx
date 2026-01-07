@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/components/AuthProvider";
 import { getDailyQuests, getWeeklyQuests, getAchievements, getStreak, claimQuestReward, Quest } from "@/lib/quests";
 import { getWallet } from "@/lib/dahCoins";
@@ -130,12 +132,16 @@ export default function QuestsPage() {
 
   if (!session) {
     return (
-      <main className="container mx-auto py-6 px-4">
-        <Card className="p-8 text-center">
-          <Lock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-xl font-semibold mb-2">Log in to view quests</h2>
-          <p className="text-muted-foreground">Complete quests to earn DAH Coins!</p>
-        </Card>
+      <main className="min-h-screen bg-background pb-20">
+        <AppHeader />
+        <div className="container mx-auto py-6 px-4">
+          <Card className="p-8 text-center">
+            <Lock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-xl font-semibold mb-2">Log in to view quests</h2>
+            <p className="text-muted-foreground">Complete quests to earn DAH Coins!</p>
+          </Card>
+        </div>
+        <BottomNav />
       </main>
     );
   }
@@ -161,110 +167,114 @@ export default function QuestsPage() {
   };
 
   return (
-    <main className="container mx-auto py-6 px-4 space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Target className="w-6 h-6" />
-            Quests
-          </h1>
-          <p className="text-muted-foreground">Complete quests to earn DAH Coins</p>
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="container mx-auto py-6 px-4 space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Target className="w-6 h-6" />
+              Quests
+            </h1>
+            <p className="text-muted-foreground">Complete quests to earn DAH Coins</p>
+          </div>
+          <Card className="px-4 py-2 flex items-center gap-2">
+            <Coins className="w-5 h-5 text-primary" />
+            <span className="font-bold">{wallet.available}</span>
+          </Card>
         </div>
-        <Card className="px-4 py-2 flex items-center gap-2">
-          <Coins className="w-5 h-5 text-primary" />
-          <span className="font-bold">{wallet.available}</span>
-        </Card>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <Card className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Flame className="w-5 h-5 text-orange-500" />
+              <span className="text-2xl font-bold">{streak}</span>
+            </div>
+            <p className="text-sm text-muted-foreground">Day Streak</p>
+          </Card>
+
+          <Card className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Target className="w-5 h-5 text-primary" />
+              <span className="text-2xl font-bold">
+                {completedDaily}/{dailyQuests.length}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">Daily</p>
+          </Card>
+
+          <Card className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Star className="w-5 h-5 text-yellow-500" />
+              <span className="text-2xl font-bold">
+                {completedWeekly}/{weeklyQuests.length}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">Weekly</p>
+          </Card>
+
+          <Card className="p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Trophy className="w-5 h-5 text-purple-500" />
+              <span className="text-2xl font-bold">
+                {unlockedAchievements}/{achievements.length}
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground">Achievements</p>
+          </Card>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="daily" className="gap-1">
+              <Target className="w-4 h-4" />
+              Daily
+            </TabsTrigger>
+            <TabsTrigger value="weekly" className="gap-1">
+              <Star className="w-4 h-4" />
+              Weekly
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="gap-1">
+              <Trophy className="w-4 h-4" />
+              Achievements
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="daily" className="mt-6 space-y-3">
+            {dailyQuests.map((quest) => (
+              <QuestCard
+                key={quest.id}
+                quest={quest}
+                onClaim={() => handleClaim(quest.id)}
+                disabled={!quest.completed || quest.claimed}
+              />
+            ))}
+          </TabsContent>
+
+          <TabsContent value="weekly" className="mt-6 space-y-3">
+            {weeklyQuests.map((quest) => (
+              <QuestCard
+                key={quest.id}
+                quest={quest}
+                onClaim={() => handleClaim(quest.id)}
+                disabled={!quest.completed || quest.claimed}
+              />
+            ))}
+          </TabsContent>
+
+          <TabsContent value="achievements" className="mt-6 space-y-3">
+            {achievements.map((quest) => (
+              <QuestCard
+                key={quest.id}
+                quest={quest}
+                onClaim={() => handleClaim(quest.id)}
+                disabled={!quest.completed || quest.claimed}
+              />
+            ))}
+          </TabsContent>
+        </Tabs>
       </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Flame className="w-5 h-5 text-orange-500" />
-            <span className="text-2xl font-bold">{streak}</span>
-          </div>
-          <p className="text-sm text-muted-foreground">Day Streak</p>
-        </Card>
-
-        <Card className="p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Target className="w-5 h-5 text-primary" />
-            <span className="text-2xl font-bold">
-              {completedDaily}/{dailyQuests.length}
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground">Daily</p>
-        </Card>
-
-        <Card className="p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Star className="w-5 h-5 text-yellow-500" />
-            <span className="text-2xl font-bold">
-              {completedWeekly}/{weeklyQuests.length}
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground">Weekly</p>
-        </Card>
-
-        <Card className="p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Trophy className="w-5 h-5 text-purple-500" />
-            <span className="text-2xl font-bold">
-              {unlockedAchievements}/{achievements.length}
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground">Achievements</p>
-        </Card>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="daily" className="gap-1">
-            <Target className="w-4 h-4" />
-            Daily
-          </TabsTrigger>
-          <TabsTrigger value="weekly" className="gap-1">
-            <Star className="w-4 h-4" />
-            Weekly
-          </TabsTrigger>
-          <TabsTrigger value="achievements" className="gap-1">
-            <Trophy className="w-4 h-4" />
-            Achievements
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="daily" className="mt-6 space-y-3">
-          {dailyQuests.map((quest) => (
-            <QuestCard
-              key={quest.id}
-              quest={quest}
-              onClaim={() => handleClaim(quest.id)}
-              disabled={!quest.completed || quest.claimed}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="weekly" className="mt-6 space-y-3">
-          {weeklyQuests.map((quest) => (
-            <QuestCard
-              key={quest.id}
-              quest={quest}
-              onClaim={() => handleClaim(quest.id)}
-              disabled={!quest.completed || quest.claimed}
-            />
-          ))}
-        </TabsContent>
-
-        <TabsContent value="achievements" className="mt-6 space-y-3">
-          {achievements.map((quest) => (
-            <QuestCard
-              key={quest.id}
-              quest={quest}
-              onClaim={() => handleClaim(quest.id)}
-              disabled={!quest.completed || quest.claimed}
-            />
-          ))}
-        </TabsContent>
-      </Tabs>
+      <BottomNav />
     </main>
   );
 }

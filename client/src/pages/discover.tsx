@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { getAllPosts } from "@/lib/feedData";
 import { Post } from "@/lib/postTypes";
 import { Card } from "@/components/ui/card";
@@ -71,27 +73,29 @@ export default function DiscoverPage() {
   }, [mediaPosts, searchQuery]);
 
   return (
-    <main className="container mx-auto py-6 px-4 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Sparkles className="w-6 h-6" />
-          Discover
-        </h1>
-        <p className="text-muted-foreground">Explore trending content, creators, and sounds</p>
-      </div>
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="container mx-auto py-6 px-4 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Sparkles className="w-6 h-6" />
+            Discover
+          </h1>
+          <p className="text-muted-foreground">Explore trending content, creators, and sounds</p>
+        </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-        <Input
-          placeholder="Search posts, creators, hashtags, sounds..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-11 h-12 text-lg"
-          data-testid="input-discover-search"
-        />
-      </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Input
+            placeholder="Search posts, creators, hashtags, sounds..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-11 h-12 text-lg"
+            data-testid="input-discover-search"
+          />
+        </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="foryou" className="gap-1">
             <Sparkles className="w-4 h-4" />
@@ -247,9 +251,11 @@ export default function DiscoverPage() {
                 </div>
               </Card>
             ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+      <BottomNav />
     </main>
   );
 }

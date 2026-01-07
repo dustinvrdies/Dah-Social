@@ -1,5 +1,6 @@
 import { useRoute, Link } from "wouter";
-import { MainNav } from "@/components/MainNav";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { PostRenderer } from "@/components/PostRenderer";
 import { getStoreById, getListingsByStore } from "@/lib/feedData";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,8 @@ export default function StorePage() {
 
   if (!store) {
     return (
-      <main className="min-h-screen bg-background text-foreground">
-        <MainNav />
+      <main className="min-h-screen bg-background text-foreground pb-20">
+        <AppHeader />
         <div className="max-w-4xl mx-auto p-6 text-center">
           <h1 className="text-2xl font-bold mb-4">Store not found</h1>
           <Link href="/mall">
@@ -29,6 +30,7 @@ export default function StorePage() {
             </Button>
           </Link>
         </div>
+        <BottomNav />
       </main>
     );
   }
@@ -42,8 +44,7 @@ export default function StorePage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground pb-20">
-      <MainNav />
-      
+      <AppHeader />
       <div className="relative h-32 md:h-40 bg-gradient-to-br from-card to-muted overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-r ${categoryColors[store.category]} opacity-60`} />
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
@@ -145,6 +146,7 @@ export default function StorePage() {
           </Link>
         </div>
       </div>
+      <BottomNav />
     </main>
   );
 }

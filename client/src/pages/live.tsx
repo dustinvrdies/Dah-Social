@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { AppHeader } from "@/components/AppHeader";
+import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/components/AuthProvider";
 import { getLiveStreams, getTopLiveStreams, formatViewerCount, formatStreamDuration, gifts, sendGift, LiveStream } from "@/lib/live";
 import { getWallet } from "@/lib/dahCoins";
@@ -225,59 +227,63 @@ export default function LivePage() {
   const filteredStreams = activeCategory === "all" ? streams : streams.filter((s) => s.category === activeCategory);
 
   return (
-    <main className="container mx-auto py-6 px-4 space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Radio className="w-6 h-6 text-red-500" />
-            DAH Live
-          </h1>
-          <p className="text-muted-foreground">Watch live streams and support creators with gifts</p>
-        </div>
-        <Button className="bg-dah-gradient-strong gap-2" data-testid="button-go-live">
-          <Radio className="w-4 h-4" />
-          Go Live
-        </Button>
-      </div>
-
-      {topStreams.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="font-semibold flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            Top Live Now
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {topStreams.map((stream) => (
-              <LiveCard key={stream.id} stream={stream} onClick={() => setSelectedStream(stream)} />
-            ))}
+    <main className="min-h-screen bg-background pb-20">
+      <AppHeader />
+      <div className="container mx-auto py-6 px-4 space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Radio className="w-6 h-6 text-red-500" />
+              DAH Live
+            </h1>
+            <p className="text-muted-foreground">Watch live streams and support creators with gifts</p>
           </div>
+          <Button className="bg-dah-gradient-strong gap-2" data-testid="button-go-live">
+            <Radio className="w-4 h-4" />
+            Go Live
+          </Button>
         </div>
-      )}
 
-      <Tabs value={activeCategory} onValueChange={setActiveCategory}>
-        <TabsList className="flex-wrap h-auto gap-1">
-          {categories.map((cat) => (
-            <TabsTrigger key={cat} value={cat} className="capitalize">
-              {cat}
-            </TabsTrigger>
+        {topStreams.length > 0 && (
+          <div className="space-y-3">
+            <h2 className="font-semibold flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Top Live Now
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {topStreams.map((stream) => (
+                <LiveCard key={stream.id} stream={stream} onClick={() => setSelectedStream(stream)} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <Tabs value={activeCategory} onValueChange={setActiveCategory}>
+          <TabsList className="flex-wrap h-auto gap-1">
+            {categories.map((cat) => (
+              <TabsTrigger key={cat} value={cat} className="capitalize">
+                {cat}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredStreams.map((stream) => (
+            <LiveCard key={stream.id} stream={stream} onClick={() => setSelectedStream(stream)} />
           ))}
-        </TabsList>
-      </Tabs>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredStreams.map((stream) => (
-          <LiveCard key={stream.id} stream={stream} onClick={() => setSelectedStream(stream)} />
-        ))}
-      </div>
-
-      {filteredStreams.length === 0 && (
-        <div className="text-center py-12">
-          <Radio className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">No live streams in this category</p>
         </div>
-      )}
 
-      {selectedStream && <LiveViewer stream={selectedStream} onClose={() => setSelectedStream(null)} />}
+        {filteredStreams.length === 0 && (
+          <div className="text-center py-12">
+            <Radio className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">No live streams in this category</p>
+          </div>
+        )}
+
+        {selectedStream && <LiveViewer stream={selectedStream} onClose={() => setSelectedStream(null)} />}
+      </div>
+      <BottomNav />
     </main>
   );
 }
