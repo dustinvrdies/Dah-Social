@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -71,8 +70,7 @@ export default function AvenueDetailPage() {
   
   if (!avenue) {
     return (
-      <main className="min-h-screen bg-background pb-20">
-        <AppHeader />
+      <PageLayout>
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold mb-4">Avenue not found</h1>
           <p className="text-muted-foreground mb-4">The avenue you're looking for doesn't exist.</p>
@@ -80,8 +78,7 @@ export default function AvenueDetailPage() {
             <Button data-testid="button-browse-avenues">Browse Avenues</Button>
           </Link>
         </div>
-        <BottomNav />
-      </main>
+      </PageLayout>
     );
   }
 
@@ -118,8 +115,7 @@ export default function AvenueDetailPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="h-32 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-4 -mt-16">
@@ -283,8 +279,7 @@ export default function AvenueDetailPage() {
           </aside>
         </div>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { getInbox, getSentLetters, sendLetter, markAsRead, deleteLetter, Letter } from "@/lib/inbox";
 import { Card } from "@/components/ui/card";
@@ -91,8 +90,7 @@ export default function InboxPage() {
   const unreadCount = letters.filter(l => !l.read).length;
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="max-w-4xl mx-auto p-4 md:p-6">
         <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
           <div className="flex items-center gap-3">
@@ -314,7 +312,6 @@ export default function InboxPage() {
           </Tabs>
         )}
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

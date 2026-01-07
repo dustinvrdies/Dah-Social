@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRoute, Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { DraggableProfileBlocks } from "@/components/DraggableProfileBlocks";
 import { ProfileThemeProvider } from "@/components/ProfileThemeProvider";
 import { ProfileThemeSwitcher } from "@/components/ProfileThemeSwitcher";
@@ -91,8 +90,8 @@ export default function ProfilePage() {
 
   return (
     <ProfileThemeProvider theme={theme}>
-      <AppHeader />
-      <div className={`min-h-screen pb-20 ${theme.background}`}>
+      <PageLayout>
+        <div className={`${theme.background}`}>
         <div className="max-w-4xl mx-auto">
           <div className="h-32 bg-dah-gradient opacity-50" />
           
@@ -288,8 +287,8 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </div>
-      <BottomNav />
+        </div>
+      </PageLayout>
     </ProfileThemeProvider>
   );
 }

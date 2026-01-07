@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { addCoins } from "@/lib/dahCoins";
 import { pushNotification } from "@/lib/notifications";
@@ -63,8 +62,7 @@ export default function LoginPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="max-w-4xl mx-auto p-6">
         <div className="grid md:grid-cols-2 gap-8 items-center min-h-[calc(100vh-200px)]">
           <div className="space-y-6">
@@ -151,7 +149,6 @@ export default function LoginPage() {
           </Card>
         </div>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

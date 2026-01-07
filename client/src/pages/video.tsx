@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Link } from "wouter";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { NativeAdCard } from "@/components/NativeAdCard";
 import { videoOnlyFeed, getAllPosts } from "@/lib/feedData";
@@ -74,7 +75,7 @@ function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: VideoPostType;
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-screen bg-black snap-start snap-always flex-shrink-0"
+      className="relative w-full h-[calc(100vh-80px)] bg-black snap-start snap-always flex-shrink-0"
     >
       <video
         ref={videoRef}
@@ -195,62 +196,40 @@ export default function VideoPage() {
   }, [allVideos]);
 
   return (
-    <main className="h-screen bg-black overflow-hidden">
-      <div 
-        className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-        style={{ scrollSnapType: "y mandatory" }}
-      >
-        {feedWithAds.length === 0 ? (
-          <div className="h-screen flex items-center justify-center text-white/60">
-            No videos yet. Be the first to share!
-          </div>
-        ) : (
-          feedWithAds.map((item, idx) => {
-            if (item.type === "ad") {
-              return (
-                <div 
-                  key={`ad-${item.ad.id}-${idx}`} 
-                  className="w-full h-screen snap-start snap-always flex-shrink-0"
-                >
-                  <NativeAdCard ad={item.ad} variant="video" />
-                </div>
-              );
-            }
-            return (
-              <TikTokVideoCard 
-                key={`${item.post.id}-${idx}`} 
-                post={item.post} 
-                isMuted={isMuted}
-                onToggleMute={() => setIsMuted(!isMuted)}
-              />
-            );
-          })
-        )}
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-sm border-t border-white/10 px-4 py-2 z-50">
-        <div className="max-w-lg mx-auto flex items-center justify-around">
-          <Link href="/">
-            <Button variant="ghost" size="sm" className="text-white/70 flex-col h-auto py-1 gap-0.5">
-              <Home className="w-5 h-5" />
-              <span className="text-[10px]">Home</span>
-            </Button>
-          </Link>
-          <Button variant="ghost" size="sm" className="text-white flex-col h-auto py-1 gap-0.5">
-            <div className="w-8 h-5 bg-dah-gradient-strong rounded flex items-center justify-center">
-              <Plus className="w-4 h-4 text-white" />
+    <PageLayout hideHeader={true}>
+      <div className="h-[calc(100vh-80px)] bg-black overflow-hidden">
+        <div 
+          className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+          style={{ scrollSnapType: "y mandatory" }}
+        >
+          {feedWithAds.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-white/60">
+              No videos yet. Be the first to share!
             </div>
-          </Button>
-          <Link href="/profile/me">
-            <Button variant="ghost" size="sm" className="text-white/70 flex-col h-auto py-1 gap-0.5">
-              <Avatar className="w-5 h-5">
-                <AvatarFallback className="text-[8px]">ME</AvatarFallback>
-              </Avatar>
-              <span className="text-[10px]">Profile</span>
-            </Button>
-          </Link>
+          ) : (
+            feedWithAds.map((item, idx) => {
+              if (item.type === "ad") {
+                return (
+                  <div 
+                    key={`ad-${item.ad.id}-${idx}`} 
+                    className="w-full h-full snap-start snap-always flex-shrink-0"
+                  >
+                    <NativeAdCard ad={item.ad} variant="video" />
+                  </div>
+                );
+              }
+              return (
+                <TikTokVideoCard 
+                  key={`${item.post.id}-${idx}`} 
+                  post={item.post} 
+                  isMuted={isMuted}
+                  onToggleMute={() => setIsMuted(!isMuted)}
+                />
+              );
+            })
+          )}
         </div>
       </div>
-    </main>
+    </PageLayout>
   );
 }

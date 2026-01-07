@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { getAllPosts } from "@/lib/feedData";
 import { Post } from "@/lib/postTypes";
 import { Card } from "@/components/ui/card";
@@ -73,8 +72,7 @@ export default function DiscoverPage() {
   }, [mediaPosts, searchQuery]);
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="container mx-auto py-6 px-4 space-y-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -255,7 +253,6 @@ export default function DiscoverPage() {
           </TabsContent>
         </Tabs>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

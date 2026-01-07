@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/components/AuthProvider";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { getWallet, getTransactionHistory } from "@/lib/dahCoins";
 import { getAllPosts } from "@/lib/feedData";
 import { Card } from "@/components/ui/card";
@@ -52,8 +51,7 @@ export default function DashboardPage() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-background pb-20">
-        <AppHeader />
+      <PageLayout>
         <div className="container mx-auto py-12 px-4">
           <Card className="p-8 text-center max-w-md mx-auto">
             <Lock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
@@ -64,8 +62,7 @@ export default function DashboardPage() {
             </Link>
           </Card>
         </div>
-        <BottomNav />
-      </main>
+      </PageLayout>
     );
   }
 
@@ -105,8 +102,7 @@ export default function DashboardPage() {
   const maxViews = Math.max(...analyticsData.map((d) => d.views));
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="container mx-auto py-6 px-4 space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
@@ -243,7 +239,6 @@ export default function DashboardPage() {
           )}
         </Card>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

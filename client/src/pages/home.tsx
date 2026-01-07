@@ -1,5 +1,4 @@
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { Feed } from "@/components/Feed";
 import { Stories } from "@/components/Stories";
 import { 
@@ -14,10 +13,8 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20">
-      <AppHeader />
-      
-      <main className="max-w-2xl mx-auto px-4 py-4">
+    <PageLayout>
+      <div className="max-w-2xl mx-auto px-4 py-4">
         <div className="mb-4">
           <Stories />
         </div>
@@ -40,9 +37,7 @@ export default function Home() {
         <EventsSection />
 
         <MarketplacePicksSection />
-      </main>
-
-      <BottomNav />
-    </div>
+      </div>
+    </PageLayout>
   );
 }

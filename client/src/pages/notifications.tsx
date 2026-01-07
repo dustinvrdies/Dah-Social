@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { getNotifications, Notification } from "@/lib/notifications";
 import { Card } from "@/components/ui/card";
@@ -15,8 +14,7 @@ export default function NotificationsPage() {
   }, [session]);
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="max-w-3xl mx-auto p-6 space-y-4">
         <h1 className="text-2xl font-bold">Alerts</h1>
         {!session ? (
@@ -36,7 +34,6 @@ export default function NotificationsPage() {
           <div className="text-muted-foreground">No alerts yet.</div>
         )}
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

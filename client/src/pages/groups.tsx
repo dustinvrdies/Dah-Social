@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { getGroups, searchGroups, isGroupMember, joinGroup, leaveGroup, groupCategories, Group } from "@/lib/groups";
 import { Card } from "@/components/ui/card";
@@ -97,8 +96,7 @@ export default function GroupsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="container mx-auto py-6 px-4 space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
@@ -180,7 +178,6 @@ export default function GroupsPage() {
           </div>
         )}
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

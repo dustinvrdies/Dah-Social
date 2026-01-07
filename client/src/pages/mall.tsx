@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { MallLanding } from "@/components/MallLanding";
 import { SellerDashboard } from "@/components/SellerDashboard";
 import { PostRenderer } from "@/components/PostRenderer";
@@ -23,8 +22,7 @@ export default function MallPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
         <SellerDashboard />
         <MallLanding selectedCategory={category} onSelectCategory={setCategory} />
@@ -87,7 +85,6 @@ export default function MallPage() {
           )}
         </div>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

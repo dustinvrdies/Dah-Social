@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRoute, Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -77,8 +76,7 @@ export default function AvenuePostPage() {
   
   if (!avenue || !post) {
     return (
-      <main className="min-h-screen bg-background pb-20">
-        <AppHeader />
+      <PageLayout>
         <div className="max-w-4xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold mb-4">Post not found</h1>
           <p className="text-muted-foreground mb-4">This post may have been removed or doesn't exist.</p>
@@ -86,8 +84,7 @@ export default function AvenuePostPage() {
             <Button data-testid="button-browse-avenues">Browse Avenues</Button>
           </Link>
         </div>
-        <BottomNav />
-      </main>
+      </PageLayout>
     );
   }
 
@@ -121,8 +118,7 @@ export default function AvenuePostPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-4">
           <Link href={`/av/${avenue.name}`}>
@@ -357,8 +353,7 @@ export default function AvenuePostPage() {
           )}
         </div>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }
 

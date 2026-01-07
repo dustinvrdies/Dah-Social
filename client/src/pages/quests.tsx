@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { getDailyQuests, getWeeklyQuests, getAchievements, getStreak, claimQuestReward, Quest } from "@/lib/quests";
 import { getWallet } from "@/lib/dahCoins";
@@ -132,8 +131,7 @@ export default function QuestsPage() {
 
   if (!session) {
     return (
-      <main className="min-h-screen bg-background pb-20">
-        <AppHeader />
+      <PageLayout>
         <div className="container mx-auto py-6 px-4">
           <Card className="p-8 text-center">
             <Lock className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
@@ -141,8 +139,7 @@ export default function QuestsPage() {
             <p className="text-muted-foreground">Complete quests to earn DAH Coins!</p>
           </Card>
         </div>
-        <BottomNav />
-      </main>
+      </PageLayout>
     );
   }
 
@@ -167,8 +164,7 @@ export default function QuestsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="container mx-auto py-6 px-4 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -274,7 +270,6 @@ export default function QuestsPage() {
           </TabsContent>
         </Tabs>
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { AppHeader } from "@/components/AppHeader";
-import { BottomNav } from "@/components/BottomNav";
+import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { getLiveStreams, getTopLiveStreams, formatViewerCount, formatStreamDuration, gifts, sendGift, LiveStream } from "@/lib/live";
 import { getWallet } from "@/lib/dahCoins";
@@ -227,8 +226,7 @@ export default function LivePage() {
   const filteredStreams = activeCategory === "all" ? streams : streams.filter((s) => s.category === activeCategory);
 
   return (
-    <main className="min-h-screen bg-background pb-20">
-      <AppHeader />
+    <PageLayout>
       <div className="container mx-auto py-6 px-4 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -283,7 +281,6 @@ export default function LivePage() {
 
         {selectedStream && <LiveViewer stream={selectedStream} onClose={() => setSelectedStream(null)} />}
       </div>
-      <BottomNav />
-    </main>
+    </PageLayout>
   );
 }
