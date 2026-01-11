@@ -233,6 +233,71 @@ export const notifications = pgTable(
   })
 );
 
+export const userConsents = pgTable(
+  "user_consents",
+  {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    termsAccepted: boolean("terms_accepted").notNull().default(false),
+    termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
+    privacyAccepted: boolean("privacy_accepted").notNull().default(false),
+    privacyAcceptedAt: timestamp("privacy_accepted_at", { withTimezone: true }),
+    parentalConsentAcknowledged: boolean("parental_consent_acknowledged").notNull().default(false),
+    parentalConsentAt: timestamp("parental_consent_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    userIdIdx: uniqueIndex("user_consents_user_id_idx").on(t.userId),
+  })
+);
+
+export const emailVerifications = pgTable(
+  "email_verifications",
+  {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    code: varchar("code", { length: 6 }).notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    attempts: integer("attempts").notNull().default(0),
+    verified: boolean("verified").notNull().default(false),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    userIdIdx: index("email_verifications_user_id_idx").on(t.userId),
+    codeIdx: index("email_verifications_code_idx").on(t.code),
+  })
+);
+
+export const userVerifications = pgTable(
+  "user_verifications",
+  {
+    userId: varchar("user_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    email: text("email"),
+    emailVerified: boolean("email_verified").notNull().default(false),
+    emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+    phone: text("phone"),
+    phoneVerified: boolean("phone_verified").notNull().default(false),
+    phoneVerifiedAt: timestamp("phone_verified_at", { withTimezone: true }),
+    realName: text("real_name"),
+    idVerified: boolean("id_verified").notNull().default(false),
+    idVerifiedAt: timestamp("id_verified_at", { withTimezone: true }),
+    kycLevel: integer("kyc_level").notNull().default(0),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    emailIdx: index("user_verifications_email_idx").on(t.email),
+    kycLevelIdx: index("user_verifications_kyc_level_idx").on(t.kycLevel),
+  })
+);
+
 export const registerSchema = z.object({
   username: z
     .string()
@@ -241,6 +306,24 @@ export const registerSchema = z.object({
     .max(32, "Username too long")
     .regex(/^[a-z0-9_]+$/i, "Username may contain letters, numbers, underscore"),
   password: z.string().min(8, "Password must be at least 8 characters").max(200),
+  email: z.string().email("Invalid email address"),
+  age: z.number().int().min(13, "Must be at least 13 years old").max(120),
+  termsAccepted: z.boolean().refine(v => v === true, "You must accept the Terms of Service"),
+  privacyAccepted: z.boolean().refine(v => v === true, "You must accept the Privacy Policy"),
+  parentalConsentAcknowledged: z.boolean().optional(),
+});
+
+export const verifyEmailSchema = z.object({
+  code: z.string().length(6, "Code must be 6 digits"),
+});
+
+export const sendVerificationSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+export const kycSubmitSchema = z.object({
+  realName: z.string().trim().min(2).max(100).optional(),
+  phone: z.string().trim().min(10).max(20).optional(),
 });
 
 export const loginSchema = z.object({
@@ -335,6 +418,9 @@ export type Listing = typeof listings.$inferSelect;
 export type ListingMedia = typeof listingMedia.$inferSelect;
 export type Bookmark = typeof bookmarks.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
+export type UserConsent = typeof userConsents.$inferSelect;
+export type EmailVerification = typeof emailVerifications.$inferSelect;
+export type UserVerification = typeof userVerifications.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -345,3 +431,6 @@ export type ListingFiltersInput = z.infer<typeof listingFiltersSchema>;
 export type CreateCommentInput = z.infer<typeof createCommentSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type ReportInput = z.infer<typeof reportSchema>;
+export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
+export type SendVerificationInput = z.infer<typeof sendVerificationSchema>;
+export type KycSubmitInput = z.infer<typeof kycSubmitSchema>;
