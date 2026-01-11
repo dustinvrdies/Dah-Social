@@ -15,8 +15,10 @@ import {
   registerSchema,
   updateProfileSchema,
   reportSchema,
+  verifyEmailSchema,
 } from "@shared/schema";
 import { z } from "zod";
+import { sendVerificationEmail, sendWelcomeEmail } from "./email";
 
 interface DummyJsonProduct {
   id: number;
@@ -106,10 +108,33 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   app.post("/api/auth/register", async (req, res, next) => {
     try {
       const body = registerSchema.parse(req.body);
+      
+      if (body.age >= 13 && body.age < 18 && !body.parentalConsentAcknowledged) {
+        return res.status(400).json({ message: "Parental consent is required for users under 18" });
+      }
+      
       const user = await registerUser(body.username, body.password);
+      
+      await storage.createUserConsent(user.id, {
+        termsAccepted: body.termsAccepted,
+        privacyAccepted: body.privacyAccepted,
+        parentalConsentAcknowledged: body.parentalConsentAcknowledged ?? false,
+      });
+      
+      await storage.updateUserVerification(user.id, { email: body.email });
+      
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      await storage.createEmailVerification(user.id, body.email, code);
+      
+      const emailSent = await sendVerificationEmail(body.email, code, body.username);
+      
       req.login(user, (err) => {
         if (err) return next(err);
-        return res.status(201).json({ user });
+        return res.status(201).json({ 
+          user,
+          emailVerificationRequired: true,
+          emailSent,
+        });
       });
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -519,6 +544,86 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     } catch (error) {
       console.error("Error fetching product:", error);
       res.status(500).json({ message: "Failed to fetch product" });
+    }
+  });
+
+  app.get("/api/verification/status", requireAuth, async (req, res, next) => {
+    try {
+      const userId = (req.user as any).id as string;
+      const verification = await storage.getUserVerification(userId);
+      const consent = await storage.getUserConsent(userId);
+      res.json({
+        verification: verification ?? { kycLevel: 0, emailVerified: false, phoneVerified: false, idVerified: false },
+        consent: consent ?? null,
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.post("/api/verification/email/send", requireAuth, async (req, res, next) => {
+    try {
+      const userId = (req.user as any).id as string;
+      const username = (req.user as any).username as string;
+      const verification = await storage.getUserVerification(userId);
+      
+      if (verification?.emailVerified) {
+        return res.status(400).json({ message: "Email already verified" });
+      }
+      
+      const email = verification?.email;
+      if (!email) {
+        return res.status(400).json({ message: "No email on file" });
+      }
+      
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      await storage.createEmailVerification(userId, email, code);
+      const sent = await sendVerificationEmail(email, code, username);
+      
+      res.json({ ok: true, sent });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.post("/api/verification/email/verify", requireAuth, async (req, res, next) => {
+    try {
+      const body = verifyEmailSchema.parse(req.body);
+      const userId = (req.user as any).id as string;
+      const username = (req.user as any).username as string;
+      
+      const verification = await storage.getEmailVerificationByCode(userId, body.code);
+      
+      if (!verification) {
+        return res.status(400).json({ message: "Invalid verification code" });
+      }
+      
+      if (verification.expiresAt < new Date()) {
+        return res.status(400).json({ message: "Verification code expired" });
+      }
+      
+      if (verification.attempts >= 5) {
+        return res.status(400).json({ message: "Too many attempts. Please request a new code." });
+      }
+      
+      await storage.incrementVerificationAttempts(verification.id);
+      
+      await storage.markEmailVerified(verification.id);
+      await storage.updateUserVerification(userId, {
+        email: verification.email,
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+        kycLevel: 1,
+      });
+      
+      await sendWelcomeEmail(verification.email, username);
+      
+      res.json({ ok: true, message: "Email verified successfully" });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", issues: err.issues });
+      }
+      next(err);
     }
   });
 

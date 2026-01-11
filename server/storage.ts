@@ -12,13 +12,19 @@ import {
   reports,
   bookmarks,
   notifications,
+  userConsents,
+  emailVerifications,
+  userVerifications,
   type User,
   type Profile,
   type Post,
   type Comment,
   type Notification,
+  type UserConsent,
+  type EmailVerification,
+  type UserVerification,
 } from "@shared/schema";
-import { and, desc, eq, sql, asc } from "drizzle-orm";
+import { and, desc, eq, sql, asc, lt } from "drizzle-orm";
 
 export interface PublicUser {
   id: string;
@@ -565,6 +571,102 @@ class DbStorage implements IStorage {
       profile: row.profile ?? null,
       media: mediaRows,
     };
+  }
+
+  async createUserConsent(userId: string, data: { termsAccepted: boolean; privacyAccepted: boolean; parentalConsentAcknowledged?: boolean }): Promise<UserConsent> {
+    const now = new Date();
+    const [consent] = await db.insert(userConsents).values({
+      userId,
+      termsAccepted: data.termsAccepted,
+      termsAcceptedAt: data.termsAccepted ? now : null,
+      privacyAccepted: data.privacyAccepted,
+      privacyAcceptedAt: data.privacyAccepted ? now : null,
+      parentalConsentAcknowledged: data.parentalConsentAcknowledged ?? false,
+      parentalConsentAt: data.parentalConsentAcknowledged ? now : null,
+    }).returning();
+    return consent;
+  }
+
+  async getUserConsent(userId: string): Promise<UserConsent | undefined> {
+    const [consent] = await db.select().from(userConsents).where(eq(userConsents.userId, userId)).limit(1);
+    return consent;
+  }
+
+  async createEmailVerification(userId: string, email: string, code: string): Promise<EmailVerification> {
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const [verification] = await db.insert(emailVerifications).values({
+      userId,
+      email,
+      code,
+      expiresAt,
+    }).returning();
+    return verification;
+  }
+
+  async getEmailVerificationByCode(userId: string, code: string): Promise<EmailVerification | undefined> {
+    const [verification] = await db.select()
+      .from(emailVerifications)
+      .where(and(
+        eq(emailVerifications.userId, userId),
+        eq(emailVerifications.code, code),
+        eq(emailVerifications.verified, false)
+      ))
+      .limit(1);
+    return verification;
+  }
+
+  async incrementVerificationAttempts(verificationId: string): Promise<void> {
+    await db.update(emailVerifications)
+      .set({ attempts: sql`${emailVerifications.attempts} + 1` })
+      .where(eq(emailVerifications.id, verificationId));
+  }
+
+  async markEmailVerified(verificationId: string): Promise<void> {
+    await db.update(emailVerifications)
+      .set({ verified: true, verifiedAt: new Date() })
+      .where(eq(emailVerifications.id, verificationId));
+  }
+
+  async getOrCreateUserVerification(userId: string): Promise<UserVerification> {
+    const [existing] = await db.select().from(userVerifications).where(eq(userVerifications.userId, userId)).limit(1);
+    if (existing) return existing;
+    const [verification] = await db.insert(userVerifications).values({ userId }).returning();
+    return verification;
+  }
+
+  async updateUserVerification(userId: string, data: Partial<{
+    email: string;
+    emailVerified: boolean;
+    emailVerifiedAt: Date;
+    phone: string;
+    phoneVerified: boolean;
+    phoneVerifiedAt: Date;
+    realName: string;
+    idVerified: boolean;
+    idVerifiedAt: Date;
+    kycLevel: number;
+  }>): Promise<UserVerification> {
+    await this.getOrCreateUserVerification(userId);
+    const [updated] = await db.update(userVerifications)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(userVerifications.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  async getUserVerification(userId: string): Promise<UserVerification | undefined> {
+    const [verification] = await db.select().from(userVerifications).where(eq(userVerifications.userId, userId)).limit(1);
+    return verification;
+  }
+
+  async deleteExpiredVerifications(): Promise<number> {
+    const result = await db.delete(emailVerifications)
+      .where(and(
+        lt(emailVerifications.expiresAt, new Date()),
+        eq(emailVerifications.verified, false)
+      ))
+      .returning({ id: emailVerifications.id });
+    return result.length;
   }
 }
 
