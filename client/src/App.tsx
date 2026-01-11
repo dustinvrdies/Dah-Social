@@ -23,6 +23,8 @@ import DashboardPage from "@/pages/dashboard";
 import AvenuesPage from "@/pages/avenues";
 import AvenueDetailPage from "@/pages/avenue-detail";
 import AvenuePostPage from "@/pages/avenue-post";
+import TermsPage from "@/pages/terms";
+import PrivacyPage from "@/pages/privacy";
 
 function Router() {
   return (
@@ -44,6 +46,8 @@ function Router() {
       <Route path="/avenues" component={AvenuesPage} />
       <Route path="/av/:name" component={AvenueDetailPage} />
       <Route path="/av/:name/post/:postId" component={AvenuePostPage} />
+      <Route path="/terms" component={TermsPage} />
+      <Route path="/privacy" component={PrivacyPage} />
       <Route component={NotFound} />
     </Switch>
   );
