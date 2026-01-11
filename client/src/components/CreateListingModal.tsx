@@ -36,7 +36,10 @@ export function CreateListingModal({ onCreated }: { onCreated?: () => void }) {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  const canSubmit = title.trim().length >= 2 && !saving && !uploading;
+  const priceNum = Number(price || "0");
+  const isPriceValid = Number.isFinite(priceNum) && priceNum > 0;
+  const showPriceError = price !== "" && !isPriceValid;
+  const canSubmit = title.trim().length >= 2 && isPriceValid && !saving && !uploading;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,7 +96,17 @@ export function CreateListingModal({ onCreated }: { onCreated?: () => void }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1">
               <Label>Price (USD)</Label>
-              <Input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="decimal" placeholder="0.00" data-testid="input-listing-price" />
+              <Input 
+                value={price} 
+                onChange={(e) => setPrice(e.target.value)} 
+                inputMode="decimal" 
+                placeholder="Enter price" 
+                data-testid="input-listing-price"
+                className={showPriceError ? "border-red-500" : ""}
+              />
+              {showPriceError && (
+                <p className="text-xs text-red-500">Price must be greater than $0</p>
+              )}
             </div>
 
             <div className="grid gap-1">

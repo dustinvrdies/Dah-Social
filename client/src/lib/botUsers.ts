@@ -104,22 +104,30 @@ const textPostTemplates = {
   ],
 };
 
-const listingTemplates: { title: string; price: number; category: ListingCategory; location: string; imageId: number }[] = [
-  { title: "Vintage Polaroid Camera - Working Condition", price: 65, category: "flea-market", location: "Ships nationwide", imageId: 250 },
-  { title: "Retro Nintendo 64 + 3 Games", price: 120, category: "electronics", location: "Local pickup", imageId: 96 },
-  { title: "Designer Handbag - Gently Used", price: 85, category: "thrift-shop", location: "Ships nationwide", imageId: 1062 },
-  { title: "Vinyl Record Collection - 20 Albums", price: 150, category: "flea-market", location: "Local only", imageId: 145 },
-  { title: "Mechanical Watch - Needs Battery", price: 45, category: "flea-market", location: "Ships nationwide", imageId: 175 },
-  { title: "Vintage Band Tees - 5 Pack", price: 55, category: "thrift-shop", location: "Ships nationwide", imageId: 399 },
-  { title: "Trading: MacBook Air for Gaming Laptop", price: 0, category: "exchange", location: "Local meetup", imageId: 180 },
-  { title: "Refurbished iPad Mini 5", price: 180, category: "electronics", location: "Ships nationwide", imageId: 160 },
-  { title: "Antique Brass Candlesticks Pair", price: 40, category: "flea-market", location: "Local pickup", imageId: 1076 },
-  { title: "90s Denim Jacket - Size M", price: 38, category: "thrift-shop", location: "Ships nationwide", imageId: 996 },
-  { title: "Sony WH-1000XM4 Headphones", price: 175, category: "electronics", location: "Ships nationwide", imageId: 1 },
-  { title: "Trade: Pokemon Cards for Yu-Gi-Oh", price: 0, category: "exchange", location: "Meetup or mail", imageId: 357 },
-  { title: "Vintage Leather Boots - Size 10", price: 70, category: "thrift-shop", location: "Ships nationwide", imageId: 1068 },
-  { title: "Old School Boombox - Works Great", price: 95, category: "flea-market", location: "Local only", imageId: 366 },
-  { title: "Cherry MX Blue Keyboard", price: 65, category: "electronics", location: "Ships nationwide", imageId: 60 },
+type ListingTemplate = { 
+  title: string; 
+  price: number; 
+  category: ListingCategory; 
+  location: string; 
+  imageId: number;
+  dropship: boolean;
+  condition: "new" | "like-new" | "used" | "for-parts";
+};
+
+const listingTemplates: ListingTemplate[] = [
+  { title: "Vintage Polaroid Camera - Working Condition", price: 65, category: "flea-market", location: "Ships nationwide", imageId: 250, dropship: true, condition: "used" },
+  { title: "Retro Nintendo 64 + 3 Games", price: 120, category: "electronics", location: "Ships nationwide", imageId: 96, dropship: true, condition: "used" },
+  { title: "Designer Handbag - Gently Used", price: 85, category: "thrift-shop", location: "Ships nationwide", imageId: 1062, dropship: true, condition: "like-new" },
+  { title: "Vinyl Record Collection - 20 Albums", price: 150, category: "flea-market", location: "Ships nationwide", imageId: 145, dropship: true, condition: "used" },
+  { title: "Mechanical Watch - Needs Battery", price: 45, category: "flea-market", location: "Ships nationwide", imageId: 175, dropship: true, condition: "for-parts" },
+  { title: "Vintage Band Tees - 5 Pack", price: 55, category: "thrift-shop", location: "Ships nationwide", imageId: 399, dropship: true, condition: "used" },
+  { title: "Refurbished iPad Mini 5", price: 180, category: "electronics", location: "Ships nationwide", imageId: 160, dropship: true, condition: "like-new" },
+  { title: "Antique Brass Candlesticks Pair", price: 40, category: "flea-market", location: "Ships nationwide", imageId: 1076, dropship: true, condition: "used" },
+  { title: "90s Denim Jacket - Size M", price: 38, category: "thrift-shop", location: "Ships nationwide", imageId: 996, dropship: true, condition: "used" },
+  { title: "Sony WH-1000XM4 Headphones", price: 175, category: "electronics", location: "Ships nationwide", imageId: 1, dropship: true, condition: "like-new" },
+  { title: "Vintage Leather Boots - Size 10", price: 70, category: "thrift-shop", location: "Ships nationwide", imageId: 1068, dropship: true, condition: "used" },
+  { title: "Old School Boombox - Works Great", price: 95, category: "flea-market", location: "Ships nationwide", imageId: 366, dropship: true, condition: "used" },
+  { title: "Cherry MX Blue Keyboard", price: 65, category: "electronics", location: "Ships nationwide", imageId: 60, dropship: true, condition: "used" },
 ];
 
 const textPostImages = [
@@ -144,15 +152,20 @@ function generateBotPost(bot: BotUser): Post {
 
   if (isListing) {
     const template = getRandomItem(listingTemplates);
+    const basePrice = template.price;
+    const priceVariation = basePrice > 0 ? Math.floor(Math.random() * 20) - 5 : 0;
+    const finalPrice = Math.max(1, basePrice + priceVariation);
     return {
       id,
       type: "listing",
       user: bot.username,
       title: template.title,
-      price: template.price + Math.floor(Math.random() * 20) - 10,
+      price: finalPrice,
       location: template.location,
       category: template.category,
       media: picsum(template.imageId, 600, 600),
+      dropship: template.dropship,
+      condition: template.condition,
     };
   } else {
     const templates = textPostTemplates[bot.personality];

@@ -24,6 +24,8 @@ export function PostRenderer({ post }: PostRendererProps) {
           location={post.location}
           media={post.media || storedMedia}
           postId={post.id}
+          dropship={post.dropship}
+          condition={post.condition}
         />
       );
     case "ad":

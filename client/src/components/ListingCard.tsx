@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ShoppingBag, MapPin, Star, Heart, MessageCircle, Share2, ShieldCheck } from "lucide-react";
+import { ShoppingBag, MapPin, Star, Heart, MessageCircle, Share2, ShieldCheck, Truck } from "lucide-react";
 import { EscrowStatus } from "./EscrowStatus";
 
 import { analyzePostRisk } from "@/lib/safetyAI";
@@ -28,9 +28,11 @@ interface ListingCardProps {
   category?: string;
   viewMode?: "grid" | "list";
   postId?: string;
+  dropship?: boolean;
+  condition?: "new" | "like-new" | "used" | "for-parts";
 }
 
-export function ListingCard({ user, title, price, location, media, viewMode = "grid" }: ListingCardProps) {
+export function ListingCard({ user, title, price, location, media, viewMode = "grid", dropship, condition }: ListingCardProps) {
   const { session } = useAuth();
   const [rep, setRep] = useState<{ score: number; verifiedSales: number } | null>(null);
   const [liked, setLiked] = useState(false);
@@ -94,6 +96,20 @@ export function ListingCard({ user, title, price, location, media, viewMode = "g
               <Badge className="bg-dah-gradient-strong text-white border-0 font-bold flex-shrink-0" data-testid="text-listing-price">
                 ${price}
               </Badge>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-wrap">
+              {dropship && (
+                <Badge variant="secondary" className="text-xs gap-1" data-testid="badge-dropship">
+                  <Truck className="w-3 h-3" />
+                  Dropship
+                </Badge>
+              )}
+              {condition && (
+                <Badge variant="outline" className="text-xs capitalize" data-testid="badge-condition">
+                  {condition}
+                </Badge>
+              )}
             </div>
             
             <Link href={`/profile/${user}`}>
@@ -175,6 +191,20 @@ export function ListingCard({ user, title, price, location, media, viewMode = "g
       
       <div className="p-4 space-y-3">
         <div className="font-semibold text-lg" data-testid="text-listing-title">{title}</div>
+        
+        <div className="flex items-center gap-2 flex-wrap">
+          {dropship && (
+            <Badge variant="secondary" className="text-xs gap-1" data-testid="badge-dropship">
+              <Truck className="w-3 h-3" />
+              Dropship
+            </Badge>
+          )}
+          {condition && (
+            <Badge variant="outline" className="text-xs capitalize" data-testid="badge-condition">
+              {condition}
+            </Badge>
+          )}
+        </div>
         
         <Link href={`/profile/${user}`}>
           <div className="flex items-center gap-3 cursor-pointer group">

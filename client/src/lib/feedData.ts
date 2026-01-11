@@ -31,9 +31,11 @@ export const initialFeed: Post[] = [
     user: "seller1",
     title: "Used iPhone 12 (Good condition)",
     price: 250,
-    location: "Local pickup",
+    location: "Ships nationwide",
     media: picsum(160, 600, 600),
     category: "electronics",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "v2",
@@ -58,6 +60,8 @@ export const initialFeed: Post[] = [
     location: "Ships nationwide",
     media: picsum(996, 600, 600),
     category: "thrift-shop",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "img3",
@@ -79,9 +83,11 @@ export const initialFeed: Post[] = [
     user: "fleafinds",
     title: "Antique Brass Lamp",
     price: 45,
-    location: "Local pickup only",
+    location: "Ships nationwide",
     media: picsum(1076, 600, 600),
     category: "flea-market",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "img4",
@@ -123,6 +129,8 @@ export const initialFeed: Post[] = [
     location: "Ships nationwide",
     media: picsum(399, 600, 600),
     category: "thrift-shop",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "img6",
@@ -144,9 +152,11 @@ export const initialFeed: Post[] = [
     user: "gadgetguru",
     title: "Mechanical Keyboard - Cherry MX Blues",
     price: 85,
-    location: "Local pickup",
+    location: "Ships nationwide",
     media: picsum(1, 600, 600),
     category: "electronics",
+    dropship: true,
+    condition: "like-new",
   },
   {
     id: "img7",
@@ -161,9 +171,11 @@ export const initialFeed: Post[] = [
     user: "fleafinds",
     title: "Vintage Vinyl Records Collection",
     price: 120,
-    location: "Local pickup only",
+    location: "Ships nationwide",
     media: picsum(145, 600, 600),
     category: "flea-market",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "v6",
@@ -219,6 +231,8 @@ export const initialFeed: Post[] = [
     location: "Ships nationwide",
     media: picsum(1080, 600, 600),
     category: "flea-market",
+    dropship: true,
+    condition: "new",
   },
   {
     id: "img11",
@@ -250,6 +264,8 @@ export const initialFeed: Post[] = [
     location: "Ships nationwide",
     media: picsum(60, 600, 600),
     category: "electronics",
+    dropship: true,
+    condition: "new",
   },
   {
     id: "img13",
@@ -281,6 +297,8 @@ export const initialFeed: Post[] = [
     location: "Ships worldwide",
     media: picsum(250, 600, 600),
     category: "flea-market",
+    dropship: true,
+    condition: "used",
   },
   {
     id: "img15",
@@ -321,9 +339,14 @@ export function getAllPosts(): Post[] {
   return allPosts;
 }
 
-export function getListingsByCategory(category: ListingCategory | null): Post[] {
+export function getListingsByCategory(category: ListingCategory | null, purchasableOnly = true): Post[] {
   const allPosts = getAllPosts();
-  const listings = allPosts.filter((p) => p.type === "listing");
+  let listings = allPosts.filter((p) => p.type === "listing");
+  
+  if (purchasableOnly) {
+    listings = listings.filter((p) => p.type === "listing" && p.price > 0 && p.category !== "exchange");
+  }
+  
   if (!category) return listings;
   return listings.filter((p) => p.type === "listing" && p.category === category);
 }

@@ -38,6 +38,8 @@ export type ListingPost = {
   location?: string;
   media?: string;
   category?: ListingCategory;
+  dropship?: boolean;
+  condition?: "new" | "like-new" | "used" | "for-parts";
 };
 
 export type AdPost = {
