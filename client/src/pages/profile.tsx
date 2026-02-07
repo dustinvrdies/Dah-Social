@@ -24,7 +24,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Grid3X3, Video, ShoppingBag, Bookmark, Star, ShieldCheck, MessageCircle, Share2 } from "lucide-react";
+import { Settings, Grid3X3, Video, ShoppingBag, Bookmark, Star, ShieldCheck, MessageCircle, Share2, BadgeCheck } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 const STORAGE_KEY = "dah.profile.theme";
 
@@ -41,6 +42,16 @@ export default function ProfilePage() {
   const [followers, setFollowers] = useState<string[]>([]);
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [wallet, setWallet] = useState(() => getWallet(username));
+
+  const isOwnProfile = session?.username === username;
+
+  const { data: verificationData } = useQuery<{
+    verification: { emailVerified: boolean; phoneVerified: boolean; idVerified: boolean; kycLevel: number };
+  }>({
+    queryKey: ["/api/verification/status"],
+    enabled: isOwnProfile,
+  });
+  const kycLevel = verificationData?.verification?.kycLevel ?? 0;
   
   useEffect(() => {
     setRep(getReputation(username));
@@ -68,7 +79,6 @@ export default function ProfilePage() {
   }, [session, username]);
 
   const canFollow = session && session.username !== username;
-  const isOwnProfile = session?.username === username;
 
   const toggleFollow = () => {
     if (!session) return;
@@ -111,6 +121,16 @@ export default function ProfilePage() {
                   <h1 className={`text-2xl font-bold ${theme.accent}`} data-testid="text-profile-username">
                     @{username}
                   </h1>
+                  {isOwnProfile && kycLevel >= 1 && (
+                    <div className="flex items-center gap-1" data-testid="badge-verified-email">
+                      <BadgeCheck className="w-5 h-5 text-blue-400" />
+                    </div>
+                  )}
+                  {isOwnProfile && kycLevel >= 3 && (
+                    <div className="flex items-center gap-1" data-testid="badge-verified-id">
+                      <ShieldCheck className="w-5 h-5 text-green-400" />
+                    </div>
+                  )}
                   {rep.verifiedSales > 0 && (
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <ShieldCheck className="w-4 h-4 text-primary" />
@@ -186,7 +206,7 @@ export default function ProfilePage() {
                     <ProfileThemeSwitcher setTheme={setTheme} />
                   </Card>
                   <div className="md:col-span-1">
-                    <KYCStatus status="verified" />
+                    <KYCStatus />
                   </div>
                   <div className="md:col-span-1">
                     <PrivacyControls />

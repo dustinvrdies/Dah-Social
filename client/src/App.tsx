@@ -25,6 +25,7 @@ import AvenueDetailPage from "@/pages/avenue-detail";
 import AvenuePostPage from "@/pages/avenue-post";
 import TermsPage from "@/pages/terms";
 import PrivacyPage from "@/pages/privacy";
+import VerificationPage from "@/pages/verification";
 
 function Router() {
   return (
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/av/:name/post/:postId" component={AvenuePostPage} />
       <Route path="/terms" component={TermsPage} />
       <Route path="/privacy" component={PrivacyPage} />
+      <Route path="/verification" component={VerificationPage} />
       <Route component={NotFound} />
     </Switch>
   );
