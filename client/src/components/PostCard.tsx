@@ -18,7 +18,7 @@ import {
   EyeOff, 
   MoreHorizontal,
   Bookmark,
-  Send,
+  Share2,
   Coins
 } from "lucide-react";
 import {
@@ -84,7 +84,6 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
 
   const handleTip = (amount: number) => {
     if (!session) return;
-    // Tipping adds coins to creator, removes from tipper
     addCoins(user, 25, `Tip from @${session.username}`, amount);
     addCoins(session.username, session.age, `Tipped @${user}`, -amount);
     pushNotification(user, {
@@ -116,7 +115,11 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
   }
 
   const formatTimeAgo = () => {
-    if (!timestamp) return `${Math.floor(Math.random() * 23) + 1}h`;
+    if (!timestamp) {
+      const hash = postId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+      const hrs = (hash % 23) + 1;
+      return `${hrs}h`;
+    }
     const diff = Date.now() - timestamp;
     const mins = Math.floor(diff / 60000);
     if (mins < 1) return "now";
@@ -124,30 +127,29 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
     const hours = Math.floor(mins / 60);
     if (hours < 24) return `${hours}h`;
     const days = Math.floor(hours / 24);
-    return `${days}d`;
+    if (days < 7) return `${days}d`;
+    return `${Math.floor(days / 7)}w`;
   };
 
   return (
-    <Card className="overflow-hidden" data-testid={`card-post-${postId}`}>
-      <div className="p-4 flex items-center justify-between gap-3">
+    <Card className="overflow-hidden border-border/50" data-testid={`card-post-${postId}`}>
+      <div className="px-4 pt-3 pb-2 flex items-center justify-between gap-3">
         <Link href={`/profile/${user}`}>
           <div className="flex items-center gap-3 cursor-pointer group">
             <div className="ring-gradient-dah p-[2px] rounded-full">
-              <Avatar className="w-10 h-10 group-hover:scale-105 transition-transform">
+              <Avatar className="w-9 h-9 group-hover:scale-105 transition-transform">
                 <AvatarImage src={undefined} />
-                <AvatarFallback className="bg-card text-sm font-medium">
+                <AvatarFallback className="bg-card text-xs font-semibold">
                   {user.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm group-hover:text-primary transition-colors" data-testid="link-post-user">
-                  {user}
-                </span>
-                <RiskFlag level={analyzePostRisk(content)} />
-              </div>
-              <p className="text-xs text-muted-foreground">{formatTimeAgo()} ago</p>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm group-hover:text-primary transition-colors" data-testid="link-post-user">
+                {user}
+              </span>
+              <RiskFlag level={analyzePostRisk(content)} />
+              <span className="text-xs text-muted-foreground">{formatTimeAgo()}</span>
             </div>
           </div>
         </Link>
@@ -171,34 +173,46 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
         </DropdownMenu>
       </div>
 
-      {image && (
-        <div className="aspect-square bg-muted">
-          <img src={image} alt="Post" className="w-full h-full object-cover" />
+      {content && (
+        <div className="px-4 pb-2">
+          <p className="text-sm leading-relaxed" data-testid="text-post-content">{content}</p>
         </div>
       )}
 
-      <div className="p-4 space-y-3">
+      {image && (
+        <div className="mt-1 bg-muted/30">
+          <img 
+            src={image} 
+            alt="Post" 
+            className="w-full max-h-[500px] object-cover" 
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      <div className="px-4 py-2">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="icon"
               onClick={handleLike}
-              className={liked ? "text-pink-500" : ""}
+              className={liked ? "text-pink-500" : "text-muted-foreground"}
               data-testid="button-like-post"
             >
-              <Heart className={`w-6 h-6 ${liked ? "fill-current" : ""}`} />
+              <Heart className={`w-5 h-5 ${liked ? "fill-current" : ""}`} />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setShowComments(!showComments)}
+              className="text-muted-foreground"
               data-testid="button-toggle-comments"
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" data-testid="button-share-post">
-              <Send className="w-6 h-6" />
+            <Button variant="ghost" size="icon" className="text-muted-foreground" data-testid="button-share-post">
+              <Share2 className="w-5 h-5" />
             </Button>
             {session && session.username !== user && (
               <TipButton onTip={handleTip} />
@@ -208,44 +222,41 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
             variant="ghost" 
             size="icon"
             onClick={() => setSaved(!saved)}
-            className={saved ? "text-primary" : ""}
+            className={saved ? "text-primary" : "text-muted-foreground"}
             data-testid="button-save-post"
           >
-            <Bookmark className={`w-6 h-6 ${saved ? "fill-current" : ""}`} />
+            <Bookmark className={`w-5 h-5 ${saved ? "fill-current" : ""}`} />
           </Button>
         </div>
 
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <p className="font-semibold text-sm" data-testid="text-like-count">
+        <div className="flex items-center gap-3 mt-1 px-1">
+          {likeCount > 0 && (
+            <span className="text-xs font-semibold" data-testid="text-like-count">
               {likeCount.toLocaleString()} {likeCount === 1 ? "like" : "likes"}
-            </p>
-            {showCoinEarned && (
-              <span className="text-xs font-bold text-primary coin-earned" data-testid="text-coin-earned">
-                +1 DAH
-              </span>
-            )}
-          </div>
-          <p className="text-sm">
-            <Link href={`/profile/${user}`}>
-              <span className="font-semibold hover:text-primary cursor-pointer">{user}</span>
-            </Link>
-            {" "}
-            <span className="text-foreground" data-testid="text-post-content">{content}</span>
-          </p>
-          {commentCount > 0 && !showComments && (
+            </span>
+          )}
+          {commentCount > 0 && (
             <button 
               onClick={() => setShowComments(true)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               data-testid="button-view-comments"
             >
-              View {commentCount === 1 ? "1 comment" : `all ${commentCount} comments`}
+              {commentCount} {commentCount === 1 ? "comment" : "comments"}
             </button>
           )}
+          {showCoinEarned && (
+            <span className="text-xs font-bold text-primary coin-earned" data-testid="text-coin-earned">
+              +1 DAH
+            </span>
+          )}
         </div>
-
-        {showComments && <Comments postId={postId} />}
       </div>
+
+      {showComments && (
+        <div className="px-4 pb-3 border-t border-border/30">
+          <Comments postId={postId} />
+        </div>
+      )}
     </Card>
   );
 }

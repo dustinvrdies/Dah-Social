@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Plus, ChevronLeft, ChevronRight, X, Heart, Send, Eye } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { lsGet, lsSet } from "@/lib/storage";
 
 interface Story {
@@ -126,7 +127,10 @@ function StoryViewer({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-md h-[90vh] p-0 bg-black border-0 overflow-hidden">
+      <DialogContent className="max-w-md h-[90vh] p-0 bg-black border-0 overflow-hidden" aria-describedby={undefined}>
+        <VisuallyHidden>
+          <DialogTitle>Story Viewer</DialogTitle>
+        </VisuallyHidden>
         <div className="relative w-full h-full">
           <div className="absolute top-0 left-0 right-0 z-20 flex gap-1 p-2">
             {currentUser.stories.map((_, i) => (
@@ -238,40 +242,39 @@ export function Stories() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative -mx-1">
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-1"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex gap-3 overflow-x-auto py-1 px-1 scrollbar-hide"
       >
-        <div className="flex-shrink-0 flex flex-col items-center gap-1 w-16">
+        <button className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]" data-testid="button-add-story">
           <div className="relative">
-            <Avatar className="w-16 h-16 ring-2 ring-dashed ring-muted-foreground/30">
-              <AvatarFallback className="bg-muted text-lg">
+            <Avatar className="w-[60px] h-[60px] ring-2 ring-dashed ring-muted-foreground/20">
+              <AvatarFallback className="bg-muted/50 text-base">
                 {session?.username?.slice(0, 2).toUpperCase() || "ME"}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center ring-2 ring-background">
-              <Plus className="w-4 h-4 text-white" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-primary rounded-full flex items-center justify-center ring-2 ring-background">
+              <Plus className="w-3 h-3 text-white" />
             </div>
           </div>
-          <span className="text-xs text-muted-foreground truncate w-full text-center">Your Story</span>
-        </div>
+          <span className="text-[11px] text-muted-foreground truncate w-full text-center leading-tight">Your story</span>
+        </button>
 
         {grouped.map((user, idx) => (
           <button
             key={user.username}
-            className="flex-shrink-0 flex flex-col items-center gap-1 w-16"
+            className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]"
             onClick={() => openViewer(idx)}
             data-testid={`button-story-${user.username}`}
           >
-            <div className="ring-gradient-dah p-[3px] rounded-full">
-              <Avatar className="w-14 h-14 ring-2 ring-background">
+            <div className="ring-gradient-dah p-[2.5px] rounded-full">
+              <Avatar className="w-[56px] h-[56px] ring-[2.5px] ring-background">
                 <AvatarImage src={user.avatar} />
-                <AvatarFallback className="bg-card text-sm">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="bg-card text-sm font-medium">{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
             </div>
-            <span className="text-xs text-foreground truncate w-full text-center">{user.displayName || user.username}</span>
+            <span className="text-[11px] text-foreground truncate w-full text-center leading-tight">{user.displayName || user.username}</span>
           </button>
         ))}
       </div>
@@ -279,7 +282,7 @@ export function Stories() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm shadow-sm hidden md:flex"
+        className="absolute left-0 top-[30px] -translate-y-1/2 bg-background/80 backdrop-blur-sm shadow-sm hidden md:flex"
         onClick={scrollLeft}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -288,7 +291,7 @@ export function Stories() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm shadow-sm hidden md:flex"
+        className="absolute right-0 top-[30px] -translate-y-1/2 bg-background/80 backdrop-blur-sm shadow-sm hidden md:flex"
         onClick={scrollRight}
       >
         <ChevronRight className="w-4 h-4" />

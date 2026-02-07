@@ -110,7 +110,7 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
     pushNotification(session.username, {
       username: session.username,
       type: "coin",
-      message: "You earned 5 DAH Coins for creating a post.",
+      message: "+5 DAH Coins added to your balance.",
     });
   };
 
@@ -136,7 +136,7 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
     pushNotification(session.username, {
       username: session.username,
       type: "coin",
-      message: "You earned 10 DAH Coins for creating a listing.",
+      message: "+10 DAH Coins added to your balance.",
     });
   };
 
@@ -176,7 +176,6 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
                     <Button 
                       size="icon" 
                       variant="secondary" 
-                      className="h-8 w-8"
                       onClick={handleRotate}
                       data-testid="button-rotate-media"
                     >
@@ -186,7 +185,6 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
                   <Button 
                     size="icon" 
                     variant="destructive" 
-                    className="h-8 w-8"
                     onClick={handleRemoveMedia}
                     data-testid="button-remove-media"
                   >
@@ -273,7 +271,7 @@ export function CreatePostModal({ onPostCreated }: CreatePostModalProps) {
                 <Button 
                   size="icon" 
                   variant="destructive" 
-                  className="absolute top-2 right-2 h-8 w-8 z-10"
+                  className="absolute top-2 right-2 z-10"
                   onClick={() => setListingMedia(null)}
                   data-testid="button-remove-listing-media"
                 >

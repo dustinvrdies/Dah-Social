@@ -287,30 +287,28 @@ export function QuickActions() {
     { href: "/events", icon: "calendar", label: "Events", color: "#10B981" },
     { href: "/quests", icon: "target", label: "Quests", color: "#F59E0B" },
     { href: "/mall", icon: "shop", label: "Mall", color: "#EC4899" },
-    { href: "/dashboard", icon: "chart", label: "Dashboard", color: "#6366F1" },
+    { href: "/discover", icon: "chart", label: "Discover", color: "#6366F1" },
   ];
 
   return (
-    <section className="mb-6">
-      <div className="flex gap-4 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: "none" }}>
-        {actions.map((action) => (
-          <Link key={action.href} href={action.href}>
-            <button
-              className="flex flex-col items-center gap-1 min-w-14"
-              data-testid={`quick-action-${action.label.toLowerCase()}`}
+    <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+      {actions.map((action) => (
+        <Link key={action.href} href={action.href}>
+          <button
+            className="flex flex-col items-center gap-1.5 min-w-[56px]"
+            data-testid={`quick-action-${action.label.toLowerCase()}`}
+          >
+            <div 
+              className="w-11 h-11 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: action.color + "18" }}
             >
-              <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: action.color + "20" }}
-              >
-                <ActionIcon name={action.icon} color={action.color} />
-              </div>
-              <span className="text-[10px] text-muted-foreground">{action.label}</span>
-            </button>
-          </Link>
-        ))}
-      </div>
-    </section>
+              <ActionIcon name={action.icon} color={action.color} />
+            </div>
+            <span className="text-[10px] text-muted-foreground font-medium">{action.label}</span>
+          </button>
+        </Link>
+      ))}
+    </div>
   );
 }
 
