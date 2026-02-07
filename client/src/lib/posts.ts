@@ -3,8 +3,20 @@ import { Post } from "./postTypes";
 
 const KEY = "dah.posts";
 const MEDIA_KEY = "dah.post.media";
+const SEED_VERSION_KEY = "dah.seed.version";
+const CURRENT_SEED_VERSION = 3;
 
-export const getPosts = (f: Post[]) => lsGet<Post[]>(KEY, f);
+export const getPosts = (f: Post[]) => {
+  const storedVersion = lsGet<number>(SEED_VERSION_KEY, 0);
+  if (storedVersion < CURRENT_SEED_VERSION) {
+    lsSet(SEED_VERSION_KEY, CURRENT_SEED_VERSION);
+    lsSet(KEY, f);
+    try { localStorage.removeItem("dah.bot.posts"); } catch {}
+    try { localStorage.removeItem("dah.bot.lastRun"); } catch {}
+    return f;
+  }
+  return lsGet<Post[]>(KEY, f);
+};
 export const setPosts = (p: Post[]) => lsSet(KEY, p);
 
 export const getPostMedia = (postId: string): string | undefined => {
