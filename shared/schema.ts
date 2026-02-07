@@ -434,3 +434,5 @@ export type ReportInput = z.infer<typeof reportSchema>;
 export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
 export type SendVerificationInput = z.infer<typeof sendVerificationSchema>;
 export type KycSubmitInput = z.infer<typeof kycSubmitSchema>;
+
+export * from "./models/chat";
