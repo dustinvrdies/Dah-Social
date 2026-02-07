@@ -4,7 +4,8 @@ import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import { getUnreadCount } from "@/lib/inbox";
-import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3, MessageSquare } from "lucide-react";
+import { getWallet } from "@/lib/dahCoins";
+import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3, MessageSquare, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +14,16 @@ export function MainNav() {
   const { session, logout } = useAuth();
   const [location] = useLocation();
   const [unreadInbox, setUnreadInbox] = useState(0);
+  const [coinBalance, setCoinBalance] = useState(0);
 
   useEffect(() => {
     if (session) {
       setUnreadInbox(getUnreadCount(session.username));
+      setCoinBalance(getWallet(session.username).available);
       const interval = setInterval(() => {
         setUnreadInbox(getUnreadCount(session.username));
-      }, 5000);
+        setCoinBalance(getWallet(session.username).available);
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [session]);
@@ -38,15 +42,25 @@ export function MainNav() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-card/98 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-border/50 bg-card/95 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-14">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <Link href="/" data-testid="link-home-logo">
               <span className="font-bold text-2xl text-gradient-dah tracking-tight">DAH</span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-1">
+            {session && (
+              <Link href="/dashboard">
+                <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 cursor-pointer hover-elevate" data-testid="display-coin-balance-nav">
+                  <Coins className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-primary tabular-nums">{coinBalance.toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">DAH</span>
+                </div>
+              </Link>
+            )}
+
+            <div className="hidden lg:flex items-center gap-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location === item.href;
@@ -114,14 +128,22 @@ export function MainNav() {
               </Link>
             )}
             
-            <Button variant="ghost" size="icon" className="md:hidden" data-testid="button-menu">
+            <Button variant="ghost" size="icon" className="lg:hidden" data-testid="button-menu">
               <Menu className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </div>
       
-      <div className="md:hidden flex items-center gap-1 py-1 border-t border-border/50 overflow-x-auto px-2" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div className="lg:hidden flex items-center gap-1 py-1 border-t border-border/30 overflow-x-auto px-2 scrollbar-hide">
+        {session && (
+          <Link href="/dashboard">
+            <div className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 mr-1" data-testid="display-coin-balance-mobile">
+              <Coins className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-bold text-primary tabular-nums">{coinBalance.toLocaleString()}</span>
+            </div>
+          </Link>
+        )}
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location === item.href;

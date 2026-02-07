@@ -2,21 +2,47 @@ import { Link } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
-import { LogIn, Search } from "lucide-react";
+import { getWallet } from "@/lib/dahCoins";
+import { LogIn, Search, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function AppHeader() {
   const { session } = useAuth();
   const [showSearch, setShowSearch] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0);
+
+  useEffect(() => {
+    if (session) {
+      const wallet = getWallet(session.username);
+      setCoinBalance(wallet.available);
+      const interval = setInterval(() => {
+        const w = getWallet(session.username);
+        setCoinBalance(w.available);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [session]);
 
   return (
-    <header className="sticky top-0 z-50 bg-card/98 backdrop-blur-xl border-b border-border">
+    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-xl border-b border-border/50">
       <div className="flex items-center justify-between gap-3 h-14 px-4 max-w-7xl mx-auto">
-        <Link href="/" data-testid="link-home-logo">
-          <span className="font-bold text-2xl text-gradient-dah tracking-tight">DAH</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" data-testid="link-home-logo">
+            <span className="font-bold text-2xl text-gradient-dah tracking-tight">DAH</span>
+          </Link>
+
+          {session && (
+            <Link href="/dashboard">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 cursor-pointer hover-elevate" data-testid="display-coin-balance">
+                <Coins className="w-4 h-4 text-primary" />
+                <span className="text-sm font-bold text-primary tabular-nums">{coinBalance.toLocaleString()}</span>
+                <span className="text-xs text-muted-foreground hidden sm:inline">DAH</span>
+              </div>
+            </Link>
+          )}
+        </div>
 
         {showSearch ? (
           <div className="flex-1 max-w-md">

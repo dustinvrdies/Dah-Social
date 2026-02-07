@@ -11,7 +11,7 @@ export function PageLayout({ children, hideHeader = false, hideNav = false }: Pa
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {!hideHeader && <AppHeader />}
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-24">
         {children}
       </main>
       {!hideNav && <BottomNav />}

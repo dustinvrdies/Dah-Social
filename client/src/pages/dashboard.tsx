@@ -185,22 +185,20 @@ export default function DashboardPage() {
                   <span className="text-muted-foreground">This Week</span>
                   <span className="font-bold">{weeklyEarnings} DAH</span>
                 </div>
-                <Progress value={(weeklyEarnings / 100) * 100} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">Daily cap: 100 DAH</p>
+                <Progress value={Math.min(weeklyEarnings, 100)} className="h-2" />
               </div>
               <div>
                 <div className="flex items-center justify-between text-sm mb-1">
                   <span className="text-muted-foreground">This Month</span>
                   <span className="font-bold">{monthlyEarnings} DAH</span>
                 </div>
-                <Progress value={(monthlyEarnings / 2000) * 100} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">Monthly cap: 2,000 DAH</p>
+                <Progress value={Math.min((monthlyEarnings / 100) * 100, 100)} className="h-2" />
               </div>
               <div className="pt-2 border-t">
-                <p className="text-sm text-muted-foreground">Lifetime Earnings</p>
+                <p className="text-sm text-muted-foreground">Total Balance</p>
                 <p className="text-xl font-bold flex items-center gap-1">
                   <Coins className="w-5 h-5 text-primary" />
-                  {wallet.available + wallet.lockedForCollege + Math.floor(Math.random() * 5000)}
+                  {wallet.available + wallet.lockedForCollege}
                 </p>
               </div>
             </div>

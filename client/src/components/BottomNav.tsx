@@ -1,20 +1,24 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { getUnreadCount } from "@/lib/inbox";
-import { Home, Video, ShoppingBag, Mail, User } from "lucide-react";
+import { getWallet } from "@/lib/dahCoins";
+import { Home, Video, ShoppingBag, Mail, User, Coins } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function BottomNav() {
   const { session } = useAuth();
   const [location] = useLocation();
   const [unreadInbox, setUnreadInbox] = useState(0);
+  const [coinBalance, setCoinBalance] = useState(0);
 
   useEffect(() => {
     if (session) {
       setUnreadInbox(getUnreadCount(session.username));
+      setCoinBalance(getWallet(session.username).available);
       const interval = setInterval(() => {
         setUnreadInbox(getUnreadCount(session.username));
-      }, 5000);
+        setCoinBalance(getWallet(session.username).available);
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [session]);
@@ -37,8 +41,16 @@ export function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t border-border safe-area-bottom">
-      <div className="flex items-center justify-around h-16 max-w-lg mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-xl border-t border-border/50 safe-area-bottom">
+      {session && (
+        <Link href="/dashboard">
+          <div className="flex items-center justify-center gap-1.5 py-1 border-b border-border/30 cursor-pointer hover-elevate" data-testid="display-coin-balance-bottom">
+            <Coins className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-bold text-primary tabular-nums">{coinBalance.toLocaleString()} DAH Coins</span>
+          </div>
+        </Link>
+      )}
+      <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = isTabActive(tab.href, tab.label);

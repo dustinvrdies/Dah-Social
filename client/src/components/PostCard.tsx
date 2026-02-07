@@ -61,6 +61,8 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
     return unsubscribe;
   }, [postId, session]);
 
+  const [showCoinEarned, setShowCoinEarned] = useState(false);
+
   const handleLike = () => {
     if (!session) return;
     
@@ -73,8 +75,10 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
       pushNotification(session.username, {
         username: session.username,
         type: "coin",
-        message: "You earned 1 DAH Coin for liking a post.",
+        message: "+1 DAH Coin added to your balance.",
       });
+      setShowCoinEarned(true);
+      setTimeout(() => setShowCoinEarned(false), 1500);
     }
   };
 
@@ -212,9 +216,16 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
         </div>
 
         <div className="space-y-1">
-          <p className="font-semibold text-sm" data-testid="text-like-count">
-            {likeCount.toLocaleString()} {likeCount === 1 ? "like" : "likes"}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-sm" data-testid="text-like-count">
+              {likeCount.toLocaleString()} {likeCount === 1 ? "like" : "likes"}
+            </p>
+            {showCoinEarned && (
+              <span className="text-xs font-bold text-primary coin-earned" data-testid="text-coin-earned">
+                +1 DAH
+              </span>
+            )}
+          </div>
           <p className="text-sm">
             <Link href={`/profile/${user}`}>
               <span className="font-semibold hover:text-primary cursor-pointer">{user}</span>

@@ -116,7 +116,7 @@ export function earnCoins(
   pushNotification(username, {
     username,
     type: "coin",
-    message: `+${adjustedAmount} DAH Coins for ${ACTION_LABELS[action].toLowerCase()}.`,
+    message: `+${adjustedAmount} DAH Coins added to your balance.`,
   });
   
   return { 
@@ -162,17 +162,11 @@ export function recordDailyLogin(username: string, age: number): { streak: numbe
 export function getEarningDashboard(username: string) {
   const wallet = getWallet(username);
   const limits = getUserLimits(username);
-  const stats = getRevenueStats();
   const streak = getLoginStreak(username);
   
   return {
     wallet,
     limits,
-    platformStats: {
-      totalPooled: stats.availableForPayouts,
-      platformReserve: stats.platformReserve,
-    },
     streak: streak.streak,
-    rates: EARNING_RATES,
   };
 }

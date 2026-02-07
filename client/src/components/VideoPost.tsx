@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,37 @@ interface VideoPostProps {
 
 export function VideoPost({ src, user, caption }: VideoPostProps) {
   const ref = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [likeCount] = useState(Math.floor(Math.random() * 10000) + 100);
   const [commentCount] = useState(Math.floor(Math.random() * 500) + 10);
+
+  useEffect(() => {
+    if (!containerRef.current || !ref.current) return;
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const video = ref.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+            setIsPlaying(true);
+          } else {
+            video.pause();
+            setIsPlaying(false);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const toggle = async () => {
     if (!ref.current) return;
@@ -40,7 +65,7 @@ export function VideoPost({ src, user, caption }: VideoPostProps) {
   };
 
   return (
-    <Card className="relative w-full aspect-[9/16] max-h-[80vh] overflow-hidden bg-black" data-testid={`card-video-${user}`}>
+    <Card ref={containerRef} className="relative w-full aspect-[9/16] max-h-[80vh] overflow-hidden bg-black" data-testid={`card-video-${user}`}>
       <video
         ref={ref}
         src={src}
@@ -59,6 +84,8 @@ export function VideoPost({ src, user, caption }: VideoPostProps) {
           </div>
         </div>
       )}
+      
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
       
       <div className="absolute right-3 bottom-24 flex flex-col items-center gap-4">
         <Link href={`/profile/${user}`}>
