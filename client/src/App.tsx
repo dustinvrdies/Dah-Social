@@ -26,6 +26,7 @@ import AvenuePostPage from "@/pages/avenue-post";
 import TermsPage from "@/pages/terms";
 import PrivacyPage from "@/pages/privacy";
 import VerificationPage from "@/pages/verification";
+import GamesPage from "@/pages/games";
 
 function Router() {
   return (
@@ -44,6 +45,7 @@ function Router() {
       <Route path="/discover" component={DiscoverPage} />
       <Route path="/quests" component={QuestsPage} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/games" component={GamesPage} />
       <Route path="/avenues" component={AvenuesPage} />
       <Route path="/av/:name" component={AvenueDetailPage} />
       <Route path="/av/:name/post/:postId" component={AvenuePostPage} />

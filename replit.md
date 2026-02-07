@@ -15,6 +15,14 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - Profile themes: Midnight, Neon, Ocean, Sunset, Aurora, Minimal
 - All color tokens use HSL format (H S% L%) per design guidelines
 
+### New Features (February 2026)
+
+- **Feed Sorting/Filtering** - For You tab with sort (newest, popular, shuffle) and media-only filter; Following tab shows only followed users' posts; Trending tab sorts by engagement
+- **DAH Games** - Mini games section with 4 built-in games (Coin Rush, Memory Match, Trivia, Color Match) that award DAH Coins
+- **AI Game Creator** - Users describe a game idea and AI (OpenAI) generates a playable HTML5 game in an iframe
+- **Game Cooldowns** - 60-second cooldown per game to prevent farming
+- **Game History** - Track scores, coins earned, and best scores per game
+
 ### New TikTok/Facebook-Style Features (January 2026)
 
 - **Stories/Reels** - Full-screen vertical stories with auto-play, progress indicators, and reply functionality
@@ -76,6 +84,8 @@ Preferred communication style: Simple, everyday language.
   - `dah.avenues.awards.{postId}` - Awards given to posts
   - `dah.avenues.subs.{username}` - User avenue subscriptions
   - `dah.avenues.karma.{username}` - User karma breakdown
+  - `dah.games.scores.{username}` - Game score history
+  - `dah.games.cooldown.{username}.{gameId}` - Per-game cooldown timestamps
 
 ### Authentication
 - **Current Implementation**: Client-side session management via localStorage
@@ -151,6 +161,7 @@ Preferred communication style: Simple, everyday language.
 - `/profile/:username` - User profile with customizable themes
 - `/notifications` - Notification center
 - `/inbox` - Direct messaging (DAH Inbox)
+- `/games` - DAH Games with built-in mini games and AI game creator
 - `/login` - Account creation/login
 
 ### DAH Avenues (Reddit-Style Forums)

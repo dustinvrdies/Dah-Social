@@ -19,6 +19,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { sendVerificationEmail, sendWelcomeEmail } from "./email";
+import OpenAI from "openai";
 
 interface DummyJsonProduct {
   id: number;
@@ -624,6 +625,64 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         return res.status(400).json({ message: "Invalid input", issues: err.issues });
       }
       next(err);
+    }
+  });
+
+  app.post("/api/games/generate", async (req, res) => {
+    try {
+      const { description } = req.body;
+      if (!description || typeof description !== "string" || description.trim().length < 5) {
+        return res.status(400).json({ message: "Please provide a game description (at least 5 characters)" });
+      }
+
+      const aiClient = new OpenAI({
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      });
+
+      const completion = await aiClient.chat.completions.create({
+        model: "gpt-4.1-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a game developer. Create a simple, playable HTML5 game based on the user's description. Return ONLY a complete HTML document with embedded CSS and JavaScript. The game must:
+- Be a single self-contained HTML file
+- Use a dark background (#1a1a2e) with colorful game elements
+- Include a score display, instructions, and restart button
+- Be playable with mouse clicks or keyboard
+- Work in an iframe (no external resources)
+- Be fun and responsive
+- Use canvas or DOM elements for rendering
+- Include smooth animations
+- Have clear win/lose conditions
+Do NOT include any explanation - return ONLY the HTML code.`,
+          },
+          {
+            role: "user",
+            content: `Create this game: ${description.trim().slice(0, 300)}`,
+          },
+        ],
+        max_completion_tokens: 4000,
+      });
+
+      let html = completion.choices[0]?.message?.content ?? "";
+      html = html.replace(/^```html?\n?/i, "").replace(/\n?```$/i, "").trim();
+
+      if (!html.includes("<html") && !html.includes("<!DOCTYPE") && !html.includes("<body")) {
+        return res.status(500).json({ message: "AI did not generate a valid game. Try again with a different description." });
+      }
+
+      const cspMeta = `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:;">`;
+      if (html.includes("<head>")) {
+        html = html.replace("<head>", `<head>${cspMeta}`);
+      } else if (html.includes("<html>")) {
+        html = html.replace("<html>", `<html><head>${cspMeta}</head>`);
+      }
+
+      res.json({ html });
+    } catch (error) {
+      console.error("Error generating game:", error);
+      res.status(500).json({ message: "Failed to generate game. Please try again." });
     }
   });
 
