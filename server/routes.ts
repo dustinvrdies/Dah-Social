@@ -19,6 +19,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { sendVerificationEmail, sendWelcomeEmail } from "./email";
+import { registerChatRoutes } from "./replit_integrations/chat";
 import OpenAI from "openai";
 
 interface DummyJsonProduct {
@@ -95,6 +96,8 @@ const upload = multer({
 });
 
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
+  registerChatRoutes(app);
+
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, ts: new Date().toISOString() });
   });

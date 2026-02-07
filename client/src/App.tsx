@@ -27,6 +27,7 @@ import TermsPage from "@/pages/terms";
 import PrivacyPage from "@/pages/privacy";
 import VerificationPage from "@/pages/verification";
 import GamesPage from "@/pages/games";
+import { AIChatbot } from "@/components/AIChatbot";
 
 function Router() {
   return (
@@ -65,6 +66,7 @@ function App() {
           <Toaster />
           <EnvironmentBadge env="dev" />
           <Router />
+          <AIChatbot />
         </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>

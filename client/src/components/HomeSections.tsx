@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   ChevronRight, Radio, Users, Calendar, Target, MessageSquare, 
   TrendingUp, Flame, Eye, Gift, Clock, MapPin, CheckCircle2,
-  ArrowBigUp, ShoppingBag
+  ArrowBigUp, ShoppingBag, Gamepad2, Bot, Zap, Trophy
 } from "lucide-react";
 import { getGroups } from "@/lib/groups";
 import { getEvents } from "@/lib/events";
@@ -18,7 +18,7 @@ import { formatDistanceToNow } from "date-fns";
 
 function SectionHeader({ title, href, icon: Icon }: { title: string; href: string; icon: React.ElementType }) {
   return (
-    <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center justify-between gap-2 mb-3">
       <div className="flex items-center gap-2">
         <Icon className="w-5 h-5 text-primary" />
         <h2 className="font-semibold text-lg">{title}</h2>
@@ -276,6 +276,49 @@ export function MarketplacePicksSection() {
   );
 }
 
+export function GamesSection() {
+  const games = [
+    { id: "coin-rush", title: "Coin Rush", icon: Zap, color: "#F59E0B", desc: "Catch falling coins" },
+    { id: "memory-match", title: "Memory Match", icon: Gamepad2, color: "#8B5CF6", desc: "Test your memory" },
+    { id: "trivia", title: "Trivia", icon: Trophy, color: "#3B82F6", desc: "Answer questions" },
+    { id: "color-match", title: "Color Match", icon: Target, color: "#EC4899", desc: "Match colors fast" },
+  ];
+
+  return (
+    <section className="mb-6">
+      <SectionHeader title="DAH Games" href="/games" icon={Gamepad2} />
+      <Card>
+        <CardContent className="p-3">
+          <div className="grid grid-cols-2 gap-2 mb-3">
+            {games.map((game) => (
+              <Link key={game.id} href="/games">
+                <div className="flex items-center gap-2.5 p-2.5 rounded-md hover-elevate cursor-pointer" data-testid={`card-game-${game.id}`}>
+                  <div
+                    className="w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: game.color + "18", color: game.color }}
+                  >
+                    <game.icon className="w-4.5 h-4.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium leading-tight">{game.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{game.desc}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link href="/games">
+            <Button variant="outline" size="sm" className="w-full gap-2" data-testid="link-play-games">
+              <Bot className="w-4 h-4" />
+              Try AI Game Creator
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
 export function QuickActions() {
   const { session } = useAuth();
   
@@ -286,6 +329,7 @@ export function QuickActions() {
     { href: "/groups", icon: "users", label: "Groups", color: "#8B5CF6" },
     { href: "/events", icon: "calendar", label: "Events", color: "#10B981" },
     { href: "/quests", icon: "target", label: "Quests", color: "#F59E0B" },
+    { href: "/games", icon: "gamepad", label: "Games", color: "#F97316" },
     { href: "/mall", icon: "shop", label: "Mall", color: "#EC4899" },
     { href: "/discover", icon: "chart", label: "Discover", color: "#6366F1" },
   ];
@@ -323,6 +367,7 @@ function ActionIcon({ name, color }: { name: string; color: string }) {
     case "users": return <Users className={iconClass} style={style} />;
     case "calendar": return <Calendar className={iconClass} style={style} />;
     case "target": return <Target className={iconClass} style={style} />;
+    case "gamepad": return <Gamepad2 className={iconClass} style={style} />;
     case "shop": return <ShoppingBag className={iconClass} style={style} />;
     case "chart": return <TrendingUp className={iconClass} style={style} />;
     default: return null;

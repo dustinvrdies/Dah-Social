@@ -22,6 +22,8 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - **AI Game Creator** - Users describe a game idea and AI (OpenAI) generates a playable HTML5 game in an iframe
 - **Game Cooldowns** - 60-second cooldown per game to prevent farming
 - **Game History** - Track scores, coins earned, and best scores per game
+- **AI Chatbot** - Floating AI assistant (bottom-right corner) powered by OpenAI, available on every page with streaming responses
+- **Games on Home Page** - Games section and quick action visible on the main feed
 
 ### New TikTok/Facebook-Style Features (January 2026)
 

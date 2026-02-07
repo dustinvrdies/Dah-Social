@@ -15,7 +15,8 @@ import {
   GroupsSection, 
   EventsSection, 
   QuestsSection,
-  MarketplacePicksSection 
+  MarketplacePicksSection,
+  GamesSection
 } from "@/components/HomeSections";
 import { Coins, Sparkles } from "lucide-react";
 
@@ -77,6 +78,8 @@ export default function Home() {
         <div>
           <Feed />
         </div>
+
+        <GamesSection />
 
         <AvenuesSpotlight />
 
