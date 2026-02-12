@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
@@ -46,16 +46,11 @@ export function AppHeader() {
 
         {showSearch ? (
           <div className="flex-1 max-w-md">
-            <SearchBar 
-              onSearch={(q) => {
-                console.log("Searching for:", q);
-                setShowSearch(false);
-              }} 
-            />
+            <SearchBar />
           </div>
         ) : (
           <div className="hidden sm:flex flex-1 max-w-md">
-            <SearchBar onSearch={(q) => console.log("Searching for:", q)} />
+            <SearchBar />
           </div>
         )}
 

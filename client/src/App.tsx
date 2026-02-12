@@ -27,6 +27,9 @@ import TermsPage from "@/pages/terms";
 import PrivacyPage from "@/pages/privacy";
 import VerificationPage from "@/pages/verification";
 import GamesPage from "@/pages/games";
+import SearchPage from "@/pages/search";
+import RewardsPage from "@/pages/rewards";
+import LeaderboardPage from "@/pages/leaderboard";
 import { AIChatbot } from "@/components/AIChatbot";
 
 function Router() {
@@ -53,6 +56,9 @@ function Router() {
       <Route path="/terms" component={TermsPage} />
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/verification" component={VerificationPage} />
+      <Route path="/search" component={SearchPage} />
+      <Route path="/rewards" component={RewardsPage} />
+      <Route path="/leaderboard" component={LeaderboardPage} />
       <Route component={NotFound} />
     </Switch>
   );

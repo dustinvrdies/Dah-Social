@@ -5,7 +5,7 @@ import { NotificationBell } from "./NotificationBell";
 import { SearchBar } from "./SearchBar";
 import { getUnreadCount } from "@/lib/inbox";
 import { getWallet } from "@/lib/dahCoins";
-import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3, MessageSquare, Coins, Gamepad2 } from "lucide-react";
+import { Home, Video, ShoppingBag, User, LogIn, LogOut, Mail, Menu, Radio, Users, Calendar, Sparkles, Target, BarChart3, MessageSquare, Coins, Gamepad2, Gift, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +39,8 @@ export function MainNav() {
     { href: "/events", label: "Events", icon: Calendar },
     { href: "/quests", label: "Quests", icon: Target },
     { href: "/games", label: "Games", icon: Gamepad2 },
+    { href: "/rewards", label: "Rewards", icon: Gift },
+    { href: "/leaderboard", label: "Ranks", icon: Trophy },
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   ];
 
@@ -83,7 +85,7 @@ export function MainNav() {
           </div>
 
           <div className="hidden sm:flex flex-1 max-w-md mx-4">
-            <SearchBar onSearch={(q) => console.log("Searching for:", q)} />
+            <SearchBar />
           </div>
 
           <div className="flex items-center gap-2">

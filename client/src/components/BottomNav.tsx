@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "./AuthProvider";
 import { getUnreadCount } from "@/lib/inbox";
 import { getWallet } from "@/lib/dahCoins";
-import { Home, Video, ShoppingBag, Mail, User, Coins } from "lucide-react";
+import { Home, Video, ShoppingBag, Mail, User, Coins, Gift } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function BottomNav() {
@@ -27,7 +27,7 @@ export function BottomNav() {
     { href: "/", label: "Home", icon: Home },
     { href: "/video", label: "Video", icon: Video },
     { href: "/mall", label: "Mall", icon: ShoppingBag },
-    { href: "/inbox", label: "Inbox", icon: Mail, badge: unreadInbox },
+    { href: "/rewards", label: "Rewards", icon: Gift },
     { href: session ? `/profile/${session.username}` : "/login", label: "Profile", icon: User },
   ];
 

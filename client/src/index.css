@@ -4,64 +4,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* DAH SOCIAL - Soft Charcoal Dark Theme - Easier on the eyes */
+/* DAH SOCIAL - Deep Dark Theme with Teal Accents */
 :root {
-  --dah-accent: 330 70% 62%;
+  --dah-accent: 168 80% 42%;
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .06);
   --opaque-button-border-intensity: 8;
   --elevate-1: rgba(255,255,255, .05);
   --elevate-2: rgba(255,255,255, .10);
   
-  /* Soft charcoal dark theme - easier on eyes */
-  --background: 225 12% 12%;
-  --foreground: 210 18% 92%;
-  --border: 225 10% 22%;
+  /* Deep dark theme - near black */
+  --background: 220 16% 7%;
+  --foreground: 210 20% 90%;
+  --border: 220 12% 15%;
   
-  --card: 225 12% 15%;
-  --card-foreground: 210 18% 92%;
-  --card-border: 225 10% 20%;
+  --card: 220 16% 10%;
+  --card-foreground: 210 20% 90%;
+  --card-border: 220 12% 14%;
   
-  --sidebar: 225 12% 13%;
-  --sidebar-foreground: 210 18% 90%;
-  --sidebar-border: 225 10% 20%;
-  --sidebar-primary: 330 70% 62%;
+  --sidebar: 220 16% 8%;
+  --sidebar-foreground: 210 20% 88%;
+  --sidebar-border: 220 12% 14%;
+  --sidebar-primary: 168 80% 42%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 60% 28%;
-  --sidebar-accent-foreground: 210 50% 88%;
-  --sidebar-ring: 330 70% 62%;
+  --sidebar-accent: 168 40% 18%;
+  --sidebar-accent-foreground: 168 50% 80%;
+  --sidebar-ring: 168 80% 42%;
   
-  --popover: 225 12% 14%;
-  --popover-foreground: 210 18% 92%;
-  --popover-border: 225 10% 22%;
+  --popover: 220 16% 9%;
+  --popover-foreground: 210 20% 90%;
+  --popover-border: 220 12% 15%;
   
-  /* Softer pink primary */
-  --primary: 330 70% 62%;
+  /* Teal primary */
+  --primary: 168 80% 42%;
   --primary-foreground: 0 0% 100%;
   
-  /* Softer blue secondary */
-  --secondary: 210 70% 55%;
+  /* Purple secondary */
+  --secondary: 270 60% 55%;
   --secondary-foreground: 0 0% 100%;
   
-  --muted: 225 10% 18%;
-  --muted-foreground: 210 12% 60%;
+  --muted: 220 12% 14%;
+  --muted-foreground: 210 12% 55%;
   
-  /* Softer blue accent */
-  --accent: 210 55% 24%;
-  --accent-foreground: 210 50% 88%;
+  /* Teal accent */
+  --accent: 168 40% 16%;
+  --accent-foreground: 168 50% 80%;
   
   --destructive: 0 65% 52%;
   --destructive-foreground: 0 0% 100%;
   
-  --input: 225 10% 18%;
-  --ring: 330 70% 62%;
+  --input: 220 12% 14%;
+  --ring: 168 80% 42%;
   
   /* Chart colors */
-  --chart-1: 330 85% 60%;
-  --chart-2: 210 80% 55%;
-  --chart-3: 280 70% 60%;
-  --chart-4: 170 70% 50%;
-  --chart-5: 45 90% 55%;
+  --chart-1: 168 80% 42%;
+  --chart-2: 270 60% 55%;
+  --chart-3: 45 90% 55%;
+  --chart-4: 340 70% 55%;
+  --chart-5: 210 80% 55%;
   
   --font-sans: Inter, system-ui, sans-serif;
   --font-serif: Georgia, serif;
@@ -105,7 +105,7 @@
 
 /* Light mode - rarely used, keeping for compatibility */
 .light {
-  --dah-accent: 330 85% 55%;
+  --dah-accent: 168 80% 38%;
   --button-outline: rgba(0,0,0, .08);
   --badge-outline: rgba(0,0,0, .05);
   --opaque-button-border-intensity: -5;
@@ -123,33 +123,33 @@
   --sidebar: 210 25% 96%;
   --sidebar-foreground: 225 15% 20%;
   --sidebar-border: 210 20% 88%;
-  --sidebar-primary: 330 85% 55%;
+  --sidebar-primary: 168 80% 38%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 70% 92%;
-  --sidebar-accent-foreground: 210 50% 30%;
-  --sidebar-ring: 330 85% 55%;
+  --sidebar-accent: 168 30% 90%;
+  --sidebar-accent-foreground: 168 50% 25%;
+  --sidebar-ring: 168 80% 38%;
   
   --popover: 0 0% 100%;
   --popover-foreground: 225 15% 15%;
   --popover-border: 210 20% 88%;
   
-  --primary: 330 85% 55%;
+  --primary: 168 80% 38%;
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 210 80% 55%;
+  --secondary: 270 60% 55%;
   --secondary-foreground: 0 0% 100%;
   
   --muted: 210 20% 94%;
   --muted-foreground: 225 10% 45%;
   
-  --accent: 210 70% 92%;
-  --accent-foreground: 210 50% 30%;
+  --accent: 168 30% 90%;
+  --accent-foreground: 168 50% 25%;
   
   --destructive: 0 70% 55%;
   --destructive-foreground: 0 0% 100%;
   
   --input: 210 20% 90%;
-  --ring: 330 85% 55%;
+  --ring: 168 80% 38%;
 }
 
 @layer base {
@@ -160,8 +160,8 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     background-image:
-      radial-gradient(circle at 15% 50%, hsl(330 70% 62% / 0.03), transparent 25%),
-      radial-gradient(circle at 85% 30%, hsl(210 70% 55% / 0.03), transparent 25%);
+      radial-gradient(circle at 15% 50%, hsl(168 80% 42% / 0.03), transparent 25%),
+      radial-gradient(circle at 85% 30%, hsl(270 60% 55% / 0.03), transparent 25%);
     background-attachment: fixed;
   }
   
@@ -239,17 +239,17 @@
     inset: -1px;
   }
   
-  /* DAH gradient utilities - softer saturation */
+  /* DAH gradient utilities - teal/purple */
   .bg-dah-gradient {
-    background: linear-gradient(135deg, hsl(330 70% 62% / 0.12) 0%, hsl(210 70% 55% / 0.12) 100%);
+    background: linear-gradient(135deg, hsl(168 80% 42% / 0.12) 0%, hsl(270 60% 55% / 0.12) 100%);
   }
   
   .bg-dah-gradient-strong {
-    background: linear-gradient(135deg, hsl(330 70% 58%) 0%, hsl(210 70% 52%) 100%);
+    background: linear-gradient(135deg, hsl(168 80% 42%) 0%, hsl(168 60% 32%) 100%);
   }
   
   .text-gradient-dah {
-    background: linear-gradient(135deg, hsl(330 70% 65%) 0%, hsl(210 70% 60%) 100%);
+    background: linear-gradient(135deg, hsl(168 80% 50%) 0%, hsl(168 60% 65%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -258,23 +258,23 @@
   .border-gradient-dah {
     border: 2px solid transparent;
     background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-                linear-gradient(135deg, hsl(330 70% 62%), hsl(210 70% 55%)) border-box;
+                linear-gradient(135deg, hsl(168 80% 42%), hsl(270 60% 55%)) border-box;
   }
   
   /* Story bubble ring gradient */
   .ring-gradient-dah {
-    background: linear-gradient(135deg, hsl(330 70% 62%), hsl(280 60% 55%), hsl(210 70% 55%));
+    background: linear-gradient(135deg, hsl(168 80% 42%), hsl(200 70% 50%), hsl(270 60% 55%));
     padding: 3px;
     border-radius: 9999px;
   }
   
-  /* Glow effects - softer */
-  .glow-pink {
-    box-shadow: 0 0 20px hsl(330 70% 62% / 0.25), 0 0 40px hsl(330 70% 62% / 0.1);
+  /* Glow effects - teal */
+  .glow-teal {
+    box-shadow: 0 0 20px hsl(168 80% 42% / 0.25), 0 0 40px hsl(168 80% 42% / 0.1);
   }
   
-  .glow-blue {
-    box-shadow: 0 0 20px hsl(210 70% 55% / 0.25), 0 0 40px hsl(210 70% 55% / 0.1);
+  .glow-purple {
+    box-shadow: 0 0 20px hsl(270 60% 55% / 0.25), 0 0 40px hsl(270 60% 55% / 0.1);
   }
   
   /* Card translucency for softer feel */

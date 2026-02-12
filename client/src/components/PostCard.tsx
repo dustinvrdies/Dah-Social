@@ -211,7 +211,22 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
             >
               <MessageCircle className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-muted-foreground" data-testid="button-share-post">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground"
+              onClick={() => {
+                const url = `${window.location.origin}/?post=${postId}`;
+                if (navigator.share) {
+                  navigator.share({ title: `Post by @${user}`, text: content.slice(0, 100), url });
+                } else {
+                  navigator.clipboard.writeText(url);
+                  const event = new CustomEvent("dah-toast", { detail: { title: "Link copied!" } });
+                  window.dispatchEvent(event);
+                }
+              }}
+              data-testid="button-share-post"
+            >
               <Share2 className="w-5 h-5" />
             </Button>
             {session && session.username !== user && (

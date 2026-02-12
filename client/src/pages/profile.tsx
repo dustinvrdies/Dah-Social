@@ -20,28 +20,60 @@ import { follow, unfollow, isFollowing, getFollowers, getFollowing } from "@/lib
 import { getReputation } from "@/lib/reputation";
 import { getWallet } from "@/lib/dahCoins";
 import { pushNotification } from "@/lib/notifications";
+import { getUserProfile, updateUserProfile } from "@/lib/profileData";
+import { getUserLevel } from "@/lib/levels";
+import { getUserBadges } from "@/lib/badges";
+import { getAllPosts } from "@/lib/feedData";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Grid3X3, Video, ShoppingBag, Bookmark, Star, ShieldCheck, MessageCircle, Share2, BadgeCheck } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Settings, Grid3X3, Video, ShoppingBag, Bookmark, Star, ShieldCheck, MessageCircle, Share2, BadgeCheck, Pencil, Award, TrendingUp, Flame, Coins, Zap, Calendar, Gem, Crown, Users as UsersIcon, type LucideIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "dah.profile.theme";
+
+const badgeIconMap: Record<string, LucideIcon> = {
+  star: Star,
+  flame: Flame,
+  calendar: Calendar,
+  coins: Coins,
+  gem: Gem,
+  crown: Crown,
+  users: UsersIcon,
+  award: Award,
+  trending: TrendingUp,
+  zap: Zap,
+};
 
 export default function ProfilePage() {
   const [, params] = useRoute("/profile/:username");
   const username = (params?.username || "unknown").trim().toLowerCase();
   const { session } = useAuth();
 
+  const { toast } = useToast();
   const [theme, setTheme] = useState<ProfileTheme>(defaultTheme);
   const [following, setFollowingState] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
+  const [editOpen, setEditOpen] = useState(false);
 
   const [rep, setRep] = useState(() => getReputation(username));
   const [followers, setFollowers] = useState<string[]>([]);
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [wallet, setWallet] = useState(() => getWallet(username));
+  const [profile, setProfile] = useState(() => getUserProfile(username));
+  const [editForm, setEditForm] = useState({ displayName: "", bio: "", avatarUrl: "", location: "", website: "" });
+  const levelInfo = getUserLevel(username);
+  const badges = getUserBadges(username);
+  const unlockedBadges = badges.filter(b => b.unlocked);
+
+  const userPosts = getAllPosts().filter(p => p.username === username);
 
   const isOwnProfile = session?.username === username;
 
@@ -58,6 +90,7 @@ export default function ProfilePage() {
     setFollowers(getFollowers(username));
     setFollowingList(getFollowing(username));
     setWallet(getWallet(username));
+    setProfile(getUserProfile(username));
   }, [username]);
 
   useEffect(() => {
@@ -80,6 +113,24 @@ export default function ProfilePage() {
 
   const canFollow = session && session.username !== username;
 
+  const openEditDialog = () => {
+    setEditForm({
+      displayName: profile.displayName,
+      bio: profile.bio,
+      avatarUrl: profile.avatarUrl,
+      location: profile.location,
+      website: profile.website,
+    });
+    setEditOpen(true);
+  };
+
+  const saveProfile = () => {
+    const updated = updateUserProfile(username, editForm);
+    setProfile(updated);
+    setEditOpen(false);
+    toast({ title: "Profile updated", description: "Your changes have been saved." });
+  };
+
   const toggleFollow = () => {
     if (!session) return;
     if (following) {
@@ -96,7 +147,7 @@ export default function ProfilePage() {
     }
   };
 
-  const postCount = Math.floor(Math.random() * 100) + 10;
+  const postCount = userPosts.length;
 
   return (
     <ProfileThemeProvider theme={theme}>
@@ -109,18 +160,21 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
               <div className="ring-gradient-dah p-[3px] rounded-full">
                 <Avatar className="w-32 h-32 border-4 border-background">
-                  <AvatarImage src={undefined} />
+                  <AvatarImage src={profile.avatarUrl || undefined} />
                   <AvatarFallback className="bg-card text-3xl font-bold">
-                    {username.slice(0, 2).toUpperCase()}
+                    {(profile.displayName || username).slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
               </div>
               
               <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className={`text-2xl font-bold ${theme.accent}`} data-testid="text-profile-username">
-                    @{username}
-                  </h1>
+                  <div>
+                    <h1 className={`text-2xl font-bold ${theme.accent}`} data-testid="text-profile-username">
+                      {profile.displayName || username}
+                    </h1>
+                    <span className="text-sm text-muted-foreground" data-testid="text-profile-handle">@{username}</span>
+                  </div>
                   {isOwnProfile && kycLevel >= 1 && (
                     <div className="flex items-center gap-1" data-testid="badge-verified-email">
                       <BadgeCheck className="w-5 h-5 text-blue-400" />
@@ -176,14 +230,47 @@ export default function ProfilePage() {
                   </>
                 )}
                 {isOwnProfile && (
-                  <Button variant="outline" size="icon" data-testid="button-settings">
-                    <Settings className="w-5 h-5" />
+                  <Button variant="outline" onClick={openEditDialog} data-testid="button-edit-profile">
+                    <Pencil className="w-4 h-4 mr-1.5" />
+                    Edit
                   </Button>
                 )}
                 <Button variant="outline" size="icon" data-testid="button-share-profile">
                   <Share2 className="w-5 h-5" />
                 </Button>
               </div>
+            </div>
+
+            {profile.bio && (
+              <p className="mt-3 text-sm max-w-lg" data-testid="text-profile-bio">{profile.bio}</p>
+            )}
+            {(profile.location || profile.website) && (
+              <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground flex-wrap">
+                {profile.location && <span data-testid="text-profile-location">{profile.location}</span>}
+                {profile.website && <a href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" data-testid="link-profile-website">{profile.website}</a>}
+              </div>
+            )}
+
+            <div className="flex items-center gap-3 mt-3 flex-wrap">
+              <Badge variant="outline" className="gap-1">
+                <Zap className="w-3 h-3" />
+                Lv. {levelInfo.level} {levelInfo.title}
+              </Badge>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <span>{levelInfo.xp}/{levelInfo.xpToNext} XP</span>
+                <Progress value={levelInfo.xpToNext > 0 ? (levelInfo.xp / levelInfo.xpToNext) * 100 : 100} className="w-16 h-1.5" />
+              </div>
+              {unlockedBadges.length > 0 && (
+                <div className="flex items-center gap-1">
+                  {unlockedBadges.slice(0, 5).map(b => {
+                    const BadgeIcon = badgeIconMap[b.icon] || Award;
+                    return <BadgeIcon key={b.id} title={b.name} className="w-4 h-4 text-primary" />;
+                  })}
+                  {unlockedBadges.length > 5 && (
+                    <span className="text-xs text-muted-foreground">+{unlockedBadges.length - 5}</span>
+                  )}
+                </div>
+              )}
             </div>
             
             <div className="mt-6 space-y-6">
@@ -260,16 +347,18 @@ export default function ProfilePage() {
                 </TabsList>
                 
                 <TabsContent value="posts" className="mt-4">
-                  <div className="grid grid-cols-3 gap-1">
-                    {Array.from({ length: 9 }).map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="aspect-square bg-muted/30 rounded-md flex items-center justify-center hover-elevate cursor-pointer"
-                      >
-                        <span className="text-muted-foreground text-xs">Post {i + 1}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {userPosts.filter(p => p.type !== "video" && p.type !== "listing").length === 0 ? (
+                    <p className="text-center text-muted-foreground py-8">No posts yet</p>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-1">
+                      {userPosts.filter(p => p.type !== "video" && p.type !== "listing").slice(0, 12).map((p) => (
+                        <div key={p.id} className="aspect-square bg-muted/30 rounded-md flex items-center justify-center hover-elevate cursor-pointer overflow-hidden">
+                          {p.type === "text" && <span className="text-xs text-muted-foreground p-2 line-clamp-3">{p.content}</span>}
+                          {p.type === "ad" && <span className="text-xs text-muted-foreground">Ad</span>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="videos" className="mt-4">
@@ -308,6 +397,67 @@ export default function ProfilePage() {
           </div>
         </div>
         </div>
+
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit Profile</DialogTitle>
+              <DialogDescription>Update your profile information</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Display Name</label>
+                <Input
+                  value={editForm.displayName}
+                  onChange={(e) => setEditForm(f => ({ ...f, displayName: e.target.value }))}
+                  placeholder="Your display name"
+                  data-testid="input-edit-displayname"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Bio</label>
+                <Textarea
+                  value={editForm.bio}
+                  onChange={(e) => setEditForm(f => ({ ...f, bio: e.target.value }))}
+                  placeholder="Tell us about yourself..."
+                  rows={3}
+                  data-testid="input-edit-bio"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Avatar URL</label>
+                <Input
+                  value={editForm.avatarUrl}
+                  onChange={(e) => setEditForm(f => ({ ...f, avatarUrl: e.target.value }))}
+                  placeholder="https://example.com/avatar.jpg"
+                  data-testid="input-edit-avatar"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Location</label>
+                <Input
+                  value={editForm.location}
+                  onChange={(e) => setEditForm(f => ({ ...f, location: e.target.value }))}
+                  placeholder="City, Country"
+                  data-testid="input-edit-location"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Website</label>
+                <Input
+                  value={editForm.website}
+                  onChange={(e) => setEditForm(f => ({ ...f, website: e.target.value }))}
+                  placeholder="yoursite.com"
+                  data-testid="input-edit-website"
+                />
+              </div>
+              <div className="flex items-center gap-2 justify-end">
+                <Button variant="outline" onClick={() => setEditOpen(false)} data-testid="button-cancel-edit">Cancel</Button>
+                <Button onClick={saveProfile} data-testid="button-save-profile">Save Changes</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </PageLayout>
     </ProfileThemeProvider>
   );

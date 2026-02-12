@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Plus, ChevronLeft, ChevronRight, X, Heart, Send, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import { Plus, ChevronLeft, ChevronRight, X, Heart, Send, Eye, Image, Camera } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { lsGet, lsSet } from "@/lib/storage";
+import { useToast } from "@/hooks/use-toast";
 
 interface Story {
   id: string;
@@ -17,6 +19,7 @@ interface Story {
   caption?: string;
   timestamp: number;
   views: number;
+  isLive?: boolean;
 }
 
 const STORIES_KEY = "dah.stories";
@@ -24,11 +27,11 @@ const STORIES_KEY = "dah.stories";
 const picsum = (id: number) => `https://picsum.photos/id/${id}/1080/1920`;
 
 const initialStories: Story[] = [
-  { id: "s1", username: "maya_creates", displayName: "Maya", media: picsum(1015), mediaType: "image", caption: "Golden hour vibes", timestamp: Date.now() - 3600000, views: 234 },
+  { id: "s1", username: "maya_creates", displayName: "Maya", media: picsum(1015), mediaType: "image", caption: "Golden hour vibes", timestamp: Date.now() - 3600000, views: 234, isLive: true },
   { id: "s2", username: "techie_marcus", displayName: "Marcus", media: picsum(180), mediaType: "image", caption: "New setup finally complete", timestamp: Date.now() - 7200000, views: 156 },
-  { id: "s3", username: "sarah_thrifts", displayName: "Sarah", media: picsum(1025), mediaType: "image", caption: "Today's finds", timestamp: Date.now() - 10800000, views: 189 },
+  { id: "s3", username: "sarah_thrifts", displayName: "Sarah", media: picsum(1025), mediaType: "image", caption: "Today's finds", timestamp: Date.now() - 10800000, views: 189, isLive: true },
   { id: "s4", username: "alex_trades", displayName: "Alex", media: picsum(1036), mediaType: "image", caption: "Market day", timestamp: Date.now() - 14400000, views: 312 },
-  { id: "s5", username: "jenna_vintage", displayName: "Jenna", media: picsum(1047), mediaType: "image", caption: "90s forever", timestamp: Date.now() - 18000000, views: 278 },
+  { id: "s5", username: "jenna_vintage", displayName: "Jenna", media: picsum(1047), mediaType: "image", caption: "90s forever", timestamp: Date.now() - 18000000, views: 278, isLive: true },
   { id: "s6", username: "mike_flips", displayName: "Mike", media: picsum(1067), mediaType: "image", caption: "Estate sale score", timestamp: Date.now() - 21600000, views: 445 },
   { id: "s7", username: "maya_creates", media: picsum(1084), mediaType: "image", caption: "Studio update", timestamp: Date.now() - 1800000, views: 567 },
   { id: "s8", username: "techie_marcus", media: picsum(366), mediaType: "image", caption: "Retro tech", timestamp: Date.now() - 5400000, views: 123 },
@@ -58,6 +61,8 @@ function groupStoriesByUser(stories: Story[]) {
     avatar: storyList[0].avatar,
     stories: storyList.sort((a, b) => a.timestamp - b.timestamp),
     latestTimestamp: Math.max(...storyList.map((s) => s.timestamp)),
+    isLive: storyList.some(s => s.isLive),
+    thumbnail: storyList[0].media,
   }));
 }
 
@@ -221,10 +226,35 @@ function formatTimeAgo(timestamp: number) {
 
 export function Stories() {
   const { session } = useAuth();
-  const [stories] = useState(() => getStories());
+  const { toast } = useToast();
+  const [stories, setStories] = useState(() => getStories());
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
+  const [showCreate, setShowCreate] = useState(false);
+  const [storyCaption, setStoryCaption] = useState("");
+  const [storyImageUrl, setStoryImageUrl] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleCreateStory = () => {
+    if (!session) return;
+    const imageUrl = storyImageUrl.trim() || `https://picsum.photos/id/${Math.floor(Math.random() * 200) + 100}/1080/1920`;
+    const newStory: Story = {
+      id: `story-${Date.now()}`,
+      username: session.username,
+      displayName: session.username,
+      media: imageUrl,
+      mediaType: "image",
+      caption: storyCaption.trim() || undefined,
+      timestamp: Date.now(),
+      views: 0,
+    };
+    addStory(newStory);
+    setStories(getStories());
+    setShowCreate(false);
+    setStoryCaption("");
+    setStoryImageUrl("");
+    toast({ title: "Story posted!", description: "Your story is now live for 24 hours" });
+  };
 
   const grouped = groupStoriesByUser(stories);
 
@@ -247,7 +277,14 @@ export function Stories() {
         ref={scrollRef}
         className="flex gap-3 overflow-x-auto py-1 px-1 scrollbar-hide"
       >
-        <button className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]" data-testid="button-add-story">
+        <button
+          className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[72px]"
+          onClick={() => {
+            if (!session) return;
+            setShowCreate(true);
+          }}
+          data-testid="button-add-story"
+        >
           <div className="relative">
             <Avatar className="w-[60px] h-[60px] ring-2 ring-dashed ring-muted-foreground/20">
               <AvatarFallback className="bg-muted/50 text-base">
@@ -304,6 +341,47 @@ export function Stories() {
           onClose={() => setViewerOpen(false)}
         />
       )}
+
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Camera className="w-5 h-5 text-primary" />
+              Create Story
+            </DialogTitle>
+            <DialogDescription>Share a moment with your followers</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm text-muted-foreground mb-1 block">Image URL (optional - random if empty)</label>
+              <Input
+                placeholder="https://example.com/image.jpg"
+                value={storyImageUrl}
+                onChange={(e) => setStoryImageUrl(e.target.value)}
+                data-testid="input-story-image"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-1 block">Caption</label>
+              <Input
+                placeholder="What's happening?"
+                value={storyCaption}
+                onChange={(e) => setStoryCaption(e.target.value)}
+                data-testid="input-story-caption"
+              />
+            </div>
+            {storyImageUrl && (
+              <div className="aspect-[9/16] max-h-[200px] rounded-lg overflow-hidden bg-muted">
+                <img src={storyImageUrl} alt="Preview" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <Button className="w-full bg-dah-gradient-strong" onClick={handleCreateStory} data-testid="button-post-story">
+              <Image className="w-4 h-4 mr-2" />
+              Post Story
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
