@@ -27,7 +27,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TipButton } from "./TipButton";
 
 interface PostCardProps {
   user: string;
@@ -91,7 +90,8 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
       type: "coin",
       message: `@${session.username} sent you a tip of ${amount} DAH Coin!`,
     });
-    alert(`Tip of ${amount} DAH Coin sent to @${user}`);
+    const event = new CustomEvent("dah-toast", { detail: { title: `Tipped @${user} ${amount} DAH Coin` } });
+    window.dispatchEvent(event);
   };
 
   const handleHide = () => {
@@ -161,6 +161,12 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {session && session.username !== user && (
+              <DropdownMenuItem onClick={() => handleTip(1)} data-testid="button-tip-post">
+                <Coins className="w-4 h-4 mr-2" />
+                Tip 1 DAH Coin
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={handleHide} data-testid="button-hide-post">
               <EyeOff className="w-4 h-4 mr-2" />
               Hide post
@@ -229,9 +235,7 @@ export function PostCard({ user, content, postId, image, timestamp }: PostCardPr
             >
               <Share2 className="w-5 h-5" />
             </Button>
-            {session && session.username !== user && (
-              <TipButton onTip={handleTip} />
-            )}
+          
           </div>
           <Button 
             variant="ghost" 

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Link } from "wouter";
 import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
@@ -16,7 +16,6 @@ import {
   Music2, 
   Volume2, 
   VolumeX,
-  Home,
   BadgeCheck,
   Plus
 } from "lucide-react";
@@ -25,47 +24,35 @@ const VIDEO_AD_FREQUENCY = 4;
 
 type VideoFeedItem = { type: "video"; post: VideoPostType } | { type: "ad"; ad: NativeAd };
 
-function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: VideoPostType; isMuted: boolean; onToggleMute: () => void }) {
+function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: VideoPostType; isMuted: boolean; onToggleMute: () => void; isActive: boolean }) {
   const { session } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
-    if (!containerRef.current || !videoRef.current) return;
+    if (!videoRef.current) return;
+    if (isActive) {
+      const playPromise = videoRef.current.play();
+      if (playPromise) playPromise.catch(() => {});
+    } else {
+      videoRef.current.pause();
+    }
+  }, [isActive]);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (videoRef.current) {
-            if (entry.isIntersecting) {
-              videoRef.current.play().catch(() => {});
-              setIsPlaying(true);
-            } else {
-              videoRef.current.pause();
-              setIsPlaying(false);
-            }
-          }
-        });
-      },
-      { threshold: 0.6 }
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {});
-      }
-      setIsPlaying(!isPlaying);
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play().catch(() => {});
+    } else {
+      videoRef.current.pause();
     }
   };
 
@@ -84,7 +71,9 @@ function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: VideoPostType;
         loop
         muted={isMuted}
         playsInline
+        preload="auto"
         onClick={togglePlay}
+        data-testid={`video-player-${post.id}`}
       />
       
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
@@ -171,6 +160,8 @@ function TikTokVideoCard({ post, isMuted, onToggleMute }: { post: VideoPostType;
 
 export default function VideoPage() {
   const [isMuted, setIsMuted] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const allVideos = useMemo(() => {
     const allPosts = getAllPosts();
@@ -195,10 +186,28 @@ export default function VideoPage() {
     return result;
   }, [allVideos]);
 
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const itemHeight = container.clientHeight;
+    const newIndex = Math.round(container.scrollTop / itemHeight);
+    if (newIndex !== activeIndex) {
+      setActiveIndex(newIndex);
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
   return (
     <PageLayout hideHeader={true}>
       <div className="h-[calc(100vh-80px)] bg-black overflow-hidden">
         <div 
+          ref={scrollRef}
           className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
           style={{ scrollSnapType: "y mandatory" }}
         >
@@ -224,6 +233,7 @@ export default function VideoPage() {
                   post={item.post} 
                   isMuted={isMuted}
                   onToggleMute={() => setIsMuted(!isMuted)}
+                  isActive={idx === activeIndex}
                 />
               );
             })

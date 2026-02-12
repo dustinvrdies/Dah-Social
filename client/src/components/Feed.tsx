@@ -28,8 +28,10 @@ type FeedItem = Post | { isAd: true; ad: NativeAd };
 
 function getPostEngagement(post: Post): number {
   const reactions = getReactions(post.id);
-  const hasMedia = ("media" in post && post.media) || ("src" in post && post.src) ? 2 : 0;
-  return reactions.length + hasMedia;
+  const hasMedia = ("media" in post && post.media) || ("src" in post && post.src) ? 3 : 0;
+  const isVideo = post.type === "video" ? 2 : 0;
+  const isListing = post.type === "listing" ? 1 : 0;
+  return reactions.length + hasMedia + isVideo + isListing;
 }
 
 function seededShuffle<T>(arr: T[], seed: number): T[] {
@@ -40,6 +42,41 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
     const j = s % (i + 1);
     [result[i], result[j]] = [result[j], result[i]];
   }
+  return result;
+}
+
+function diversifyFeed(posts: Post[]): Post[] {
+  if (posts.length <= 3) return posts;
+  
+  const textPosts = posts.filter(p => p.type === "text" && !("media" in p && p.media));
+  const mediaPosts = posts.filter(p => p.type === "text" && "media" in p && p.media);
+  const videoPosts = posts.filter(p => p.type === "video");
+  const listingPosts = posts.filter(p => p.type === "listing");
+  
+  const result: Post[] = [];
+  const queues = [mediaPosts, textPosts, videoPosts, listingPosts].filter(q => q.length > 0);
+  const indices = queues.map(() => 0);
+  
+  let queueIdx = 0;
+  let totalAdded = 0;
+  const maxPosts = posts.length;
+  
+  while (totalAdded < maxPosts) {
+    let found = false;
+    for (let attempt = 0; attempt < queues.length; attempt++) {
+      const qi = (queueIdx + attempt) % queues.length;
+      if (indices[qi] < queues[qi].length) {
+        result.push(queues[qi][indices[qi]]);
+        indices[qi]++;
+        totalAdded++;
+        found = true;
+        queueIdx = (qi + 1) % queues.length;
+        break;
+      }
+    }
+    if (!found) break;
+  }
+  
   return result;
 }
 
@@ -98,12 +135,14 @@ export function Feed() {
         return seededShuffle(filtered, daySeed);
       }
       case "newest":
-      default:
-        return [...filtered].sort((a, b) => {
+      default: {
+        const sorted = [...filtered].sort((a, b) => {
           const aTime = (a as any).timestamp || 0;
           const bTime = (b as any).timestamp || 0;
           return bTime - aTime;
         });
+        return diversifyFeed(sorted);
+      }
     }
   }, [posts, hidden, activeTab, sortMode, mediaOnly, following]);
 

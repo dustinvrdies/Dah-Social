@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
@@ -94,13 +94,59 @@ function LiveCard({ stream, onClick }: { stream: LiveStream; onClick: () => void
   );
 }
 
+const liveVideos = [
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+];
+
+function getLiveVideoForStream(streamId: string): string {
+  const hash = streamId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return liveVideos[hash % liveVideos.length];
+}
+
 function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => void }) {
   const { session } = useAuth();
   const { toast } = useToast();
   const [selectedGift, setSelectedGift] = useState(gifts[0]);
   const [quantity, setQuantity] = useState(1);
+  const [showGifts, setShowGifts] = useState(false);
+  const [chatMessages, setChatMessages] = useState<{ user: string; text: string }[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const wallet = session ? getWallet(session.username) : null;
+  const videoSrc = getLiveVideoForStream(stream.id);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    const fakeUsers = ["viewer123", "fan_girl", "crypto_king", "shopaholic", "nightowl", "chill_vibes", "lol_queen"];
+    const messages = [
+      "this is so cool!!",
+      "love your content",
+      "first time here, hi everyone",
+      "amazing stream",
+      "can you show us more?",
+      "just followed!",
+      "DAH fam lets goo",
+      "sending love",
+      "how long have you been live?",
+    ];
+    const interval = setInterval(() => {
+      const user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+      const text = messages[Math.floor(Math.random() * messages.length)];
+      setChatMessages(prev => [...prev.slice(-20), { user, text }]);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSendGift = () => {
     if (!session) {
@@ -112,6 +158,7 @@ function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => vo
     if (result.success) {
       toast({ title: result.message });
       setQuantity(1);
+      setShowGifts(false);
     } else {
       toast({ title: result.message, variant: "destructive" });
     }
@@ -121,19 +168,18 @@ function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => vo
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-4xl h-[90vh] p-0 overflow-hidden">
         <div className="flex flex-col h-full">
-          <div className="relative flex-1 bg-black">
-            {stream.thumbnailUrl ? (
-              <img src={stream.thumbnailUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-dah-gradient" />
-            )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center text-white">
-                <Radio className="w-16 h-16 mx-auto mb-4 animate-pulse" />
-                <p className="text-lg font-medium">Simulated Live Stream</p>
-                <p className="text-sm text-white/70">Full streaming requires WebRTC integration</p>
-              </div>
-            </div>
+          <div className="relative flex-1 bg-black min-h-0">
+            <video
+              ref={videoRef}
+              src={videoSrc}
+              className="w-full h-full object-cover"
+              loop
+              muted
+              playsInline
+              autoPlay
+              preload="auto"
+              data-testid="video-live-player"
+            />
 
             <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -141,29 +187,63 @@ function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => vo
                   <AvatarFallback>{stream.hostUsername.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-white font-medium">{stream.hostUsername}</p>
-                  <Badge className="bg-red-500 text-white border-0 text-xs">LIVE</Badge>
+                  <p className="text-white font-medium text-sm">{stream.hostUsername}</p>
+                  <Badge className="bg-red-500 text-white border-0 text-xs gap-1">
+                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                    LIVE
+                  </Badge>
                 </div>
               </div>
+              <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 text-white text-sm">
+                <Users className="w-4 h-4" />
+                {formatViewerCount(stream.viewerCount)}
+              </div>
+            </div>
+
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              <div className="max-h-32 overflow-y-auto space-y-1 mb-2 scrollbar-hide">
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className="flex items-center gap-1.5 text-xs">
+                    <span className="font-semibold text-white/90">{msg.user}</span>
+                    <span className="text-white/70">{msg.text}</span>
+                  </div>
+                ))}
+              </div>
               <div className="flex items-center gap-2">
-                <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 text-white text-sm">
-                  <Users className="w-4 h-4" />
-                  {formatViewerCount(stream.viewerCount)}
-                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowGifts(!showGifts)}
+                  className="text-white bg-white/10 backdrop-blur-sm"
+                  data-testid="button-toggle-gifts"
+                >
+                  <Gift className="w-5 h-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-white bg-white/10 backdrop-blur-sm" data-testid="button-live-chat">
+                  <MessageCircle className="w-5 h-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-white bg-white/10 backdrop-blur-sm" data-testid="button-live-share">
+                  <Share2 className="w-5 h-5" />
+                </Button>
+                <div className="flex-1" />
+                <Button variant="ghost" size="icon" className="text-white bg-white/10 backdrop-blur-sm" data-testid="button-live-like">
+                  <Heart className="w-5 h-5" />
+                </Button>
               </div>
             </div>
           </div>
 
-          <div className="bg-card p-4 border-t">
-            <div className="flex items-center gap-4 mb-4">
-              <p className="font-medium flex-1">{stream.title}</p>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-            </div>
+          {showGifts && (
+            <div className="bg-card p-3 border-t">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <p className="text-sm font-medium">{stream.title}</p>
+                {wallet && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Coins className="w-3 h-3" /> {wallet.available}
+                  </span>
+                )}
+              </div>
 
-            <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 overflow-x-auto pb-2">
                 {gifts.map((gift) => {
                   const Icon = iconMap[gift.icon] || Heart;
@@ -171,14 +251,13 @@ function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => vo
                     <button
                       key={gift.id}
                       onClick={() => setSelectedGift(gift)}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-lg min-w-[60px] ${
-                        selectedGift.id === gift.id ? "bg-primary/20 ring-2 ring-primary" : "hover:bg-muted"
+                      className={`flex flex-col items-center gap-1 p-2 rounded-lg min-w-[56px] ${
+                        selectedGift.id === gift.id ? "bg-primary/20 ring-1 ring-primary" : ""
                       }`}
                       data-testid={`button-gift-${gift.id}`}
                     >
-                      <Icon className="w-6 h-6 text-primary" />
-                      <span className="text-xs flex items-center gap-0.5">
-                        <Coins className="w-3 h-3" />
+                      <Icon className="w-5 h-5 text-primary" />
+                      <span className="text-[10px] flex items-center gap-0.5 text-muted-foreground">
                         {gift.coinCost}
                       </span>
                     </button>
@@ -186,29 +265,19 @@ function LiveViewer({ stream, onClose }: { stream: LiveStream; onClose: () => vo
                 })}
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 border rounded-lg">
-                  <Button variant="ghost" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                    -
-                  </Button>
-                  <span className="w-8 text-center text-sm">{quantity}</span>
-                  <Button variant="ghost" size="sm" onClick={() => setQuantity(quantity + 1)}>
-                    +
-                  </Button>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-1 border border-border rounded-md">
+                  <Button variant="ghost" size="sm" onClick={() => setQuantity(Math.max(1, quantity - 1))} data-testid="button-gift-decrease">-</Button>
+                  <span className="w-6 text-center text-sm" data-testid="text-gift-quantity">{quantity}</span>
+                  <Button variant="ghost" size="sm" onClick={() => setQuantity(quantity + 1)} data-testid="button-gift-increase">+</Button>
                 </div>
-                <Button onClick={handleSendGift} className="bg-dah-gradient-strong gap-2" data-testid="button-send-gift">
-                  <Gift className="w-4 h-4" />
-                  Send ({selectedGift.coinCost * quantity})
+                <Button onClick={handleSendGift} size="sm" className="bg-dah-gradient-strong gap-1 flex-1" data-testid="button-send-gift">
+                  <Gift className="w-3.5 h-3.5" />
+                  Send {selectedGift.name} ({selectedGift.coinCost * quantity})
                 </Button>
               </div>
             </div>
-
-            {wallet && (
-              <p className="text-xs text-muted-foreground mt-2">
-                Your balance: {wallet.available} DAH Coins
-              </p>
-            )}
-          </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
