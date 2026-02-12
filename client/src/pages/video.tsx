@@ -1,11 +1,10 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Link } from "wouter";
-import { PageLayout } from "@/components/PageLayout";
 import { useAuth } from "@/components/AuthProvider";
 import { NativeAdCard } from "@/components/NativeAdCard";
 import { videoOnlyFeed, getAllPosts } from "@/lib/feedData";
 import { getVideoAds, NativeAd } from "@/lib/ads";
-import { Post, VideoPost as VideoPostType } from "@/lib/postTypes";
+import { VideoPost as VideoPostType } from "@/lib/postTypes";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
@@ -17,7 +16,8 @@ import {
   Volume2, 
   VolumeX,
   BadgeCheck,
-  Plus
+  Plus,
+  ArrowLeft
 } from "lucide-react";
 
 const VIDEO_AD_FREQUENCY = 4;
@@ -62,7 +62,7 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-[calc(100vh-80px)] bg-black snap-start snap-always flex-shrink-0"
+      className="relative w-full h-dvh bg-black snap-start snap-always flex-shrink-0"
     >
       <video
         ref={videoRef}
@@ -204,8 +204,8 @@ export default function VideoPage() {
   }, [handleScroll]);
 
   return (
-    <PageLayout hideHeader={true}>
-      <div className="h-[calc(100vh-80px)] bg-black overflow-hidden">
+    <div className="fixed inset-0 bg-black z-50 flex flex-col">
+      <div className="flex-1 overflow-hidden">
         <div 
           ref={scrollRef}
           className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
@@ -221,7 +221,7 @@ export default function VideoPage() {
                 return (
                   <div 
                     key={`ad-${item.ad.id}-${idx}`} 
-                    className="w-full h-full snap-start snap-always flex-shrink-0"
+                    className="w-full h-dvh snap-start snap-always flex-shrink-0"
                   >
                     <NativeAdCard ad={item.ad} variant="video" />
                   </div>
@@ -240,6 +240,13 @@ export default function VideoPage() {
           )}
         </div>
       </div>
-    </PageLayout>
+      <div className="absolute top-4 left-4 z-10">
+        <Link href="/">
+          <Button size="icon" variant="ghost" className="text-white bg-black/30 backdrop-blur-sm" data-testid="button-back-from-video">
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }
