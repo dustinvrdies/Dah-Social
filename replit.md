@@ -17,6 +17,18 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 
 ### New Features (February 2026)
 
+- **Global Search** - SearchBar with live dropdown results, dedicated search results page with type filters (users, posts, listings, groups, avenues)
+- **Daily Check-In** - 7-day streak tracker with escalating rewards (5-75 coins), stored in localStorage
+- **Spin Wheel** - Daily bonus wheel with 8 prize tiers (5-500 coins), weighted probabilities
+- **Leaderboard** - Top earners, most followed users, highest levels, and best streaks
+- **Badges/Achievements** - 15 badges across 5 categories (streak, earning, social, special, engagement) with unlock tracking
+- **Level/XP System** - 15 rank titles from Newbie to Legend, XP earned through engagement
+- **Referral System** - Unique referral codes, referrer gets 50 coins, new user gets 25
+- **Profile Editing** - Edit display name, bio, avatar URL, location, website via dialog
+- **Mall Search & Filters** - Price sort (low/high), condition filter, search query, clear all filters
+- **Share/Repost** - Share button on posts copies link or uses native share API
+- **Story Creation** - Create stories with image URL + caption
+- **Rewards Page** - Central hub for daily check-in, spin wheel, streak tracker, and badges
 - **Feed Sorting/Filtering** - For You tab with sort (newest, popular, shuffle) and media-only filter; Following tab shows only followed users' posts; Trending tab sorts by engagement
 - **DAH Games** - Mini games section with 4 built-in games (Coin Rush, Memory Match, Trivia, Color Match) that award DAH Coins
 - **AI Game Creator** - Users describe a game idea and AI (OpenAI) generates a playable HTML5 game in an iframe
@@ -88,6 +100,12 @@ Preferred communication style: Simple, everyday language.
   - `dah.avenues.karma.{username}` - User karma breakdown
   - `dah.games.scores.{username}` - Game score history
   - `dah.games.cooldown.{username}.{gameId}` - Per-game cooldown timestamps
+  - `dah.checkin.{username}` - Daily check-in state (streak, last check-in date)
+  - `dah.spinwheel.{username}` - Spin wheel last spin timestamp
+  - `dah.levels.xp.{username}` - User XP totals
+  - `dah.badges.{username}` - Badge unlock states
+  - `dah.referral.{username}` - Referral code and referred users
+  - `dah.profile.data.{username}` - Profile data (display name, bio, avatar, location, website)
 
 ### Authentication
 - **Current Implementation**: Client-side session management via localStorage
