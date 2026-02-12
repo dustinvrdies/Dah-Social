@@ -37,6 +37,14 @@ DAH Social is a dark-themed social media platform built with React and Vite. The
 - **AI Chatbot** - Floating AI assistant (bottom-right corner) powered by OpenAI, available on every page with streaming responses
 - **Games on Home Page** - Games section and quick action visible on the main feed
 
+### Navigation & Legal Overhaul (February 2026)
+
+- **Left Navigation Drawer** - Hamburger menu in AppHeader opens a slide-out Sheet from the left with all section links organized by category (Browse, Community, Earn & Play, Legal). Includes profile card with coin balance, logout.
+- **Simplified Home Page** - Removed QuickActions, GamesSection, AvenuesSpotlight, GroupsSection, EventsSection, QuestsSection, MarketplacePicksSection from home feed. Home now shows Stories + ComposeBox + LiveNow + Feed + RightSidebar only.
+- **Comprehensive Legal Pages** - Full production-ready Terms of Service (18 sections), Privacy Policy (16 sections with GDPR/CCPA/COPPA), Community Guidelines, DMCA/Copyright Policy, Acceptable Use Policy, Cookie Policy
+- **Cookie Consent Banner** - GDPR-compliant cookie consent banner with Accept/Decline, persisted in localStorage
+- **Global Legal Footer** - Footer on every page with links to all legal pages and copyright notice
+
 ### New TikTok/Facebook-Style Features (January 2026)
 
 - **Stories/Reels** - Full-screen vertical stories with auto-play, progress indicators, and reply functionality

@@ -1,5 +1,7 @@
 import { AppHeader } from "./AppHeader";
 import { BottomNav } from "./BottomNav";
+import { LegalFooter } from "./LegalFooter";
+import { CookieConsent } from "./CookieConsent";
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -14,7 +16,9 @@ export function PageLayout({ children, hideHeader = false, hideNav = false }: Pa
       <main className="flex-1 pb-24">
         {children}
       </main>
+      <LegalFooter />
       {!hideNav && <BottomNav />}
+      <CookieConsent />
     </div>
   );
 }

@@ -25,6 +25,10 @@ import AvenueDetailPage from "@/pages/avenue-detail";
 import AvenuePostPage from "@/pages/avenue-post";
 import TermsPage from "@/pages/terms";
 import PrivacyPage from "@/pages/privacy";
+import CommunityGuidelinesPage from "@/pages/community-guidelines";
+import DMCAPage from "@/pages/dmca";
+import AcceptableUsePage from "@/pages/acceptable-use";
+import CookiePolicyPage from "@/pages/cookie-policy";
 import VerificationPage from "@/pages/verification";
 import GamesPage from "@/pages/games";
 import SearchPage from "@/pages/search";
@@ -55,6 +59,10 @@ function Router() {
       <Route path="/av/:name/post/:postId" component={AvenuePostPage} />
       <Route path="/terms" component={TermsPage} />
       <Route path="/privacy" component={PrivacyPage} />
+      <Route path="/community-guidelines" component={CommunityGuidelinesPage} />
+      <Route path="/dmca" component={DMCAPage} />
+      <Route path="/acceptable-use" component={AcceptableUsePage} />
+      <Route path="/cookie-policy" component={CookiePolicyPage} />
       <Route path="/verification" component={VerificationPage} />
       <Route path="/search" component={SearchPage} />
       <Route path="/rewards" component={RewardsPage} />
