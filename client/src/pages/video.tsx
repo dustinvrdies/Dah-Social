@@ -15,9 +15,10 @@ import {
   Music2, 
   Volume2, 
   VolumeX,
-  BadgeCheck,
   Plus,
-  ArrowLeft
+  ArrowLeft,
+  Play,
+  Loader2
 } from "lucide-react";
 
 const VIDEO_AD_FREQUENCY = 4;
@@ -28,16 +29,26 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
   const { session } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!videoRef.current) return;
+    const vid = videoRef.current;
+    if (!vid) return;
     if (isActive) {
-      const playPromise = videoRef.current.play();
-      if (playPromise) playPromise.catch(() => {});
+      vid.muted = true;
+      const playPromise = vid.play();
+      if (playPromise) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
     } else {
-      videoRef.current.pause();
+      vid.pause();
+      setIsPlaying(false);
     }
   }, [isActive]);
 
@@ -47,12 +58,17 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
     }
   }, [isMuted]);
 
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play().catch(() => {});
+  const handlePlay = () => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (vid.paused) {
+      vid.muted = true;
+      vid.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
     } else {
-      videoRef.current.pause();
+      vid.pause();
+      setIsPlaying(false);
     }
   };
 
@@ -67,18 +83,47 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
       <video
         ref={videoRef}
         src={post.src}
-        className="w-full h-full object-cover cursor-pointer"
+        className="w-full h-full object-cover"
         loop
-        muted={isMuted}
+        muted
         playsInline
-        preload="auto"
-        onClick={togglePlay}
+        preload="metadata"
+        onLoadedData={() => setIsLoading(false)}
+        onError={() => { setHasError(true); setIsLoading(false); }}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         data-testid={`video-player-${post.id}`}
       />
       
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+      {isLoading && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <Loader2 className="w-10 h-10 text-white animate-spin" />
+        </div>
+      )}
+
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
+          <p className="text-white/60 text-sm">Video unavailable</p>
+        </div>
+      )}
+
+      <div 
+        className="absolute inset-0 cursor-pointer z-[1]"
+        onClick={handlePlay}
+        data-testid={`button-play-toggle-${post.id}`}
+      />
+
+      {!isPlaying && !isLoading && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[2]">
+          <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <Play className="w-8 h-8 text-white fill-white ml-1" />
+          </div>
+        </div>
+      )}
       
-      <div className="absolute bottom-0 left-0 right-16 p-4 space-y-3">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none z-[3]" />
+      
+      <div className="absolute bottom-0 left-0 right-16 p-4 space-y-3 z-[4]">
         <Link href={`/profile/${user}`}>
           <div className="flex items-center gap-3 cursor-pointer">
             <Avatar className="w-10 h-10 ring-2 ring-white/30">
@@ -88,7 +133,7 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
             </Avatar>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-white text-sm">@{user}</span>
-              <Button size="sm" variant="outline" className="h-6 px-3 text-xs bg-transparent border-white/50 text-white">
+              <Button size="sm" variant="outline" className="text-xs bg-transparent border-white/50 text-white">
                 Follow
               </Button>
             </div>
@@ -103,7 +148,7 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
         </div>
       </div>
 
-      <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5">
+      <div className="absolute right-3 bottom-24 flex flex-col items-center gap-5 z-[4]">
         <Link href={`/profile/${user}`}>
           <div className="relative">
             <Avatar className="w-11 h-11 ring-2 ring-white">
@@ -148,8 +193,8 @@ function TikTokVideoCard({ post, isMuted, onToggleMute, isActive }: { post: Vide
       </div>
 
       <button
-        onClick={onToggleMute}
-        className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white"
+        onClick={(e) => { e.stopPropagation(); onToggleMute(); }}
+        className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white z-[5]"
         data-testid="button-toggle-mute"
       >
         {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
@@ -240,7 +285,7 @@ export default function VideoPage() {
           )}
         </div>
       </div>
-      <div className="absolute top-4 left-4 z-10">
+      <div className="absolute top-4 left-4 z-[60]">
         <Link href="/">
           <Button size="icon" variant="ghost" className="text-white bg-black/30 backdrop-blur-sm" data-testid="button-back-from-video">
             <ArrowLeft className="w-5 h-5" />
