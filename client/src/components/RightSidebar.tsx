@@ -149,7 +149,7 @@ function WhoToFollow() {
         <h3 className="font-semibold text-sm mb-3">Who to Follow</h3>
         <div className="space-y-3">
           {suggested.map((user) => {
-            const alreadyFollowing = followingState[user.username] || initialFollowMap[user.username];
+            const alreadyFollowing = followingState[user.username];
             return (
               <div key={user.username} className="flex items-center gap-3" data-testid={`suggest-user-${user.username}`}>
                 <Link href={`/profile/${user.username}`}>
