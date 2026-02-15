@@ -165,7 +165,7 @@ export default function DiscoverPage() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2 text-white text-xs">
-                      <p className="truncate">@{post.user}</p>
+                      <p className="truncate">@{post.type === "ad" ? (post as any).advertiser : (post as any).user}</p>
                     </div>
                   </div>
                 </Link>
