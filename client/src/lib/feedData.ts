@@ -25,16 +25,16 @@ export const initialFeed: Post[] = [
 
   // --- jessica_m (mom / lifestyle) ---
   { id: "jessica_m_1", type: "text", user: "jessica_m", content: "Finally got the kids to bed before 8pm. This is my Super Bowl.", media: picsum(1011, 800, 800) },
-  { id: "jessica_m_2", type: "text", user: "jessica_m", content: "Tried a new crockpot recipe tonight and the whole family actually ate it without complaining. Miracles do happen." },
+  { id: "jessica_m_2", type: "text", user: "jessica_m", content: "Tried a new crockpot recipe tonight and the whole family actually ate it without complaining. Miracles do happen.", media: picsum(42, 800, 800) },
   { id: "jessica_m_3", type: "text", user: "jessica_m", content: "Target run was supposed to be 10 minutes. It was not 10 minutes.", media: picsum(1033, 800, 600) },
   { id: "jessica_m_4", type: "text", user: "jessica_m", content: "Anyone else feel like laundry is a full time job or just me" },
   { id: "jessica_m_5", type: "text", user: "jessica_m", content: "My daughter told me I look tired today. Thanks babe I know.", media: picsum(1027, 800, 800) },
   { id: "jessica_m_6", type: "video", user: "jessica_m", src: sampleVideos[0], caption: "The chaos of getting three kids out the door in the morning" },
-  { id: "jessica_m_7", type: "text", user: "jessica_m", content: "Date night for the first time in 3 months. We went to Olive Garden and it was perfect." },
+  { id: "jessica_m_7", type: "text", user: "jessica_m", content: "Date night for the first time in 3 months. We went to Olive Garden and it was perfect.", media: picsum(225, 800, 600) },
 
   // --- marcus_t (tech / gaming) ---
   { id: "marcus_t_1", type: "text", user: "marcus_t", content: "Just built my first PC from scratch. Cable management could use some work but she runs like a dream.", media: picsum(180, 800, 600) },
-  { id: "marcus_t_2", type: "text", user: "marcus_t", content: "Been coding for 12 hours straight. Don't even know what day it is anymore." },
+  { id: "marcus_t_2", type: "text", user: "marcus_t", content: "Been coding for 12 hours straight. Don't even know what day it is anymore.", media: picsum(48, 800, 600) },
   { id: "marcus_t_3", type: "video", user: "marcus_t", src: sampleVideos[1], caption: "Unboxing the new RTX 5090. This thing is a beast." },
   { id: "marcus_t_4", type: "text", user: "marcus_t", content: "Finally hit Immortal in Valorant. Only took me 2000 hours lol", media: picsum(96, 800, 800) },
   { id: "marcus_t_5", type: "text", user: "marcus_t", content: "Hot take: tabs are better than spaces and I will die on this hill." },
@@ -45,10 +45,10 @@ export const initialFeed: Post[] = [
   // --- sarah_b (fitness / wellness) ---
   { id: "sarah_b_1", type: "text", user: "sarah_b", content: "5am gym session hit different today. New PR on deadlifts!", media: picsum(1048, 800, 800) },
   { id: "sarah_b_2", type: "text", user: "sarah_b", content: "Meal prep Sunday! 20 containers done and ready for the week.", media: picsum(292, 800, 800) },
-  { id: "sarah_b_3", type: "text", user: "sarah_b", content: "Rest days are important too. Repeat that to yourself." },
+  { id: "sarah_b_3", type: "text", user: "sarah_b", content: "Rest days are important too. Repeat that to yourself.", media: picsum(85, 800, 800) },
   { id: "sarah_b_4", type: "video", user: "sarah_b", src: sampleVideos[2], caption: "Full body workout you can do at home with no equipment" },
   { id: "sarah_b_5", type: "text", user: "sarah_b", content: "6 month transformation. Consistency over perfection every single time.", media: picsum(1062, 800, 800) },
-  { id: "sarah_b_6", type: "text", user: "sarah_b", content: "Tried yoga for the first time and I am NOT flexible lol but I'll keep going" },
+  { id: "sarah_b_6", type: "text", user: "sarah_b", content: "Tried yoga for the first time and I am NOT flexible lol but I'll keep going", media: picsum(91, 800, 800) },
   { id: "sarah_b_7", type: "text", user: "sarah_b", content: "The gym at 6am on a Monday is a different breed of human" },
 
   // --- dave_cooks (food / cooking) ---
@@ -58,8 +58,8 @@ export const initialFeed: Post[] = [
   { id: "dave_cooks_4", type: "video", user: "dave_cooks", src: sampleVideos[3], caption: "One pan dinner that takes 15 minutes. Trust me on this one." },
   { id: "dave_cooks_5", type: "text", user: "dave_cooks", content: "When the recipe says a pinch of salt I use a handful. No regrets." },
   { id: "dave_cooks_6", type: "text", user: "dave_cooks", content: "Sunday brunch spread for the squad. Nobody's leaving hungry.", media: picsum(425, 800, 800) },
-  { id: "dave_cooks_7", type: "text", user: "dave_cooks", content: "Bought an air fryer last week and I genuinely don't know how I lived without one" },
-  { id: "dave_cooks_8", type: "text", user: "dave_cooks", content: "If Gordon Ramsay saw my risotto he'd probably call me a donut but I think it slaps" },
+  { id: "dave_cooks_7", type: "text", user: "dave_cooks", content: "Bought an air fryer last week and I genuinely don't know how I lived without one", media: picsum(160, 800, 800) },
+  { id: "dave_cooks_8", type: "text", user: "dave_cooks", content: "If Gordon Ramsay saw my risotto he'd probably call me a donut but I think it slaps", media: picsum(163, 800, 800) },
   { id: "dave_cooks_9", type: "text", user: "dave_cooks", content: "Grocery haul for the week. Trying to eat at home more instead of ordering DoorDash every night.", media: picsum(102, 800, 600) },
 
   // --- alex_photos (photography) ---
@@ -74,10 +74,10 @@ export const initialFeed: Post[] = [
   // --- mia_travels (travel) ---
   { id: "mia_travels_1", type: "text", user: "mia_travels", content: "Just landed. New city, new adventures. Let's gooo!", media: picsum(1040, 800, 600) },
   { id: "mia_travels_2", type: "text", user: "mia_travels", content: "This hostel has the most incredible rooftop view I've ever seen", media: picsum(1019, 800, 800) },
-  { id: "mia_travels_3", type: "text", user: "mia_travels", content: "Missed my connecting flight and ended up exploring a random city for 8 hours. Best accident ever." },
+  { id: "mia_travels_3", type: "text", user: "mia_travels", content: "Missed my connecting flight and ended up exploring a random city for 8 hours. Best accident ever.", media: picsum(274, 800, 600) },
   { id: "mia_travels_4", type: "video", user: "mia_travels", src: sampleVideos[5], caption: "Driving through the mountains at sunset. No filter needed." },
   { id: "mia_travels_5", type: "text", user: "mia_travels", content: "The street food here is unreal. I've eaten 4 times today and I'm not sorry.", media: picsum(493, 800, 800) },
-  { id: "mia_travels_6", type: "text", user: "mia_travels", content: "Packing tip: roll your clothes, don't fold. You're welcome." },
+  { id: "mia_travels_6", type: "text", user: "mia_travels", content: "Packing tip: roll your clothes, don't fold. You're welcome.", media: picsum(277, 800, 800) },
   { id: "mia_travels_7", type: "text", user: "mia_travels", content: "If you ever get the chance to travel solo, do it. Changed my whole perspective.", media: picsum(1047, 800, 600) },
   { id: "mia_travels_8", type: "text", user: "mia_travels", content: "Airport WiFi is never fast enough. Never." },
 
@@ -85,13 +85,13 @@ export const initialFeed: Post[] = [
   { id: "jay_music_1", type: "text", user: "jay_music", content: "Studio session went until 3am. New track is sounding crazy.", media: picsum(1060, 800, 600) },
   { id: "jay_music_2", type: "text", user: "jay_music", content: "500 people showed up last night. Energy was unmatched.", media: picsum(1057, 800, 800) },
   { id: "jay_music_3", type: "video", user: "jay_music", src: sampleVideos[6], caption: "Crowd reaction when the beat drops. This is why I do it." },
-  { id: "jay_music_4", type: "text", user: "jay_music", content: "New album dropping next month. Been working on this for a year." },
+  { id: "jay_music_4", type: "text", user: "jay_music", content: "New album dropping next month. Been working on this for a year.", media: picsum(145, 800, 600) },
   { id: "jay_music_5", type: "text", user: "jay_music", content: "What's everyone listening to right now? Need new music for my playlist" },
   { id: "jay_music_6", type: "text", user: "jay_music", content: "Set list for tonight is absolutely stacked. See y'all at 10pm.", media: picsum(1067, 800, 600) },
 
   // --- emma_reads (books / reading) ---
   { id: "emma_reads_1", type: "text", user: "emma_reads", content: "Just finished this book in one sitting. Could not put it down. 10/10 recommend.", media: picsum(24, 800, 800) },
-  { id: "emma_reads_2", type: "text", user: "emma_reads", content: "My TBR pile is getting out of control but I keep buying more books" },
+  { id: "emma_reads_2", type: "text", user: "emma_reads", content: "My TBR pile is getting out of control but I keep buying more books", media: picsum(175, 800, 800) },
   { id: "emma_reads_3", type: "text", user: "emma_reads", content: "Book club meeting tonight. We're discussing the new release everyone's talking about." },
   { id: "emma_reads_4", type: "text", user: "emma_reads", content: "Rainy day + coffee + a good book = perfection", media: picsum(1069, 800, 600) },
   { id: "emma_reads_5", type: "text", user: "emma_reads", content: "The plot twist in chapter 12 had me audibly gasp on the train. People looked at me." },
@@ -101,9 +101,9 @@ export const initialFeed: Post[] = [
   { id: "tony_builds_1", type: "text", user: "tony_builds", content: "Built this bookshelf from scratch. No instructions, just vibes.", media: picsum(1084, 800, 800) },
   { id: "tony_builds_2", type: "text", user: "tony_builds", content: "Home Depot run #3 this week. I basically live there now." },
   { id: "tony_builds_3", type: "video", user: "tony_builds", src: sampleVideos[7], caption: "Full kitchen renovation timelapse. 6 weeks of work in 60 seconds." },
-  { id: "tony_builds_4", type: "text", user: "tony_builds", content: "Measure twice, cut once. Unless you're me, then measure three times and still mess up." },
+  { id: "tony_builds_4", type: "text", user: "tony_builds", content: "Measure twice, cut once. Unless you're me, then measure three times and still mess up.", media: picsum(190, 800, 600) },
   { id: "tony_builds_5", type: "text", user: "tony_builds", content: "The deck is finally done! Just in time for summer.", media: picsum(1076, 800, 600) },
-  { id: "tony_builds_6", type: "text", user: "tony_builds", content: "Nothing beats the feeling of building something with your own hands" },
+  { id: "tony_builds_6", type: "text", user: "tony_builds", content: "Nothing beats the feeling of building something with your own hands", media: picsum(195, 800, 800) },
   { id: "tony_builds_7", type: "text", user: "tony_builds", content: "Who needs a contractor when you have YouTube tutorials and determination" },
 
   // --- nina_style (fashion) ---
@@ -111,23 +111,23 @@ export const initialFeed: Post[] = [
   { id: "nina_style_2", type: "text", user: "nina_style", content: "Sustainable fashion doesn't have to be boring. Proof right here.", media: picsum(1025, 800, 800) },
   { id: "nina_style_3", type: "video", user: "nina_style", src: sampleVideos[8], caption: "GRWM for a night out. Hair, makeup, outfit - the whole thing." },
   { id: "nina_style_4", type: "text", user: "nina_style", content: "When the fit hits right you just know.", media: picsum(1012, 800, 800) },
-  { id: "nina_style_5", type: "text", user: "nina_style", content: "Closet cleanout revealed clothes I forgot I even had" },
-  { id: "nina_style_6", type: "text", user: "nina_style", content: "Fall fashion is the best fashion and I will not be taking questions at this time" },
+  { id: "nina_style_5", type: "text", user: "nina_style", content: "Closet cleanout revealed clothes I forgot I even had", media: picsum(203, 800, 800) },
+  { id: "nina_style_6", type: "text", user: "nina_style", content: "Fall fashion is the best fashion and I will not be taking questions at this time", media: picsum(210, 800, 800) },
   { id: "nina_style_7", type: "text", user: "nina_style", content: "New drops at Zara have me rethinking my entire wardrobe" },
 
   // --- mike_runs (running / outdoor) ---
   { id: "mike_runs_1", type: "text", user: "mike_runs", content: "5K personal best today! Shaved 2 minutes off my time.", media: picsum(1054, 800, 600) },
   { id: "mike_runs_2", type: "text", user: "mike_runs", content: "Trail running in the fall is a whole vibe. The colors are insane right now.", media: picsum(1015, 800, 600) },
-  { id: "mike_runs_3", type: "text", user: "mike_runs", content: "Marathon training week 8. My knees have opinions about this." },
+  { id: "mike_runs_3", type: "text", user: "mike_runs", content: "Marathon training week 8. My knees have opinions about this.", media: picsum(217, 800, 800) },
   { id: "mike_runs_4", type: "text", user: "mike_runs", content: "6am run crew never misses. Even in the rain. Especially in the rain.", media: picsum(1039, 800, 800) },
   { id: "mike_runs_5", type: "video", user: "mike_runs", src: sampleVideos[9], caption: "Morning run through the park. Sometimes you just need to clear your head." },
-  { id: "mike_runs_6", type: "text", user: "mike_runs", content: "Post-run smoothie is my religion" },
+  { id: "mike_runs_6", type: "text", user: "mike_runs", content: "Post-run smoothie is my religion", media: picsum(220, 800, 800) },
 
   // --- lisa_plants (plants / gardening) ---
   { id: "lisa_plants_1", type: "text", user: "lisa_plants", content: "My monstera put out a new leaf!! Plant parents understand this excitement.", media: picsum(1040, 800, 800) },
-  { id: "lisa_plants_2", type: "text", user: "lisa_plants", content: "I own 47 plants. My apartment is basically a jungle. No I'm not getting more. Okay maybe one more." },
+  { id: "lisa_plants_2", type: "text", user: "lisa_plants", content: "I own 47 plants. My apartment is basically a jungle. No I'm not getting more. Okay maybe one more.", media: picsum(230, 800, 800) },
   { id: "lisa_plants_3", type: "text", user: "lisa_plants", content: "Garden update: tomatoes are finally turning red!", media: picsum(146, 800, 600) },
-  { id: "lisa_plants_4", type: "text", user: "lisa_plants", content: "PSA: stop overwatering your succulents. They literally want to be left alone." },
+  { id: "lisa_plants_4", type: "text", user: "lisa_plants", content: "PSA: stop overwatering your succulents. They literally want to be left alone.", media: picsum(235, 800, 800) },
   { id: "lisa_plants_5", type: "text", user: "lisa_plants", content: "Propagation station is thriving. Free plants from plants is the best hack.", media: picsum(365, 800, 800) },
   { id: "lisa_plants_6", type: "video", user: "lisa_plants", src: sampleVideos[10], caption: "Repotting day! Giving all my babies new homes." },
   { id: "lisa_plants_7", type: "text", user: "lisa_plants", content: "Someone told me I talk to my plants too much. They're thriving so clearly it works." },
@@ -137,7 +137,7 @@ export const initialFeed: Post[] = [
   { id: "chris_ball_2", type: "text", user: "chris_ball", content: "That ref was absolutely blind tonight. I'm heated." },
   { id: "chris_ball_3", type: "text", user: "chris_ball", content: "Pickup basketball at the park. Nothing beats it on a Saturday morning.", media: picsum(1058, 800, 800) },
   { id: "chris_ball_4", type: "text", user: "chris_ball", content: "Fantasy football lineup looking STRONG this week. Championship incoming." },
-  { id: "chris_ball_5", type: "text", user: "chris_ball", content: "Just got tickets to the game next weekend!! Who's coming with me??" },
+  { id: "chris_ball_5", type: "text", user: "chris_ball", content: "Just got tickets to the game next weekend!! Who's coming with me??", media: picsum(240, 800, 600) },
   { id: "chris_ball_6", type: "video", user: "chris_ball", src: sampleVideos[11], caption: "Crazy finish to tonight's game. Couldn't believe my eyes." },
   { id: "chris_ball_7", type: "text", user: "chris_ball", content: "Sunday football food spread is ready. Wings, nachos, the works.", media: picsum(431, 800, 800) },
 
@@ -168,18 +168,18 @@ export const initialFeed: Post[] = [
   { id: "amanda_pets_7", type: "text", user: "amanda_pets", content: "The amount of money I spend on pet toys is alarming and I do not care" },
 
   // --- ben_finance (finance bro) ---
-  { id: "ben_finance_1", type: "text", user: "ben_finance", content: "Markets are wild today. Stay calm and think long term." },
+  { id: "ben_finance_1", type: "text", user: "ben_finance", content: "Markets are wild today. Stay calm and think long term.", media: picsum(325, 800, 600) },
   { id: "ben_finance_2", type: "text", user: "ben_finance", content: "The best time to start investing was 10 years ago. The second best time is now." },
-  { id: "ben_finance_3", type: "text", user: "ben_finance", content: "Morning routine: coffee, check portfolio, pretend everything is fine." },
-  { id: "ben_finance_4", type: "text", user: "ben_finance", content: "Just finished a great book on personal finance. Biggest takeaway: spend less than you make. Revolutionary." },
+  { id: "ben_finance_3", type: "text", user: "ben_finance", content: "Morning routine: coffee, check portfolio, pretend everything is fine.", media: picsum(330, 800, 800) },
+  { id: "ben_finance_4", type: "text", user: "ben_finance", content: "Just finished a great book on personal finance. Biggest takeaway: spend less than you make. Revolutionary.", media: picsum(335, 800, 800) },
   { id: "ben_finance_5", type: "text", user: "ben_finance", content: "Emergency fund complete. 6 months of expenses saved. Feels incredible.", media: picsum(1005, 800, 600) },
 
   // --- diana_nurse (healthcare worker) ---
-  { id: "diana_nurse_1", type: "text", user: "diana_nurse", content: "12 hour shift done. My feet have never been this tired." },
+  { id: "diana_nurse_1", type: "text", user: "diana_nurse", content: "12 hour shift done. My feet have never been this tired.", media: picsum(340, 800, 800) },
   { id: "diana_nurse_2", type: "text", user: "diana_nurse", content: "A patient told me I was the nicest nurse they've had. Made my entire week." },
   { id: "diana_nurse_3", type: "text", user: "diana_nurse", content: "Night shift snack game is unmatched.", media: picsum(431, 800, 800) },
   { id: "diana_nurse_4", type: "text", user: "diana_nurse", content: "To all my fellow healthcare workers: drink water and take your breaks. Please." },
-  { id: "diana_nurse_5", type: "text", user: "diana_nurse", content: "3 days off in a row feels like a vacation. I'm doing absolutely nothing and loving it." },
+  { id: "diana_nurse_5", type: "text", user: "diana_nurse", content: "3 days off in a row feels like a vacation. I'm doing absolutely nothing and loving it.", media: picsum(345, 800, 800) },
   { id: "diana_nurse_6", type: "text", user: "diana_nurse", content: "Flu season is coming. Get your shots people!" },
 
   // --- omar_eats (foodie / restaurant reviews) ---
@@ -189,13 +189,13 @@ export const initialFeed: Post[] = [
   { id: "omar_eats_4", type: "text", user: "omar_eats", content: "Brunch places that charge $18 for two eggs and toast have lost their minds" },
   { id: "omar_eats_5", type: "video", user: "omar_eats", src: sampleVideos[2], caption: "This restaurant does the craziest tableside prep. Had to record it." },
   { id: "omar_eats_6", type: "text", user: "omar_eats", content: "Home cooked meal > restaurant food 9 times out of 10. Tonight was that 1 time though.", media: picsum(312, 800, 800) },
-  { id: "omar_eats_7", type: "text", user: "omar_eats", content: "Food truck festival this weekend. My body is ready." },
+  { id: "omar_eats_7", type: "text", user: "omar_eats", content: "Food truck festival this weekend. My body is ready.", media: picsum(350, 800, 600) },
 
   // --- kate_yoga (yoga / mindfulness) ---
   { id: "kate_yoga_1", type: "text", user: "kate_yoga", content: "Sunrise yoga on the beach. This is what peace feels like.", media: picsum(1043, 800, 600) },
   { id: "kate_yoga_2", type: "text", user: "kate_yoga", content: "Reminder: it's okay to say no. Your energy is precious." },
   { id: "kate_yoga_3", type: "text", user: "kate_yoga", content: "Finally nailed the crow pose!! Only took 6 months of face planting.", media: picsum(1048, 800, 800) },
-  { id: "kate_yoga_4", type: "text", user: "kate_yoga", content: "Morning meditation done. 10 minutes of silence changes your whole day." },
+  { id: "kate_yoga_4", type: "text", user: "kate_yoga", content: "Morning meditation done. 10 minutes of silence changes your whole day.", media: picsum(355, 800, 800) },
   { id: "kate_yoga_5", type: "video", user: "kate_yoga", src: sampleVideos[3], caption: "15 minute morning stretch routine. Your body will thank you." },
   { id: "kate_yoga_6", type: "text", user: "kate_yoga", content: "Gratitude list: coffee, sunshine, my yoga mat, and you guys. That's it." },
 
@@ -203,7 +203,7 @@ export const initialFeed: Post[] = [
   { id: "tyler_cars_1", type: "text", user: "tyler_cars", content: "Washed and detailed the car today. She's shining.", media: picsum(111, 800, 600) },
   { id: "tyler_cars_2", type: "text", user: "tyler_cars", content: "Cars and coffee this morning was packed. Saw a mint '67 Mustang.", media: picsum(133, 800, 800) },
   { id: "tyler_cars_3", type: "video", user: "tyler_cars", src: sampleVideos[5], caption: "Quick rip through the canyon roads. Nothing like it." },
-  { id: "tyler_cars_4", type: "text", user: "tyler_cars", content: "Oil change done. Basic maintenance saves you thousands in the long run people." },
+  { id: "tyler_cars_4", type: "text", user: "tyler_cars", content: "Oil change done. Basic maintenance saves you thousands in the long run people.", media: picsum(360, 800, 600) },
   { id: "tyler_cars_5", type: "text", user: "tyler_cars", content: "Gas prices are making me consider a bicycle honestly" },
   { id: "tyler_cars_6", type: "text", user: "tyler_cars", content: "Road trip playlist is locked in. 8 hours of driving, 0 complaints.", media: picsum(1071, 800, 600) },
 
@@ -211,9 +211,9 @@ export const initialFeed: Post[] = [
   { id: "sam_comedy_1", type: "text", user: "sam_comedy", content: "Me: I'll go to bed early tonight. Also me at 2am: I wonder what the deepest lake in the world is." },
   { id: "sam_comedy_2", type: "text", user: "sam_comedy", content: "My bank account and my Amazon cart are in a constant war and my bank account is losing" },
   { id: "sam_comedy_3", type: "text", user: "sam_comedy", content: "Adulting is just googling how to do stuff and hoping for the best" },
-  { id: "sam_comedy_4", type: "text", user: "sam_comedy", content: "I put my headphones in at work so nobody talks to me. The music isn't even playing." },
+  { id: "sam_comedy_4", type: "text", user: "sam_comedy", content: "I put my headphones in at work so nobody talks to me. The music isn't even playing.", media: picsum(370, 800, 800) },
   { id: "sam_comedy_5", type: "text", user: "sam_comedy", content: "My phone battery and my will to function both die at exactly 3pm every day" },
-  { id: "sam_comedy_6", type: "text", user: "sam_comedy", content: "Went to the grocery store hungry and came back with $200 worth of snacks and no actual meals" },
+  { id: "sam_comedy_6", type: "text", user: "sam_comedy", content: "Went to the grocery store hungry and came back with $200 worth of snacks and no actual meals", media: picsum(375, 800, 800) },
   { id: "sam_comedy_7", type: "text", user: "sam_comedy", content: "Social battery at 2%. Do not approach." },
   { id: "sam_comedy_8", type: "video", user: "sam_comedy", src: sampleVideos[4], caption: "Trying to explain my job to my parents. They still don't get it." },
   { id: "sam_comedy_9", type: "text", user: "sam_comedy", content: "The weekend goes by in 2 seconds but a Monday takes approximately 47 hours" },
@@ -223,8 +223,8 @@ export const initialFeed: Post[] = [
   { id: "priya_design_1", type: "text", user: "priya_design", content: "New logo design just dropped. Client loved it first try. That never happens.", media: picsum(1084, 800, 800) },
   { id: "priya_design_2", type: "text", user: "priya_design", content: "Can you make the logo bigger? The four words every designer dreads." },
   { id: "priya_design_3", type: "text", user: "priya_design", content: "Color palette for the new project. Feeling these earth tones.", media: picsum(1019, 800, 800) },
-  { id: "priya_design_4", type: "text", user: "priya_design", content: "Typography matters more than people think. The right font changes everything." },
-  { id: "priya_design_5", type: "text", user: "priya_design", content: "Portfolio update coming soon. Been working on some really cool projects." },
+  { id: "priya_design_4", type: "text", user: "priya_design", content: "Typography matters more than people think. The right font changes everything.", media: picsum(245, 800, 800) },
+  { id: "priya_design_5", type: "text", user: "priya_design", content: "Portfolio update coming soon. Been working on some really cool projects.", media: picsum(248, 800, 800) },
   { id: "priya_design_6", type: "video", user: "priya_design", src: sampleVideos[6], caption: "Speed design challenge. Brand identity in 30 minutes. Let's see what happens." },
 
   // --- rob_dad (dad jokes / family) ---
@@ -238,10 +238,10 @@ export const initialFeed: Post[] = [
   { id: "rob_dad_8", type: "text", user: "rob_dad", content: "I don't snore. I dream I'm a motorcycle." },
 
   // --- zoe_college (college student) ---
-  { id: "zoe_college_1", type: "text", user: "zoe_college", content: "Finals week. Haven't slept in 2 days. Coffee is the only thing keeping me alive." },
+  { id: "zoe_college_1", type: "text", user: "zoe_college", content: "Finals week. Haven't slept in 2 days. Coffee is the only thing keeping me alive.", media: picsum(255, 800, 800) },
   { id: "zoe_college_2", type: "text", user: "zoe_college", content: "Submitted my paper 3 minutes before the deadline. Living on the edge.", media: picsum(367, 800, 800) },
-  { id: "zoe_college_3", type: "text", user: "zoe_college", content: "Ramen noodles for dinner again. The college experience is glamorous." },
-  { id: "zoe_college_4", type: "text", user: "zoe_college", content: "Library at midnight hits different during finals. Everyone's a little unhinged." },
+  { id: "zoe_college_3", type: "text", user: "zoe_college", content: "Ramen noodles for dinner again. The college experience is glamorous.", media: picsum(258, 800, 800) },
+  { id: "zoe_college_4", type: "text", user: "zoe_college", content: "Library at midnight hits different during finals. Everyone's a little unhinged.", media: picsum(260, 800, 600) },
   { id: "zoe_college_5", type: "text", user: "zoe_college", content: "Got an A on that paper I wrote at 4am. Maybe panic is my superpower." },
   { id: "zoe_college_6", type: "text", user: "zoe_college", content: "Dorm room makeover! Fairy lights fix everything.", media: picsum(1035, 800, 800) },
   { id: "zoe_college_7", type: "video", user: "zoe_college", src: sampleVideos[7], caption: "A day in my life as a college student. It's chaos." },
@@ -255,16 +255,16 @@ export const initialFeed: Post[] = [
   { id: "carlos_barber_5", type: "text", user: "carlos_barber", content: "New clippers just arrived. These are a game changer.", media: picsum(60, 800, 600) },
 
   // --- tanya_teacher (teacher) ---
-  { id: "tanya_teacher_1", type: "text", user: "tanya_teacher", content: "A student told me I'm their favorite teacher today. I'm not crying you're crying." },
+  { id: "tanya_teacher_1", type: "text", user: "tanya_teacher", content: "A student told me I'm their favorite teacher today. I'm not crying you're crying.", media: picsum(265, 800, 600) },
   { id: "tanya_teacher_2", type: "text", user: "tanya_teacher", content: "Summer break countdown: 23 days. Not that I'm counting." },
   { id: "tanya_teacher_3", type: "text", user: "tanya_teacher", content: "Classroom setup is complete! Ready for the new school year.", media: picsum(180, 800, 600) },
   { id: "tanya_teacher_4", type: "text", user: "tanya_teacher", content: "Parent teacher conferences are a marathon not a sprint" },
-  { id: "tanya_teacher_5", type: "text", user: "tanya_teacher", content: "Spending my own money on classroom supplies again. Just teacher things." },
+  { id: "tanya_teacher_5", type: "text", user: "tanya_teacher", content: "Spending my own money on classroom supplies again. Just teacher things.", media: picsum(270, 800, 800) },
   { id: "tanya_teacher_6", type: "text", user: "tanya_teacher", content: "Field trip today went surprisingly smooth. Nobody got lost. That's a win." },
-  { id: "tanya_teacher_7", type: "text", user: "tanya_teacher", content: "Grading 150 essays this weekend. Send help. Or wine. Or both." },
+  { id: "tanya_teacher_7", type: "text", user: "tanya_teacher", content: "Grading 150 essays this weekend. Send help. Or wine. Or both.", media: picsum(275, 800, 800) },
 
   // --- leo_crypto (crypto / web3) ---
-  { id: "leo_crypto_1", type: "text", user: "leo_crypto", content: "Charts looking interesting today. Not financial advice." },
+  { id: "leo_crypto_1", type: "text", user: "leo_crypto", content: "Charts looking interesting today. Not financial advice.", media: picsum(280, 800, 600) },
   { id: "leo_crypto_2", type: "text", user: "leo_crypto", content: "DCA and chill. Stop trying to time the market." },
   { id: "leo_crypto_3", type: "text", user: "leo_crypto", content: "Everyone's a genius in a bull market. Stay humble." },
   { id: "leo_crypto_4", type: "text", user: "leo_crypto", content: "Portfolio update: still holding. Diamond hands." },
@@ -274,23 +274,23 @@ export const initialFeed: Post[] = [
   { id: "maria_coffee_1", type: "text", user: "maria_coffee", content: "Morning pour over ritual. The process is just as important as the cup.", media: picsum(425, 800, 800) },
   { id: "maria_coffee_2", type: "text", user: "maria_coffee", content: "Found a new roaster downtown and I think I'm in love", media: picsum(766, 800, 600) },
   { id: "maria_coffee_3", type: "text", user: "maria_coffee", content: "Latte art attempt #47. Getting closer... I think?", media: picsum(1060, 800, 800) },
-  { id: "maria_coffee_4", type: "text", user: "maria_coffee", content: "Iced coffee in December. Don't judge me." },
+  { id: "maria_coffee_4", type: "text", user: "maria_coffee", content: "Iced coffee in December. Don't judge me.", media: picsum(285, 800, 800) },
   { id: "maria_coffee_5", type: "text", user: "maria_coffee", content: "Life is too short for bad coffee. That's my philosophy." },
   { id: "maria_coffee_6", type: "video", user: "maria_coffee", src: sampleVideos[9], caption: "My entire coffee setup. Yes I have a problem. No I won't stop." },
 
   // --- kevin_gamer (gaming) ---
   { id: "kevin_gamer_1", type: "text", user: "kevin_gamer", content: "Just pulled an all-nighter gaming. No regrets. Okay maybe some regrets.", media: picsum(96, 800, 800) },
   { id: "kevin_gamer_2", type: "text", user: "kevin_gamer", content: "The new update broke everything. Devs please fix." },
-  { id: "kevin_gamer_3", type: "text", user: "kevin_gamer", content: "Looking for squad members for ranked tonight. Must have comms and a good attitude." },
+  { id: "kevin_gamer_3", type: "text", user: "kevin_gamer", content: "Looking for squad members for ranked tonight. Must have comms and a good attitude.", media: picsum(290, 800, 800) },
   { id: "kevin_gamer_4", type: "text", user: "kevin_gamer", content: "My K/D ratio is my personality at this point" },
   { id: "kevin_gamer_5", type: "video", user: "kevin_gamer", src: sampleVideos[10], caption: "Clutched a 1v4 and my hands are literally shaking" },
-  { id: "kevin_gamer_6", type: "text", user: "kevin_gamer", content: "Controller drift is ruining my life. Just bought my third controller this year." },
+  { id: "kevin_gamer_6", type: "text", user: "kevin_gamer", content: "Controller drift is ruining my life. Just bought my third controller this year.", media: picsum(295, 800, 800) },
 
   // --- ash_hiker (hiking / nature) ---
   { id: "ash_hiker_1", type: "text", user: "ash_hiker", content: "Summit reached! 8 miles and 3000ft of elevation. The view was worth every step.", media: picsum(1018, 800, 600) },
   { id: "ash_hiker_2", type: "text", user: "ash_hiker", content: "Nature doesn't need a filter.", media: picsum(1015, 800, 600) },
   { id: "ash_hiker_3", type: "text", user: "ash_hiker", content: "Got lost on the trail for 20 minutes but honestly it led to the best viewpoint", media: picsum(1039, 800, 800) },
-  { id: "ash_hiker_4", type: "text", user: "ash_hiker", content: "Camping this weekend. No cell service. See y'all Monday." },
+  { id: "ash_hiker_4", type: "text", user: "ash_hiker", content: "Camping this weekend. No cell service. See y'all Monday.", media: picsum(300, 800, 600) },
   { id: "ash_hiker_5", type: "video", user: "ash_hiker", src: sampleVideos[11], caption: "Waterfall we stumbled onto during today's hike. Magical." },
   { id: "ash_hiker_6", type: "text", user: "ash_hiker", content: "Trail snacks are a love language. Someone brought homemade trail mix and I almost cried.", media: picsum(1047, 800, 600) },
   { id: "ash_hiker_7", type: "text", user: "ash_hiker", content: "Sunrise from the ridge this morning. I live for moments like this.", media: picsum(1013, 800, 600) },
@@ -299,14 +299,14 @@ export const initialFeed: Post[] = [
   { id: "jenny_mom_1", type: "text", user: "jenny_mom", content: "First day of school!! Where did the time go?? My baby is growing up.", media: picsum(1033, 800, 800) },
   { id: "jenny_mom_2", type: "text", user: "jenny_mom", content: "Wine after bedtime is self care. Change my mind." },
   { id: "jenny_mom_3", type: "text", user: "jenny_mom", content: "My toddler said 'no' 847 times today. I counted." },
-  { id: "jenny_mom_4", type: "text", user: "jenny_mom", content: "Play date at the park. They played for 5 minutes then wanted snacks for an hour." },
+  { id: "jenny_mom_4", type: "text", user: "jenny_mom", content: "Play date at the park. They played for 5 minutes then wanted snacks for an hour.", media: picsum(320, 800, 600) },
   { id: "jenny_mom_5", type: "text", user: "jenny_mom", content: "Baked cookies with the kids. The kitchen looks like a war zone but the cookies are good.", media: picsum(312, 800, 800) },
   { id: "jenny_mom_6", type: "text", user: "jenny_mom", content: "Mom brain is real. I put my phone in the fridge and couldn't find it for 30 minutes." },
 
   // --- derek_fit (crossfit / gym bro) ---
   { id: "derek_fit_1", type: "text", user: "derek_fit", content: "New PR on clean and jerk! 225lbs felt light today.", media: picsum(1062, 800, 800) },
   { id: "derek_fit_2", type: "text", user: "derek_fit", content: "Leg day is the best day and if you skip it we can't be friends" },
-  { id: "derek_fit_3", type: "text", user: "derek_fit", content: "Pre-workout hit different today. Could run through a wall right now." },
+  { id: "derek_fit_3", type: "text", user: "derek_fit", content: "Pre-workout hit different today. Could run through a wall right now.", media: picsum(305, 800, 800) },
   { id: "derek_fit_4", type: "text", user: "derek_fit", content: "Protein shake game: strong. Taste: questionable.", media: picsum(1048, 800, 600) },
   { id: "derek_fit_5", type: "video", user: "derek_fit", src: sampleVideos[12], caption: "Full workout breakdown. Chest and back superset." },
   { id: "derek_fit_6", type: "text", user: "derek_fit", content: "Rest day tomorrow. My body has requested it." },
@@ -314,8 +314,8 @@ export const initialFeed: Post[] = [
   // --- sophie_bakes (baking) ---
   { id: "sophie_bakes_1", type: "text", user: "sophie_bakes", content: "Chocolate chip cookies fresh out of the oven. Come get some.", media: picsum(312, 800, 800) },
   { id: "sophie_bakes_2", type: "text", user: "sophie_bakes", content: "Wedding cake commission complete! 3 tiers of chocolate and vanilla marble.", media: picsum(1080, 800, 800) },
-  { id: "sophie_bakes_3", type: "text", user: "sophie_bakes", content: "Sourdough starter is finally alive after 7 days. Named her Bertha." },
-  { id: "sophie_bakes_4", type: "text", user: "sophie_bakes", content: "Baking at midnight because I suddenly needed brownies. Normal behavior." },
+  { id: "sophie_bakes_3", type: "text", user: "sophie_bakes", content: "Sourdough starter is finally alive after 7 days. Named her Bertha.", media: picsum(310, 800, 800) },
+  { id: "sophie_bakes_4", type: "text", user: "sophie_bakes", content: "Baking at midnight because I suddenly needed brownies. Normal behavior.", media: picsum(315, 800, 800) },
   { id: "sophie_bakes_5", type: "text", user: "sophie_bakes", content: "My macarons actually have feet!! After like 20 failed batches. We did it.", media: picsum(429, 800, 800) },
   { id: "sophie_bakes_6", type: "video", user: "sophie_bakes", src: sampleVideos[0], caption: "Satisfying frosting swirl on 24 cupcakes. Watch to the end." },
 

@@ -66,7 +66,7 @@ export function ComposeBox({ onPostCreated }: ComposeBoxProps) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handlePost(); } }}
-          placeholder="What's glitching in your matrix?"
+          placeholder="What's manifesting in your brain today?"
           className="w-full bg-transparent text-sm placeholder:text-muted-foreground/60 outline-none py-1"
           data-testid="input-compose"
         />

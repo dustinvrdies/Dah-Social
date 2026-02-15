@@ -24,6 +24,7 @@ import { getUserProfile, updateUserProfile } from "@/lib/profileData";
 import { getUserLevel } from "@/lib/levels";
 import { getUserBadges } from "@/lib/badges";
 import { getAllPosts } from "@/lib/feedData";
+import type { Post } from "@/lib/postTypes";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,146 @@ const badgeIconMap: Record<string, LucideIcon> = {
   zap: Zap,
 };
 
+function PostGrid({ posts }: { posts: Post[] }) {
+  if (posts.length === 0) {
+    return <p className="text-center text-muted-foreground py-8">No posts yet</p>;
+  }
+  return (
+    <div className="grid grid-cols-3 gap-1">
+      {posts.slice(0, 18).map((p) => {
+        const hasMedia = p.type === "text" && p.media;
+        return (
+          <div key={p.id} className="aspect-square bg-muted/30 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative group" data-testid={`post-grid-${p.id}`}>
+            {hasMedia ? (
+              <>
+                <img src={p.media} alt="" className="w-full h-full object-cover" loading="lazy" />
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <p className="text-white text-xs p-2 line-clamp-3 text-center">{p.content}</p>
+                </div>
+              </>
+            ) : (
+              <span className="text-xs text-muted-foreground p-2 line-clamp-4 text-center">{p.type === "text" ? p.content : ""}</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function VideoGrid({ posts }: { posts: Post[] }) {
+  if (posts.length === 0) {
+    return <p className="text-center text-muted-foreground py-8">No videos yet</p>;
+  }
+  return (
+    <div className="grid grid-cols-3 gap-1">
+      {posts.slice(0, 9).map((p) => (
+        <div key={p.id} className="aspect-[9/16] bg-muted/30 rounded-md flex items-center justify-center cursor-pointer overflow-hidden relative" data-testid={`video-grid-${p.id}`}>
+          {p.type === "video" && p.src ? (
+            <video src={p.src} className="w-full h-full object-cover" muted />
+          ) : (
+            <Video className="w-8 h-8 text-muted-foreground/50" />
+          )}
+          <div className="absolute bottom-1 left-1 right-1">
+            <p className="text-[10px] text-white/80 truncate">{p.type === "video" ? p.caption : ""}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ListingGrid({ posts }: { posts: Post[] }) {
+  if (posts.length === 0) {
+    return <p className="text-center text-muted-foreground py-8">No listings yet</p>;
+  }
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      {posts.slice(0, 9).map((p) => (
+        <Card key={p.id} className="overflow-hidden cursor-pointer" data-testid={`listing-grid-${p.id}`}>
+          <div className="aspect-square bg-muted/30 flex items-center justify-center overflow-hidden">
+            {p.type === "listing" && p.media ? (
+              <img src={p.media} alt="" className="w-full h-full object-cover" loading="lazy" />
+            ) : (
+              <ShoppingBag className="w-8 h-8 text-muted-foreground/50" />
+            )}
+          </div>
+          <div className="p-2">
+            <p className="text-xs font-medium truncate">{p.type === "listing" ? p.title : ""}</p>
+            <p className="text-xs text-primary font-bold">{p.type === "listing" ? `$${p.price}` : ""}</p>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function MutualFollowers({ myUsername, profileUsername }: { myUsername: string; profileUsername: string }) {
+  const myFollowing = getFollowing(myUsername);
+  const theirFollowers = getFollowers(profileUsername);
+  const mutuals = myFollowing.filter(u => theirFollowers.includes(u));
+
+  if (mutuals.length === 0) return null;
+
+  return (
+    <Card className="p-3" data-testid="card-mutual-followers">
+      <div className="flex items-center gap-2">
+        <div className="flex -space-x-2">
+          {mutuals.slice(0, 3).map(u => (
+            <Avatar key={u} className="w-6 h-6 border-2 border-background">
+              <AvatarFallback className="text-[8px]">{u.slice(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Followed by{" "}
+          <Link href={`/profile/${mutuals[0]}`} className="text-foreground font-medium">@{mutuals[0]}</Link>
+          {mutuals.length === 2 && (
+            <> and <Link href={`/profile/${mutuals[1]}`} className="text-foreground font-medium">@{mutuals[1]}</Link></>
+          )}
+          {mutuals.length > 2 && (
+            <> and {mutuals.length - 1} others you follow</>
+          )}
+        </p>
+      </div>
+    </Card>
+  );
+}
+
+function ActivityStats({ posts, username, followers }: { posts: Post[]; username: string; followers: string[] }) {
+  const totalLikes = posts.reduce((sum, p) => {
+    const engagement = JSON.parse(localStorage.getItem(`dah.engagement.${p.id}`) || "{}");
+    return sum + (engagement.likes || 0);
+  }, 0);
+  const totalComments = posts.reduce((sum, p) => {
+    const comments = JSON.parse(localStorage.getItem(`dah.comments.${p.id}`) || "[]");
+    return sum + (Array.isArray(comments) ? comments.length : 0);
+  }, 0);
+  const joinDate = localStorage.getItem(`dah.joinDate.${username}`) || new Date().toISOString();
+
+  const stats = [
+    { label: "Total Likes", value: totalLikes.toLocaleString(), icon: Star },
+    { label: "Comments", value: totalComments.toLocaleString(), icon: MessageCircle },
+    { label: "Posts", value: posts.length.toString(), icon: Grid3X3 },
+    { label: "Followers", value: followers.length.toString(), icon: UsersIcon },
+  ];
+
+  return (
+    <div className="grid grid-cols-4 gap-2" data-testid="activity-stats">
+      {stats.map(s => {
+        const SIcon = s.icon;
+        return (
+          <Card key={s.label} className="p-3 text-center">
+            <SIcon className="w-4 h-4 text-primary mx-auto mb-1" />
+            <p className="font-bold text-sm tabular-nums">{s.value}</p>
+            <p className="text-[10px] text-muted-foreground">{s.label}</p>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const [, params] = useRoute("/profile/:username");
   const username = (params?.username || "unknown").trim().toLowerCase();
@@ -71,9 +212,9 @@ export default function ProfilePage() {
   const [editForm, setEditForm] = useState({ displayName: "", bio: "", avatarUrl: "", location: "", website: "" });
   const levelInfo = getUserLevel(username);
   const badges = getUserBadges(username);
-  const unlockedBadges = badges.filter(b => b.unlocked);
+  const unlockedBadges = badges.filter(b => b.unlockedAt !== null);
 
-  const userPosts = getAllPosts().filter(p => p.username === username);
+  const userPosts = getAllPosts().filter(p => 'user' in p && p.user === username);
 
   const isOwnProfile = session?.username === username;
 
@@ -264,7 +405,7 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-1">
                   {unlockedBadges.slice(0, 5).map(b => {
                     const BadgeIcon = badgeIconMap[b.icon] || Award;
-                    return <BadgeIcon key={b.id} title={b.name} className="w-4 h-4 text-primary" />;
+                    return <BadgeIcon key={b.id} aria-label={b.name} className="w-4 h-4 text-primary" />;
                   })}
                   {unlockedBadges.length > 5 && (
                     <span className="text-xs text-muted-foreground">+{unlockedBadges.length - 5}</span>
@@ -308,6 +449,12 @@ export default function ProfilePage() {
                 <DraggableProfileBlocks profileUsername={username} />
               </Card>
               
+              {!isOwnProfile && session && (
+                <MutualFollowers myUsername={session.username} profileUsername={username} />
+              )}
+
+              <ActivityStats posts={userPosts} username={username} followers={followers} />
+
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="w-full justify-start bg-transparent border-b border-border/30 rounded-none p-0">
                   <TabsTrigger 
@@ -347,44 +494,15 @@ export default function ProfilePage() {
                 </TabsList>
                 
                 <TabsContent value="posts" className="mt-4">
-                  {userPosts.filter(p => p.type !== "video" && p.type !== "listing").length === 0 ? (
-                    <p className="text-center text-muted-foreground py-8">No posts yet</p>
-                  ) : (
-                    <div className="grid grid-cols-3 gap-1">
-                      {userPosts.filter(p => p.type !== "video" && p.type !== "listing").slice(0, 12).map((p) => (
-                        <div key={p.id} className="aspect-square bg-muted/30 rounded-md flex items-center justify-center hover-elevate cursor-pointer overflow-hidden">
-                          {p.type === "text" && <span className="text-xs text-muted-foreground p-2 line-clamp-3">{p.content}</span>}
-                          {p.type === "ad" && <span className="text-xs text-muted-foreground">Ad</span>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <PostGrid posts={userPosts.filter(p => p.type !== "video" && p.type !== "listing")} />
                 </TabsContent>
                 
                 <TabsContent value="videos" className="mt-4">
-                  <div className="grid grid-cols-3 gap-1">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="aspect-[9/16] bg-muted/30 rounded-md flex items-center justify-center hover-elevate cursor-pointer"
-                      >
-                        <Video className="w-8 h-8 text-muted-foreground/50" />
-                      </div>
-                    ))}
-                  </div>
+                  <VideoGrid posts={userPosts.filter(p => p.type === "video")} />
                 </TabsContent>
                 
                 <TabsContent value="shop" className="mt-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="aspect-square bg-muted/30 rounded-md flex items-center justify-center hover-elevate cursor-pointer"
-                      >
-                        <ShoppingBag className="w-8 h-8 text-muted-foreground/50" />
-                      </div>
-                    ))}
-                  </div>
+                  <ListingGrid posts={userPosts.filter(p => p.type === "listing")} />
                 </TabsContent>
                 
                 <TabsContent value="saved" className="mt-4">
