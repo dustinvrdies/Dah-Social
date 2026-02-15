@@ -1,5 +1,7 @@
 import { lsGet, lsSet } from "./storage";
 import { Post, ListingCategory } from "./postTypes";
+import { toggleLike, hasLiked, addComment } from "./engagement";
+import { addReaction, getReactions, type ReactionType } from "./reactions";
 
 export interface BotUser {
   username: string;
@@ -230,6 +232,94 @@ export function maybeGenerateNewBotPost(): Post | null {
   lsSet(BOT_LAST_RUN_KEY, Date.now());
   
   return post;
+}
+
+const BOT_INTERACT_KEY = "dah.bot.lastInteract";
+const BOT_INTERACT_INTERVAL = 2 * 60 * 1000;
+
+const botCommentsByPersonality: Record<string, string[]> = {
+  casual: [
+    "This is so cool", "Love it!", "Need this rn", "Yesss", "Vibes",
+    "How much?", "W", "Obsessed", "My wallet is crying", "Sick find",
+  ],
+  professional: [
+    "Great listing", "Fair price for this", "Quality item", "Good deal",
+    "Solid condition", "Would recommend this seller", "Nice inventory",
+    "Market value spot on", "Premium quality", "Impressive collection",
+  ],
+  creative: [
+    "The aesthetic though", "This is art", "Beautiful piece", "So unique",
+    "Love the creativity", "Inspiration everywhere", "Chef's kiss",
+    "This belongs in a museum", "One of a kind", "Absolutely stunning",
+  ],
+  enthusiast: [
+    "Been hunting for this!", "Finally!", "Take my coins",
+    "This community never disappoints", "Instant save",
+    "Going to share this with everyone", "Best find today",
+    "The algorithm knew I needed this", "Legendary post", "Top tier content",
+  ],
+};
+
+const reactionWeights: { type: ReactionType; weight: number }[] = [
+  { type: "like", weight: 35 },
+  { type: "love", weight: 25 },
+  { type: "fire", weight: 15 },
+  { type: "haha", weight: 8 },
+  { type: "wow", weight: 7 },
+  { type: "money", weight: 5 },
+  { type: "sad", weight: 3 },
+  { type: "angry", weight: 2 },
+];
+
+function pickWeightedReaction(): ReactionType {
+  const total = reactionWeights.reduce((s, w) => s + w.weight, 0);
+  let r = Math.random() * total;
+  for (const w of reactionWeights) {
+    r -= w.weight;
+    if (r <= 0) return w.type;
+  }
+  return "like";
+}
+
+export function runBotInteractions(allPosts: Post[]): void {
+  if (typeof window === "undefined") return;
+
+  const lastInteract = lsGet<number>(BOT_INTERACT_KEY, 0);
+  if (Date.now() - lastInteract < BOT_INTERACT_INTERVAL) return;
+
+  const eligiblePosts = allPosts.filter(p => p.type !== "ad");
+  if (eligiblePosts.length === 0) return;
+
+  const actingBots = botUsers.filter(() => Math.random() > 0.4);
+
+  for (const bot of actingBots) {
+    const targetCount = Math.floor(Math.random() * 3) + 1;
+
+    for (let t = 0; t < targetCount; t++) {
+      const post = eligiblePosts[Math.floor(Math.random() * eligiblePosts.length)];
+      const postUser = (post as any).user || "";
+
+      if (postUser === bot.username) continue;
+
+      if (Math.random() > 0.3 && !hasLiked(post.id, bot.username)) {
+        toggleLike(post.id, bot.username);
+      }
+
+      const existingReactions = getReactions(post.id);
+      const alreadyReacted = existingReactions.some(r => r.username === bot.username);
+      if (Math.random() > 0.5 && !alreadyReacted) {
+        addReaction(post.id, bot.username, pickWeightedReaction(), postUser, 25);
+      }
+
+      if (Math.random() > 0.7) {
+        const templates = botCommentsByPersonality[bot.personality] || botCommentsByPersonality.casual;
+        const comment = templates[Math.floor(Math.random() * templates.length)];
+        addComment(post.id, bot.username, comment);
+      }
+    }
+  }
+
+  lsSet(BOT_INTERACT_KEY, Date.now());
 }
 
 export function getBotUser(username: string): BotUser | undefined {

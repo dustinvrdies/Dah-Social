@@ -42,7 +42,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/video" component={VideoPage} />
       <Route path="/mall" component={MallPage} />
-      <Route path="/mall/store/:storeId" component={StorePage} />
+      <Route path="/mall/store/:storeId" component={MallPage} />
+      <Route path="/store" component={StorePage} />
       <Route path="/profile/:username" component={ProfilePage} />
       <Route path="/notifications" component={NotificationsPage} />
       <Route path="/inbox" component={InboxPage} />

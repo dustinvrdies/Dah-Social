@@ -1,5 +1,6 @@
 import { Post, ListingCategory, Store } from "./postTypes";
-import { initializeBotEcosystem, maybeGenerateNewBotPost, getBotPosts } from "./botUsers";
+import { initializeBotEcosystem, maybeGenerateNewBotPost, getBotPosts, runBotInteractions } from "./botUsers";
+import { seedTimestamps, seedEngagement } from "./engagementSeed";
 
 const picsum = (id: number, w = 600, h = 600) => `https://picsum.photos/id/${id}/${w}/${h}`;
 
@@ -1016,13 +1017,24 @@ export const initialFeed: Post[] = [
 
 import { getPosts } from "./posts";
 
-export const videoOnlyFeed = initialFeed.filter((p) => p.type === "video");
+const timestampedFeed = seedTimestamps(initialFeed);
+
+let engagementSeeded = false;
+function ensureEngagementSeeded() {
+  if (!engagementSeeded) {
+    seedEngagement(timestampedFeed);
+    engagementSeeded = true;
+  }
+}
+
+export const videoOnlyFeed = timestampedFeed.filter((p) => p.type === "video");
 
 export function getAllPosts(): Post[] {
+  ensureEngagementSeeded();
   initializeBotEcosystem();
   maybeGenerateNewBotPost();
 
-  const userPosts = getPosts(initialFeed);
+  const userPosts = getPosts(timestampedFeed);
   const botPosts = getBotPosts();
 
   const allPosts = [...userPosts, ...botPosts];
@@ -1032,6 +1044,8 @@ export function getAllPosts(): Post[] {
     const bTime = (b as any).timestamp || 0;
     return bTime - aTime;
   });
+
+  runBotInteractions(allPosts);
 
   return allPosts;
 }

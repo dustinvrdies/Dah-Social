@@ -4,6 +4,7 @@ export type TextPost = {
   user: string;
   content: string;
   media?: string;
+  timestamp?: number;
 };
 
 export type VideoPost = {
@@ -12,6 +13,7 @@ export type VideoPost = {
   user: string;
   src: string;
   caption?: string;
+  timestamp?: number;
 };
 
 export type ListingCategory = "flea-market" | "thrift-shop" | "electronics" | "exchange";
@@ -40,6 +42,7 @@ export type ListingPost = {
   category?: ListingCategory;
   dropship?: boolean;
   condition?: "new" | "like-new" | "used" | "for-parts";
+  timestamp?: number;
 };
 
 export type AdPost = {

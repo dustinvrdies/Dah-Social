@@ -4,6 +4,7 @@ import { getAllPosts } from "@/lib/feedData";
 import { getHidden } from "@/lib/moderation";
 import { getFollowing } from "@/lib/follows";
 import { getReactions } from "@/lib/reactions";
+import { getLikes, getCommentCount } from "@/lib/engagement";
 import { Post } from "@/lib/postTypes";
 import { getNextFeedAd, NativeAd } from "@/lib/ads";
 import { PostRenderer } from "./PostRenderer";
@@ -26,12 +27,92 @@ const AD_FREQUENCY = 5;
 type SortMode = "newest" | "popular" | "random";
 type FeedItem = Post | { isAd: true; ad: NativeAd };
 
-function getPostEngagement(post: Post): number {
+function getPostScore(post: Post, now: number, following: string[]): number {
+  const postTime = (post as any).timestamp || 0;
+  const ageMs = Math.max(1, now - postTime);
+  const ageHours = ageMs / (1000 * 60 * 60);
+
+  const halfLife = 48;
+  const recencyScore = Math.pow(0.5, ageHours / halfLife);
+
   const reactions = getReactions(post.id);
-  const hasMedia = ("media" in post && post.media) || ("src" in post && post.src) ? 3 : 0;
-  const isVideo = post.type === "video" ? 2 : 0;
-  const isListing = post.type === "listing" ? 1 : 0;
-  return reactions.length + hasMedia + isVideo + isListing;
+  const likes = getLikes(post.id);
+  const commentCount = getCommentCount(post.id);
+
+  const engagementScore =
+    (likes.count * 1.0) +
+    (reactions.length * 1.5) +
+    (commentCount * 3.0);
+
+  const velocityWindow = 6 * 60 * 60 * 1000;
+  const recentReactions = reactions.filter(r => (now - r.timestamp) < velocityWindow).length;
+  const velocityBoost = recentReactions > 3 ? 1 + (recentReactions * 0.15) : 1;
+
+  const hasMedia = ("media" in post && post.media) || ("src" in post && post.src);
+  const mediaBoost = hasMedia ? 1.3 : 1.0;
+  const videoBoost = post.type === "video" ? 1.4 : 1.0;
+
+  const user = getUser(post);
+  const followBoost = following.includes(user) ? 1.5 : 1.0;
+
+  const score =
+    (1 + engagementScore * 0.1) *
+    recencyScore *
+    velocityBoost *
+    mediaBoost *
+    videoBoost *
+    followBoost;
+
+  return score;
+}
+
+function getUser(p: Post): string {
+  if (p.type === "ad") return "";
+  return (p as any).user || "";
+}
+
+function enforceUserDiversity(posts: Post[]): Post[] {
+  if (posts.length <= 3) return posts;
+
+  const result: Post[] = [];
+  const remaining = [...posts];
+
+  while (remaining.length > 0) {
+    const next = remaining.shift()!;
+    result.push(next);
+
+    const nextUser = getUser(next);
+    let consecutive = 1;
+
+    while (remaining.length > 0 && consecutive < 2) {
+      const peek = remaining[0];
+      if (getUser(peek) === nextUser) {
+        result.push(remaining.shift()!);
+        consecutive++;
+      } else {
+        break;
+      }
+    }
+
+    if (remaining.length > 0) {
+      const peek = remaining[0];
+      if (getUser(peek) === nextUser) {
+        let insertIdx = -1;
+        for (let i = 1; i < remaining.length; i++) {
+          if (getUser(remaining[i]) !== nextUser) {
+            insertIdx = i;
+            break;
+          }
+        }
+        if (insertIdx > 0) {
+          const [moved] = remaining.splice(insertIdx, 1);
+          remaining.unshift(moved);
+        }
+      }
+    }
+  }
+
+  return result;
 }
 
 function seededShuffle<T>(arr: T[], seed: number): T[] {
@@ -42,41 +123,6 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
     const j = s % (i + 1);
     [result[i], result[j]] = [result[j], result[i]];
   }
-  return result;
-}
-
-function diversifyFeed(posts: Post[]): Post[] {
-  if (posts.length <= 3) return posts;
-  
-  const textPosts = posts.filter(p => p.type === "text" && !("media" in p && p.media));
-  const mediaPosts = posts.filter(p => p.type === "text" && "media" in p && p.media);
-  const videoPosts = posts.filter(p => p.type === "video");
-  const listingPosts = posts.filter(p => p.type === "listing");
-  
-  const result: Post[] = [];
-  const queues = [mediaPosts, textPosts, videoPosts, listingPosts].filter(q => q.length > 0);
-  const indices = queues.map(() => 0);
-  
-  let queueIdx = 0;
-  let totalAdded = 0;
-  const maxPosts = posts.length;
-  
-  while (totalAdded < maxPosts) {
-    let found = false;
-    for (let attempt = 0; attempt < queues.length; attempt++) {
-      const qi = (queueIdx + attempt) % queues.length;
-      if (indices[qi] < queues[qi].length) {
-        result.push(queues[qi][indices[qi]]);
-        indices[qi]++;
-        totalAdded++;
-        found = true;
-        queueIdx = (qi + 1) % queues.length;
-        break;
-      }
-    }
-    if (!found) break;
-  }
-  
   return result;
 }
 
@@ -106,11 +152,12 @@ export function Feed() {
 
   const filteredAndSortedPosts = useMemo(() => {
     let filtered = posts.filter((p) => !hidden.includes(p.id));
+    const now = Date.now();
 
     if (activeTab === "following") {
       if (following.length === 0) return [];
       filtered = filtered.filter((p) => {
-        const user = "user" in p ? p.user : "";
+        const user = getUser(p);
         return following.includes(user.toLowerCase());
       });
     }
@@ -124,26 +171,66 @@ export function Feed() {
     }
 
     if (activeTab === "trending") {
-      return [...filtered].sort((a, b) => getPostEngagement(b) - getPostEngagement(a));
+      const scored = filtered.map(p => ({
+        post: p,
+        score: getPostScore(p, now, []),
+      }));
+      scored.sort((a, b) => {
+        const aEng = getReactions(a.post.id).length + getLikes(a.post.id).count + getCommentCount(a.post.id);
+        const bEng = getReactions(b.post.id).length + getLikes(b.post.id).count + getCommentCount(b.post.id);
+        return bEng - aEng;
+      });
+      return enforceUserDiversity(scored.map(s => s.post));
     }
 
-    switch (sortMode) {
-      case "popular":
-        return [...filtered].sort((a, b) => getPostEngagement(b) - getPostEngagement(a));
-      case "random": {
-        const daySeed = Math.floor(Date.now() / 86400000);
-        return seededShuffle(filtered, daySeed);
-      }
-      case "newest":
-      default: {
-        const sorted = [...filtered].sort((a, b) => {
-          const aTime = (a as any).timestamp || 0;
-          const bTime = (b as any).timestamp || 0;
-          return bTime - aTime;
-        });
-        return diversifyFeed(sorted);
+    if (activeTab === "foryou") {
+      switch (sortMode) {
+        case "popular": {
+          const scored = filtered.map(p => ({
+            post: p,
+            score: getPostScore(p, now, following),
+          }));
+          scored.sort((a, b) => b.score - a.score);
+          return enforceUserDiversity(scored.map(s => s.post));
+        }
+        case "random": {
+          const daySeed = Math.floor(Date.now() / 86400000);
+          return seededShuffle(filtered, daySeed);
+        }
+        case "newest":
+        default: {
+          const scored = filtered.map(p => ({
+            post: p,
+            score: getPostScore(p, now, following),
+          }));
+          scored.sort((a, b) => b.score - a.score);
+
+          const topCount = Math.min(5, Math.floor(scored.length * 0.15));
+          const top = scored.slice(0, topCount).map(s => s.post);
+          const rest = scored.slice(topCount);
+
+          rest.sort((a, b) => {
+            const aTime = (a.post as any).timestamp || 0;
+            const bTime = (b.post as any).timestamp || 0;
+            return bTime - aTime;
+          });
+
+          const merged = [...top, ...rest.map(s => s.post)];
+          return enforceUserDiversity(merged);
+        }
       }
     }
+
+    if (activeTab === "following") {
+      const sorted = [...filtered].sort((a, b) => {
+        const aTime = (a as any).timestamp || 0;
+        const bTime = (b as any).timestamp || 0;
+        return bTime - aTime;
+      });
+      return enforceUserDiversity(sorted);
+    }
+
+    return enforceUserDiversity(filtered);
   }, [posts, hidden, activeTab, sortMode, mediaOnly, following]);
 
   const feedWithAds = useMemo((): FeedItem[] => {

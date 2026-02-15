@@ -3,48 +3,106 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, UserPlus } from "lucide-react";
+import { TrendingUp, UserPlus, Flame, MessageSquare, Heart } from "lucide-react";
 import { useAuth } from "./AuthProvider";
-import { isFollowing, follow } from "@/lib/follows";
-import { useState } from "react";
+import { isFollowing, follow, getFollowing } from "@/lib/follows";
+import { useState, useMemo, useEffect } from "react";
+import { getAllPosts } from "@/lib/feedData";
+import { getLikes, getCommentCount } from "@/lib/engagement";
+import { getReactions } from "@/lib/reactions";
+import type { Post } from "@/lib/postTypes";
 
-const trendingItems = [
-  { rank: 1, name: "Neon Visors", change: "+240%", volume: "Volume" },
-  { rank: 2, name: "Neon Visors", change: "+240%", volume: "Volume" },
-  { rank: 3, name: "Neon Visors", change: "+240%", volume: "Volume" },
-];
+function getTrendingData() {
+  const posts = getAllPosts();
+  const now = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
 
-const suggestedUsers = [
-  { username: "neon_vixen", displayName: "Vixen" },
-  { username: "glitch_god", displayName: "Glitch" },
-  { username: "cyber_maya", displayName: "Maya" },
-  { username: "techie_marcus", displayName: "Marcus" },
-];
+  const scored = posts
+    .filter(p => p.type !== "ad")
+    .map(p => {
+      const likes = getLikes(p.id);
+      const comments = getCommentCount(p.id);
+      const reactions = getReactions(p.id);
+      const recentReactions = reactions.filter(r => (now - r.timestamp) < dayMs).length;
+      const total = likes.count + comments * 3 + reactions.length * 1.5 + recentReactions * 5;
+      return { post: p, score: total, likes: likes.count, comments, reactions: reactions.length };
+    })
+    .sort((a, b) => b.score - a.score);
 
-function MarketTrends() {
+  return scored.slice(0, 5);
+}
+
+function getSuggestedUsers(currentUser: string | null, following: string[]) {
+  const posts = getAllPosts();
+  const userEngagement: Record<string, number> = {};
+
+  for (const p of posts) {
+    if (p.type === "ad") continue;
+    const user = (p as any).user || "";
+    if (!user || user === currentUser || following.includes(user)) continue;
+    const likes = getLikes(p.id);
+    const comments = getCommentCount(p.id);
+    const reactions = getReactions(p.id);
+    const score = likes.count + comments * 2 + reactions.length;
+    userEngagement[user] = (userEngagement[user] || 0) + score;
+  }
+
+  return Object.entries(userEngagement)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([username, score]) => ({
+      username,
+      displayName: username.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+      score,
+    }));
+}
+
+function formatNumber(n: number): string {
+  if (n >= 1000) return (n / 1000).toFixed(1) + "k";
+  return String(n);
+}
+
+function TrendingPosts() {
+  const trending = useMemo(() => getTrendingData(), []);
+
   return (
-    <Card data-testid="card-market-trends">
+    <Card data-testid="card-trending-posts">
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
-          <h3 className="font-semibold text-sm">Market Trends</h3>
-          <TrendingUp className="w-4 h-4 text-primary" />
+          <h3 className="font-semibold text-sm">Trending Now</h3>
+          <Flame className="w-4 h-4 text-orange-500" />
         </div>
         <div className="space-y-3">
-          {trendingItems.map((item, i) => (
-            <div key={i} className="flex items-center gap-3" data-testid={`trend-item-${i}`}>
-              <span className="text-xs font-bold text-muted-foreground w-4">#{item.rank}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{item.name}</p>
-                <p className="text-[10px] text-muted-foreground">{item.change} {item.volume}</p>
+          {trending.map((item, i) => {
+            const user = (item.post as any).user || "unknown";
+            const content = (item.post as any).content || (item.post as any).caption || (item.post as any).title || "";
+            const preview = content.length > 60 ? content.slice(0, 60) + "..." : content;
+
+            return (
+              <div key={item.post.id} className="flex items-start gap-2.5" data-testid={`trending-post-${i}`}>
+                <span className="text-xs font-bold text-muted-foreground w-4 mt-0.5 flex-shrink-0">
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <Link href={`/profile/${user}`}>
+                    <p className="text-xs font-medium text-primary cursor-pointer">@{user}</p>
+                  </Link>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{preview}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                      <Heart className="w-2.5 h-2.5" />
+                      {formatNumber(item.likes)}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                      <MessageSquare className="w-2.5 h-2.5" />
+                      {formatNumber(item.comments)}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <Link href="/mall">
-          <Button variant="default" size="sm" className="w-full mt-3" data-testid="button-visit-mall">
-            Visit Mall
-          </Button>
-        </Link>
       </CardContent>
     </Card>
   );
@@ -54,19 +112,44 @@ function WhoToFollow() {
   const { session } = useAuth();
   const [followingState, setFollowingState] = useState<Record<string, boolean>>({});
 
+  const following = useMemo(() => {
+    if (!session) return [] as string[];
+    return getFollowing(session.username);
+  }, [session]);
+
+  const suggested = useMemo(
+    () => getSuggestedUsers(session?.username || null, following),
+    [session, following]
+  );
+
+  useEffect(() => {
+    if (!session || suggested.length === 0) return;
+    const map: Record<string, boolean> = {};
+    suggested.forEach(u => {
+      if (isFollowing(session.username, u.username)) {
+        map[u.username] = true;
+      }
+    });
+    if (Object.keys(map).length > 0) {
+      setFollowingState(prev => ({ ...prev, ...map }));
+    }
+  }, [session, suggested]);
+
   const handleFollow = (username: string) => {
     if (!session) return;
     follow(session.username, username);
     setFollowingState(prev => ({ ...prev, [username]: true }));
   };
 
+  if (suggested.length === 0) return null;
+
   return (
     <Card data-testid="card-who-to-follow">
       <CardContent className="p-4">
         <h3 className="font-semibold text-sm mb-3">Who to Follow</h3>
         <div className="space-y-3">
-          {suggestedUsers.map((user) => {
-            const alreadyFollowing = followingState[user.username] || (session && isFollowing(session.username, user.username));
+          {suggested.map((user) => {
+            const alreadyFollowing = followingState[user.username] || initialFollowMap[user.username];
             return (
               <div key={user.username} className="flex items-center gap-3" data-testid={`suggest-user-${user.username}`}>
                 <Link href={`/profile/${user.username}`}>
@@ -108,7 +191,7 @@ function WhoToFollow() {
 export function RightSidebar() {
   return (
     <aside className="hidden lg:flex flex-col gap-4 w-72 flex-shrink-0 sticky top-16" data-testid="right-sidebar">
-      <MarketTrends />
+      <TrendingPosts />
       <WhoToFollow />
     </aside>
   );

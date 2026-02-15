@@ -28,6 +28,7 @@ import {
   Trophy,
   Mail,
   LogOut,
+  ShoppingCart,
   LogIn,
   Coins,
   FileText,
@@ -78,9 +79,10 @@ export function NavDrawer({ open, onOpenChange }: NavDrawerProps) {
 
   const earnNav = [
     { href: "/mall", label: "DAH Mall", icon: ShoppingBag },
+    { href: "/store", label: "Rewards Store", icon: ShoppingCart },
     { href: "/games", label: "Games", icon: Gamepad2 },
     { href: "/quests", label: "Quests", icon: Target },
-    { href: "/rewards", label: "Rewards", icon: Gift },
+    { href: "/rewards", label: "Daily Rewards", icon: Gift },
     { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
   ];

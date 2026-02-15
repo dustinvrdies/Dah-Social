@@ -434,20 +434,41 @@ export default function RewardsPage() {
           </div>
         </Card>
 
-        <div className="flex gap-3">
-          <Link href="/leaderboard" className="flex-1">
+        <Card className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <p className="font-semibold text-sm">Ready to spend your coins?</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Redeem for gift cards, boosts, and exclusive DAH products</p>
+            </div>
+            <Link href="/store">
+              <Button size="sm" data-testid="button-go-store">
+                <Coins className="w-3.5 h-3.5 mr-1.5" />
+                Rewards Store
+              </Button>
+            </Link>
+          </div>
+        </Card>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Link href="/store" className="block">
+            <Card className="p-4 text-center hover-elevate cursor-pointer">
+              <Gift className="w-6 h-6 text-primary mx-auto mb-1" />
+              <p className="text-sm font-medium">Store</p>
+            </Card>
+          </Link>
+          <Link href="/leaderboard" className="block">
             <Card className="p-4 text-center hover-elevate cursor-pointer">
               <Trophy className="w-6 h-6 text-primary mx-auto mb-1" />
               <p className="text-sm font-medium">Leaderboard</p>
             </Card>
           </Link>
-          <Link href="/quests" className="flex-1">
+          <Link href="/quests" className="block">
             <Card className="p-4 text-center hover-elevate cursor-pointer">
               <Zap className="w-6 h-6 text-primary mx-auto mb-1" />
               <p className="text-sm font-medium">Quests</p>
             </Card>
           </Link>
-          <Link href="/games" className="flex-1">
+          <Link href="/games" className="block">
             <Card className="p-4 text-center hover-elevate cursor-pointer">
               <Sparkles className="w-6 h-6 text-primary mx-auto mb-1" />
               <p className="text-sm font-medium">Games</p>

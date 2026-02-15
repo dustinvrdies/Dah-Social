@@ -4,7 +4,7 @@ import { Post } from "./postTypes";
 const KEY = "dah.posts";
 const MEDIA_KEY = "dah.post.media";
 const SEED_VERSION_KEY = "dah.seed.version";
-const CURRENT_SEED_VERSION = 3;
+const CURRENT_SEED_VERSION = 4;
 
 export const getPosts = (f: Post[]) => {
   const storedVersion = lsGet<number>(SEED_VERSION_KEY, 0);

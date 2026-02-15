@@ -346,3 +346,15 @@ export function hasUserSeenAd(adId: string): boolean {
   const state = getState();
   return (state.viewedAds[adId] || 0) > 0;
 }
+
+export function getUserAdEarnings(username: string): number {
+  const state = getState();
+  const userImpressions = state.impressions.filter(i => i.username === username && i.type === "impression").length;
+  const userClicks = state.impressions.filter(i => i.username === username && i.type === "click").length;
+  const cpm = 2.50;
+  const cpc = 0.25;
+  const impressionRevenue = (userImpressions / 1000) * cpm;
+  const clickRevenue = userClicks * cpc;
+  const userShare = (impressionRevenue + clickRevenue) * 0.6;
+  return Math.floor(userShare * 100);
+}
