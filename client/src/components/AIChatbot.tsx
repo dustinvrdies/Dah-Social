@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
-import { Bot, X, Send, Loader2, Sparkles, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Bot, X, Send, Loader2, Sparkles, Trash2, MessageCircle } from "lucide-react";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -16,6 +16,7 @@ export function AIChatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<number | null>(null);
+  const [pulse, setPulse] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,6 +27,11 @@ export function AIChatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPulse(false), 6000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const createConversation = async () => {
     try {
@@ -129,16 +135,19 @@ export function AIChatbot() {
   return (
     <>
       {isOpen && (
-        <div className="fixed bottom-[7.5rem] right-4 z-[60] w-[340px] sm:w-[380px]" data-testid="container-ai-chatbot">
-          <Card className="flex flex-col h-[480px] shadow-lg border-primary/20">
-            <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border/50">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-primary" />
+        <div className="fixed inset-0 z-[70] sm:inset-auto sm:bottom-[7.5rem] sm:right-4 sm:w-[380px]" data-testid="container-ai-chatbot">
+          <Card className="flex flex-col h-full sm:h-[520px] sm:rounded-lg rounded-none shadow-2xl border-primary/20">
+            <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/10 to-transparent">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold">DAH AI</p>
-                  <p className="text-[10px] text-muted-foreground">Ask me anything</p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                    <p className="text-[10px] text-muted-foreground">Online</p>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -156,28 +165,30 @@ export function AIChatbot() {
             <div className="flex-1 overflow-y-auto p-3 space-y-3">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                    <Sparkles className="w-7 h-7 text-primary" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <Sparkles className="w-8 h-8 text-primary" />
                   </div>
-                  <p className="text-sm font-medium mb-1">Welcome to DAH AI</p>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    I can help you with questions about DAH Social, give recommendations, or just chat.
+                  <p className="text-base font-semibold mb-1">Hey! I'm DAH AI</p>
+                  <p className="text-xs text-muted-foreground mb-5 max-w-[260px]">
+                    Your personal assistant for all things DAH Social. Ask me anything!
                   </p>
-                  <div className="space-y-1.5 w-full">
+                  <div className="space-y-2 w-full max-w-[280px]">
                     {["What is DAH Social?", "How do I earn DAH Coins?", "Tell me about DAH Games"].map((q) => (
-                      <Button
+                      <button
                         key={q}
-                        variant="outline"
-                        size="sm"
                         onClick={() => {
                           setInput(q);
-                          setTimeout(() => textareaRef.current?.focus(), 100);
+                          setTimeout(() => {
+                            textareaRef.current?.focus();
+                            handleSend();
+                          }, 100);
                         }}
-                        className="w-full justify-start text-xs"
+                        className="w-full text-left px-3 py-2.5 rounded-lg bg-muted/50 text-xs text-muted-foreground hover-elevate transition-colors flex items-center gap-2"
                         data-testid={`button-suggestion-${q.split(" ").slice(0, 3).join("-").toLowerCase()}`}
                       >
+                        <MessageCircle className="w-3.5 h-3.5 text-primary flex-shrink-0" />
                         {q}
-                      </Button>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -193,10 +204,10 @@ export function AIChatbot() {
                     </Avatar>
                   )}
                   <div
-                    className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                    className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                       msg.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                        ? "bg-primary text-primary-foreground rounded-br-sm"
+                        : "bg-muted rounded-bl-sm"
                     }`}
                     data-testid={`text-chat-message-${i}`}
                   >
@@ -212,8 +223,12 @@ export function AIChatbot() {
                       <Bot className="w-3.5 h-3.5" />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="bg-muted rounded-lg px-3 py-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                  <div className="bg-muted rounded-2xl rounded-bl-sm px-3 py-2">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
                   </div>
                 </div>
               )}
@@ -227,7 +242,7 @@ export function AIChatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type a message..."
+                  placeholder="Ask DAH AI anything..."
                   className="resize-none text-sm min-h-[36px] max-h-[80px]"
                   rows={1}
                   data-testid="input-chat-message"
@@ -246,14 +261,23 @@ export function AIChatbot() {
         </div>
       )}
 
-      <Button
-        size="lg"
-        className="fixed bottom-[5.5rem] right-4 z-[60] rounded-full shadow-lg bg-primary"
-        onClick={() => setIsOpen(!isOpen)}
+      <button
+        onClick={() => { setIsOpen(!isOpen); setPulse(false); }}
+        className="fixed bottom-[5.5rem] right-4 z-[70] w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center transition-transform active:scale-95"
         data-testid="button-open-chatbot"
+        style={{
+          boxShadow: "0 4px 20px rgba(var(--primary), 0.3), 0 2px 8px rgba(0,0,0,0.2)",
+        }}
       >
-        {isOpen ? <X className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
-      </Button>
+        {isOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Bot className="w-6 h-6" />
+        )}
+        {pulse && !isOpen && (
+          <span className="absolute inset-0 rounded-full bg-primary/40 animate-ping" />
+        )}
+      </button>
     </>
   );
 }
