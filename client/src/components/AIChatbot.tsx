@@ -129,7 +129,7 @@ export function AIChatbot() {
   return (
     <>
       {isOpen && (
-        <div className="fixed bottom-20 right-4 z-50 w-[340px] sm:w-[380px]" data-testid="container-ai-chatbot">
+        <div className="fixed bottom-[7.5rem] right-4 z-[60] w-[340px] sm:w-[380px]" data-testid="container-ai-chatbot">
           <Card className="flex flex-col h-[480px] shadow-lg border-primary/20">
             <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border/50">
               <div className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export function AIChatbot() {
 
       <Button
         size="lg"
-        className="fixed bottom-4 right-4 z-50 rounded-full shadow-lg bg-primary"
+        className="fixed bottom-[5.5rem] right-4 z-[60] rounded-full shadow-lg bg-primary"
         onClick={() => setIsOpen(!isOpen)}
         data-testid="button-open-chatbot"
       >
