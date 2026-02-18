@@ -298,6 +298,28 @@ export const userVerifications = pgTable(
   })
 );
 
+export const coinTransactions = pgTable(
+  "coin_transactions",
+  {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 32 }).notNull(),
+    amount: integer("amount").notNull(),
+    stripeSessionId: text("stripe_session_id"),
+    stripePaymentIntentId: text("stripe_payment_intent_id"),
+    status: varchar("status", { length: 32 }).notNull().default("pending"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    userIdIdx: index("coin_transactions_user_id_idx").on(t.userId),
+    stripeSessionIdx: index("coin_transactions_stripe_session_idx").on(t.stripeSessionId),
+    statusIdx: index("coin_transactions_status_idx").on(t.status),
+    createdAtIdx: index("coin_transactions_created_at_idx").on(t.createdAt),
+  })
+);
+
 export const registerSchema = z.object({
   username: z
     .string()
@@ -421,6 +443,7 @@ export type Notification = typeof notifications.$inferSelect;
 export type UserConsent = typeof userConsents.$inferSelect;
 export type EmailVerification = typeof emailVerifications.$inferSelect;
 export type UserVerification = typeof userVerifications.$inferSelect;
+export type CoinTransaction = typeof coinTransactions.$inferSelect;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
